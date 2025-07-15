@@ -12,11 +12,15 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "@repo/types": "workspace:*"
+    "@repo/db": "workspace:*",
+    "@repo/types": "workspace:*",
+    "@repo/typescript-config": "workspace:*"
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/ws": "^8.18.1",
+    "dotenv": "^17.2.0",
+    "jsonwebtoken": "^9.0.2",
     "ws": "^8.18.3"
   }
 }

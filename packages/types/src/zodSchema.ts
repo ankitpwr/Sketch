@@ -5,6 +5,7 @@ export const SignUpSchema = z.object({
   password: z
     .string()
     .min(3, { error: "Password must have atleast 3 characters" }),
+  name: z.string(),
 });
 
 export const SignInSchema = z.object({

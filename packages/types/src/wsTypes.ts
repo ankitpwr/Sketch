@@ -1,7 +1,7 @@
 export interface WebsocketMessage {
   type: "JOIN" | "LEAVE" | "MESSAGE";
   userId: string;
-  userName: string;
+  name: string;
   roomId: string;
   message: string | null;
 }
