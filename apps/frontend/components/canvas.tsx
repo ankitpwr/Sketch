@@ -48,13 +48,15 @@ export default function Canvas() {
           onClickhandler={() => handleTool("Rectangle")}
         />
         <Button
-          title={"Ellipse"}
-          onClickhandler={() => handleTool("Ellipse")}
-        />
-        <Button
           title={"Diamond"}
           onClickhandler={() => handleTool("Diamond")}
         />
+        <Button
+          title={"Ellipse"}
+          onClickhandler={() => handleTool("Ellipse")}
+        />
+        <Button title={"Line"} onClickhandler={() => handleTool("Line")} />
+
         <Button title={"Pencil"} onClickhandler={() => handleTool("Pencil")} />
         <Button title={"Eraser"} onClickhandler={() => handleTool("Eraser")} />
         <Button title={"Text"} onClickhandler={() => handleTool("Text")} />

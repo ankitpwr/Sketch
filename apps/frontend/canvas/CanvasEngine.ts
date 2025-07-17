@@ -1,3 +1,4 @@
+import { drawDiamond, drawEllipse, drawRectangle } from "./draw";
 import { getExistingShape } from "./http";
 import { Action, Shape, Tool } from "./types";
 
@@ -34,56 +35,43 @@ export class CanvasEngine {
     this.ctx.save();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     if (this.previewShape) {
+      const shape = this.previewShape;
+      const minX = Math.min(shape.startX, shape.endX);
+      const minY = Math.min(shape.startY, shape.endY);
+      const maxX = Math.max(shape.startX, shape.endX);
+      const maxY = Math.max(shape.startY, shape.endY);
+      const width = maxX - minX;
+      const height = maxY - minY;
       if (this.previewShape.type == "Rectangle") {
-        console.log("Creating reactangle");
-        const shape = this.previewShape;
-        const minX = Math.min(shape.startX, shape.endX);
-        const minY = Math.min(shape.startY, shape.endY);
-        const maxX = Math.max(shape.startX, shape.endX);
-        const maxY = Math.max(shape.startY, shape.endY);
-        const width = maxX - minX;
-        const height = maxY - minY;
-        const radius = Math.min(width, height) / 4;
-        this.ctx.beginPath();
-        this.ctx.roundRect(minX, minY, width, height, radius);
-        this.ctx.closePath();
-        this.ctx.stroke();
+        drawRectangle({
+          ctx: this.ctx,
+          minX: minX,
+          minY: minY,
+          maxX: maxX,
+          maxY: maxY,
+          width: width,
+          height: height,
+        });
       } else if (this.previewShape.type == "Ellipse") {
-        const shape = this.previewShape;
-        const minX = Math.min(shape.startX, shape.endX);
-        const minY = Math.min(shape.startY, shape.endY);
-        const maxX = Math.max(shape.startX, shape.endX);
-        const maxY = Math.max(shape.startY, shape.endY);
-        const width = maxX - minX;
-        const height = maxY - minY;
-        const centerX = minX + width / 2;
-        const centerY = minY + height / 2;
-        this.ctx.beginPath();
-        this.ctx.ellipse(
-          centerX,
-          centerY,
-          width / 2,
-          height / 2,
-          0,
-          0,
-          2 * Math.PI
-        );
-        this.ctx.closePath();
-        this.ctx.stroke();
+        drawEllipse({
+          ctx: this.ctx,
+          minX: minX,
+          minY: minY,
+          maxX: maxX,
+          maxY: maxY,
+          width: width,
+          height: height,
+        });
       } else if (this.previewShape.type == "Diamond") {
-        const shape = this.previewShape;
-        const minX = Math.min(shape.startX, shape.endX);
-        const minY = Math.min(shape.startY, shape.endY);
-        const maxX = Math.max(shape.startX, shape.endX);
-        const maxY = Math.max(shape.startY, shape.endY);
-        this.ctx.beginPath();
-        this.ctx.moveTo(minX, minY + (maxY - minY) / 2);
-        this.ctx.lineTo(minX + (maxX - minX) / 2, minY);
-        this.ctx.lineTo(maxX, minY + (maxY - minY) / 2);
-        this.ctx.lineTo(minX + (maxX - minX) / 2, maxY);
-        this.ctx.lineTo(minX, minY + (maxY - minY) / 2);
-
-        this.ctx.stroke();
+        drawDiamond({
+          ctx: this.ctx,
+          minX: minX,
+          minY: minY,
+          maxX: maxX,
+          maxY: maxY,
+          width: width,
+          height: height,
+        });
       }
     }
     this.ctx.restore();
