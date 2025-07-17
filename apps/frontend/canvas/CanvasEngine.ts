@@ -1,4 +1,10 @@
-import { drawDiamond, drawEllipse, drawLine, drawRectangle } from "./draw";
+import {
+  drawArrow,
+  drawDiamond,
+  drawEllipse,
+  drawLine,
+  drawRectangle,
+} from "./draw";
 import { getExistingShape } from "./http";
 import { Action, Shape, Tool } from "./types";
 
@@ -80,6 +86,14 @@ export class CanvasEngine {
           endX: shape.endX,
           endY: shape.endY,
         });
+      } else if (this.previewShape.type == "Arrow") {
+        drawArrow({
+          ctx: this.ctx,
+          startX: shape.startX,
+          startY: shape.startY,
+          endX: shape.endX,
+          endY: shape.endY,
+        });
       }
     }
     this.ctx.restore();
@@ -102,7 +116,8 @@ export class CanvasEngine {
       this.currentTool == "Rectangle" ||
       this.currentTool == "Ellipse" ||
       this.currentTool == "Diamond" ||
-      this.currentTool == "Line"
+      this.currentTool == "Line" ||
+      this.currentTool == "Arrow"
     ) {
       const currentShape = this.currentTool;
       const tempShape: Shape = {
