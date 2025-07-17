@@ -1,4 +1,4 @@
-interface Rectangle {
+interface drawArgs {
   ctx: CanvasRenderingContext2D;
   minX: number;
   minY: number;
@@ -8,6 +8,13 @@ interface Rectangle {
   height: number;
 }
 
+interface Line {
+  ctx: CanvasRenderingContext2D;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+}
 export function drawRectangle({
   ctx,
   minX,
@@ -16,7 +23,7 @@ export function drawRectangle({
   maxY,
   width,
   height,
-}: Rectangle) {
+}: drawArgs) {
   const radius = Math.min(width, height) / 4;
   ctx.beginPath();
   ctx.roundRect(minX, minY, width, height, radius);
@@ -31,7 +38,7 @@ export function drawEllipse({
   maxY,
   width,
   height,
-}: Rectangle) {
+}: drawArgs) {
   const centerX = minX + width / 2;
   const centerY = minY + height / 2;
   ctx.beginPath();
@@ -48,7 +55,7 @@ export function drawDiamond({
   maxY,
   width,
   height,
-}: Rectangle) {
+}: drawArgs) {
   const centerX = minX + width / 2;
   const centerY = minY + height / 2;
   const topPoint = { x: centerX, y: minY };
@@ -81,5 +88,13 @@ export function drawDiamond({
   ctx.arcTo(leftPoint.x, leftPoint.y, topPoint.x, topPoint.y, actualRadius);
   ctx.closePath();
 
+  ctx.stroke();
+}
+
+export function drawLine({ ctx, startX, startY, endX, endY }: Line) {
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(startX, startY);
+  ctx.lineTo(endX, endY);
   ctx.stroke();
 }

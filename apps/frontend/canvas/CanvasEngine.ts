@@ -1,4 +1,4 @@
-import { drawDiamond, drawEllipse, drawRectangle } from "./draw";
+import { drawDiamond, drawEllipse, drawLine, drawRectangle } from "./draw";
 import { getExistingShape } from "./http";
 import { Action, Shape, Tool } from "./types";
 
@@ -72,6 +72,14 @@ export class CanvasEngine {
           width: width,
           height: height,
         });
+      } else if (this.previewShape.type == "Line") {
+        drawLine({
+          ctx: this.ctx,
+          startX: shape.startX,
+          startY: shape.startY,
+          endX: shape.endX,
+          endY: shape.endY,
+        });
       }
     }
     this.ctx.restore();
@@ -90,28 +98,15 @@ export class CanvasEngine {
     const currentX = this.getCoordinates(e)[0];
     const currentY = this.getCoordinates(e)[1];
     console.log(currentX);
-    if (this.currentTool == "Rectangle") {
-      console.log("Mouse move is forming Rectangle");
+    if (
+      this.currentTool == "Rectangle" ||
+      this.currentTool == "Ellipse" ||
+      this.currentTool == "Diamond" ||
+      this.currentTool == "Line"
+    ) {
+      const currentShape = this.currentTool;
       const tempShape: Shape = {
-        type: "Rectangle",
-        startX: this.startX,
-        startY: this.startY,
-        endX: currentX,
-        endY: currentY,
-      };
-      this.previewShape = tempShape;
-    } else if (this.currentTool == "Ellipse") {
-      const tempShape: Shape = {
-        type: "Ellipse",
-        startX: this.startX,
-        startY: this.startY,
-        endX: currentX,
-        endY: currentY,
-      };
-      this.previewShape = tempShape;
-    } else if (this.currentTool == "Diamond") {
-      const tempShape: Shape = {
-        type: "Diamond",
+        type: currentShape,
         startX: this.startX,
         startY: this.startY,
         endX: currentX,
