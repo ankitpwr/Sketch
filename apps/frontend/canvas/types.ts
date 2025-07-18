@@ -1,4 +1,10 @@
-export type ShapeType = "Rectangle" | "Diamond" | "Ellipse" | "Line" | "Arrow";
+export type ShapeType =
+  | "Rectangle"
+  | "Diamond"
+  | "Ellipse"
+  | "Line"
+  | "Arrow"
+  | "Pencil";
 export type Shape = {
   type: ShapeType;
   startX: number;
@@ -25,3 +31,4 @@ export type Tool =
   | "Pencil"
   | "Eraser"
   | "Text";
+export type Points = [number, number];

@@ -1,11 +1,12 @@
+import getStroke from "perfect-freehand";
+import { Points } from "./types";
+
 interface drawArgs {
   ctx: CanvasRenderingContext2D;
   minX: number;
   minY: number;
   maxX: number;
   maxY: number;
-  width: number;
-  height: number;
 }
 
 interface Line {
@@ -15,30 +16,24 @@ interface Line {
   endX: number;
   endY: number;
 }
-export function drawRectangle({
-  ctx,
-  minX,
-  minY,
-  maxX,
-  maxY,
-  width,
-  height,
-}: drawArgs) {
+interface Pencil {
+  ctx: CanvasRenderingContext2D;
+  points: Points[];
+  lastX: number;
+  lastY: number;
+}
+export function drawRectangle({ ctx, minX, minY, maxX, maxY }: drawArgs) {
+  const width = maxX - minX;
+  const height = maxY - minY;
   const radius = Math.min(width, height) / 4;
   ctx.beginPath();
   ctx.roundRect(minX, minY, width, height, radius);
   ctx.closePath();
   ctx.stroke();
 }
-export function drawEllipse({
-  ctx,
-  minX,
-  minY,
-  maxX,
-  maxY,
-  width,
-  height,
-}: drawArgs) {
+export function drawEllipse({ ctx, minX, minY, maxX, maxY }: drawArgs) {
+  const width = maxX - minX;
+  const height = maxY - minY;
   const centerX = minX + width / 2;
   const centerY = minY + height / 2;
   ctx.beginPath();
@@ -47,15 +42,9 @@ export function drawEllipse({
   ctx.stroke();
 }
 
-export function drawDiamond({
-  ctx,
-  minX,
-  minY,
-  maxX,
-  maxY,
-  width,
-  height,
-}: drawArgs) {
+export function drawDiamond({ ctx, minX, minY, maxX, maxY }: drawArgs) {
+  const width = maxX - minX;
+  const height = maxY - minY;
   const centerX = minX + width / 2;
   const centerY = minY + height / 2;
   const topPoint = { x: centerX, y: minY };
@@ -87,7 +76,6 @@ export function drawDiamond({
   );
   ctx.arcTo(leftPoint.x, leftPoint.y, topPoint.x, topPoint.y, actualRadius);
   ctx.closePath();
-
   ctx.stroke();
 }
 
@@ -105,7 +93,7 @@ export function drawArrow({ ctx, startX, startY, endX, endY }: Line) {
   let headlen = lineLength * 0.15;
   headlen = Math.min(30, Math.max(headlen, 10));
   const angle = Math.atan2(dy, dx);
-  ctx.lineWidth = 8;
+  ctx.lineWidth = 4;
   ctx.beginPath();
   ctx.moveTo(startX, startY);
   ctx.lineCap = "round";
@@ -121,4 +109,56 @@ export function drawArrow({ ctx, startX, startY, endX, endY }: Line) {
     endY - headlen * Math.sin(angle + Math.PI / 6)
   );
   ctx.stroke();
+}
+
+export function drawPencil({ ctx, points, lastX, lastY }: Pencil) {
+  const strokeOption = {
+    size: 10,
+    thinning: 0.5,
+    streamline: 0.5,
+    easing: (t: number) => t,
+    start: { cap: true, taper: 60 },
+    end: { cap: true, taper: 60 },
+    simulatePressure: true,
+  };
+  const stroke = getStroke(points, strokeOption);
+  const pathData = getSvgPathFromStroke(stroke);
+  const myPath = new Path2D(pathData);
+
+  ctx.fill(myPath);
+}
+
+const average = (a: number, b: number) => (a + b) / 2;
+
+function getSvgPathFromStroke(points: number[][], closed = true) {
+  const len = points.length;
+
+  if (len < 4) {
+    return ``;
+  }
+
+  let a = points[0];
+  let b = points[1];
+  const c = points[2];
+
+  let result = `M${a[0].toFixed(2)},${a[1].toFixed(2)} Q${b[0].toFixed(
+    2
+  )},${b[1].toFixed(2)} ${average(b[0], c[0]).toFixed(2)},${average(
+    b[1],
+    c[1]
+  ).toFixed(2)} T`;
+
+  for (let i = 2, max = len - 1; i < max; i++) {
+    a = points[i];
+    b = points[i + 1];
+    result += `${average(a[0], b[0]).toFixed(2)},${average(a[1], b[1]).toFixed(
+      2
+    )} `;
+  }
+
+  if (closed) {
+    result += "Z";
+  }
+
+  return result;
 }
