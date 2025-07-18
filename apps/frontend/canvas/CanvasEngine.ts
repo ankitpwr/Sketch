@@ -20,8 +20,6 @@ export class CanvasEngine {
   private startY: number;
   private previewShape: Shape | null;
   public points: Points[];
-  public lastX: number | null;
-  public lastY: number | null;
 
   constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
     this.canvas = canvas;
@@ -34,8 +32,7 @@ export class CanvasEngine {
     this.startY = 0;
     this.previewShape = null;
     this.points = [];
-    this.lastX = null;
-    this.lastY = null;
+
     this.init();
     this.mouseHandler();
   }
@@ -47,119 +44,31 @@ export class CanvasEngine {
   render() {
     this.ctx.save();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    const drawShape = (s: Shape) => {
+      //prettier-ignore
+      switch (s.type) {
+        case "Rectangle":
+        case "Ellipse":
+        case "Diamond":
+          const minX = Math.min(s.startX, s.endX);
+          const minY = Math.min(s.startY, s.endY);
+          const maxX = Math.max(s.startX, s.endX);
+          const maxY = Math.max(s.startY, s.endY);
+          if(s.type=="Rectangle") drawRectangle({ctx:this.ctx, minX:minX, minY:minY, maxX:maxX, maxY:maxY});
+          if(s.type=="Ellipse") drawEllipse({ctx:this.ctx, minX:minX, minY:minY, maxX:maxX, maxY:maxY});
+          if(s.type=="Diamond") drawDiamond({ctx:this.ctx, minX:minX, minY:minY, maxX:maxX, maxY:maxY});
+          break;
 
-    this.existingShapes.forEach((storedShape, index) => {
-      const shape = storedShape;
-      const minX = Math.min(shape.startX, shape.endX);
-      const minY = Math.min(shape.startY, shape.endY);
-      const maxX = Math.max(shape.startX, shape.endX);
-      const maxY = Math.max(shape.startY, shape.endY);
-      if (shape.type == "Rectangle") {
-        drawRectangle({
-          ctx: this.ctx,
-          minX: minX,
-          minY: minY,
-          maxX: maxX,
-          maxY: maxY,
-        });
-      } else if (shape.type == "Ellipse") {
-        drawEllipse({
-          ctx: this.ctx,
-          minX: minX,
-          minY: minY,
-          maxX: maxX,
-          maxY: maxY,
-        });
-      } else if (shape.type == "Diamond") {
-        drawDiamond({
-          ctx: this.ctx,
-          minX: minX,
-          minY: minY,
-          maxX: maxX,
-          maxY: maxY,
-        });
-      } else if (shape.type == "Line") {
-        drawLine({
-          ctx: this.ctx,
-          startX: shape.startX,
-          startY: shape.startY,
-          endX: shape.endX,
-          endY: shape.endY,
-        });
-      } else if (shape.type == "Arrow") {
-        drawArrow({
-          ctx: this.ctx,
-          startX: shape.startX,
-          startY: shape.startY,
-          endX: shape.endX,
-          endY: shape.endY,
-        });
+        case "Line": drawLine({ctx:this.ctx, startX:s.startX, startY:s.startY ,endX:s.endX, endY:s.endY}); break;
+        case "Arrow": drawArrow({ctx:this.ctx, startX:s.startX, startY:s.startY ,endX:s.endX, endY:s.endY});break;
+        case "Pencil":drawPencil({ctx:this.ctx, points:s.points})
+
+         
       }
-    });
-
+    };
+    this.existingShapes.forEach(drawShape);
     if (this.previewShape) {
-      const shape = this.previewShape;
-      const minX = Math.min(shape.startX, shape.endX);
-      const minY = Math.min(shape.startY, shape.endY);
-      const maxX = Math.max(shape.startX, shape.endX);
-      const maxY = Math.max(shape.startY, shape.endY);
-
-      if (this.previewShape.type == "Rectangle") {
-        drawRectangle({
-          ctx: this.ctx,
-          minX: minX,
-          minY: minY,
-          maxX: maxX,
-          maxY: maxY,
-        });
-      } else if (this.previewShape.type == "Ellipse") {
-        drawEllipse({
-          ctx: this.ctx,
-          minX: minX,
-          minY: minY,
-          maxX: maxX,
-          maxY: maxY,
-        });
-      } else if (this.previewShape.type == "Diamond") {
-        drawDiamond({
-          ctx: this.ctx,
-          minX: minX,
-          minY: minY,
-          maxX: maxX,
-          maxY: maxY,
-        });
-      } else if (this.previewShape.type == "Line") {
-        drawLine({
-          ctx: this.ctx,
-          startX: shape.startX,
-          startY: shape.startY,
-          endX: shape.endX,
-          endY: shape.endY,
-        });
-      } else if (this.previewShape.type == "Arrow") {
-        drawArrow({
-          ctx: this.ctx,
-          startX: shape.startX,
-          startY: shape.startY,
-          endX: shape.endX,
-          endY: shape.endY,
-        });
-      } else if (shape.type == "Pencil") {
-        this.points.push([shape.endX, shape.endY]);
-        if (!this.lastX || !this.lastY) {
-          this.lastX = shape.startX;
-          this.lastY = shape.startY;
-          this.points.push([shape.startX, shape.startY]);
-        }
-        drawPencil({
-          ctx: this.ctx,
-          points: this.points,
-          lastX: this.lastX,
-          lastY: this.lastY,
-        });
-        this.lastX = shape.endX;
-        this.lastY = shape.endY;
-      }
+      drawShape(this.previewShape);
     }
     this.ctx.restore();
   }
@@ -175,9 +84,7 @@ export class CanvasEngine {
     console.log("mouseup");
 
     this.mouseDown = false;
-    this.points = [];
-    this.lastX = null;
-    this.lastY = null;
+
     const currentX = this.getCoordinates(e)[0];
     const currentY = this.getCoordinates(e)[1];
 
@@ -190,15 +97,27 @@ export class CanvasEngine {
       this.currentTool == "Pencil"
     ) {
       const currentShape = this.currentTool;
-      const tempShape: Shape = {
-        type: currentShape,
-        startX: this.startX,
-        startY: this.startY,
-        endX: currentX,
-        endY: currentY,
-      };
-      this.existingShapes.push(tempShape);
+      if (currentShape == "Pencil") {
+        if (this.points.length == 0)
+          this.points.push([this.startX, this.startY]);
+        this.points.push([currentX, currentY]);
+        const tempShape: Shape = {
+          type: "Pencil",
+          points: this.points,
+        };
+        this.existingShapes.push(tempShape);
+      } else {
+        const tempShape: Shape = {
+          type: currentShape,
+          startX: this.startX,
+          startY: this.startY,
+          endX: currentX,
+          endY: currentY,
+        };
+        this.existingShapes.push(tempShape);
+      }
     }
+    this.points = [];
   };
   handleMouseMove = (e: MouseEvent) => {
     if (!this.mouseDown) return;
@@ -214,14 +133,24 @@ export class CanvasEngine {
       this.currentTool == "Pencil"
     ) {
       const currentShape = this.currentTool;
-      const tempShape: Shape = {
-        type: currentShape,
-        startX: this.startX,
-        startY: this.startY,
-        endX: currentX,
-        endY: currentY,
-      };
-      this.previewShape = tempShape;
+      if (currentShape == "Pencil") {
+        if (this.points.length == 0)
+          this.points.push([this.startX, this.startY]);
+        this.points.push([currentX, currentY]);
+        this.previewShape = {
+          type: "Pencil",
+          points: this.points,
+        };
+      } else {
+        const tempShape: Shape = {
+          type: currentShape,
+          startX: this.startX,
+          startY: this.startY,
+          endX: currentX,
+          endY: currentY,
+        };
+        this.previewShape = tempShape;
+      }
     }
 
     this.render();

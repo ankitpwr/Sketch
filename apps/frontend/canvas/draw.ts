@@ -1,28 +1,19 @@
 import getStroke from "perfect-freehand";
-import { Points } from "./types";
+import {
+  DrawDiamondArgs,
+  DrawEllipseArgs,
+  DrawLineArgs,
+  DrawPencilArgs,
+  DrawRectangleArgs,
+} from "./types";
 
-interface drawArgs {
-  ctx: CanvasRenderingContext2D;
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-}
-
-interface Line {
-  ctx: CanvasRenderingContext2D;
-  startX: number;
-  startY: number;
-  endX: number;
-  endY: number;
-}
-interface Pencil {
-  ctx: CanvasRenderingContext2D;
-  points: Points[];
-  lastX: number;
-  lastY: number;
-}
-export function drawRectangle({ ctx, minX, minY, maxX, maxY }: drawArgs) {
+export function drawRectangle({
+  ctx,
+  minX,
+  minY,
+  maxX,
+  maxY,
+}: DrawRectangleArgs) {
   const width = maxX - minX;
   const height = maxY - minY;
   const radius = Math.min(width, height) / 4;
@@ -31,7 +22,7 @@ export function drawRectangle({ ctx, minX, minY, maxX, maxY }: drawArgs) {
   ctx.closePath();
   ctx.stroke();
 }
-export function drawEllipse({ ctx, minX, minY, maxX, maxY }: drawArgs) {
+export function drawEllipse({ ctx, minX, minY, maxX, maxY }: DrawEllipseArgs) {
   const width = maxX - minX;
   const height = maxY - minY;
   const centerX = minX + width / 2;
@@ -42,7 +33,7 @@ export function drawEllipse({ ctx, minX, minY, maxX, maxY }: drawArgs) {
   ctx.stroke();
 }
 
-export function drawDiamond({ ctx, minX, minY, maxX, maxY }: drawArgs) {
+export function drawDiamond({ ctx, minX, minY, maxX, maxY }: DrawDiamondArgs) {
   const width = maxX - minX;
   const height = maxY - minY;
   const centerX = minX + width / 2;
@@ -79,14 +70,14 @@ export function drawDiamond({ ctx, minX, minY, maxX, maxY }: drawArgs) {
   ctx.stroke();
 }
 
-export function drawLine({ ctx, startX, startY, endX, endY }: Line) {
+export function drawLine({ ctx, startX, startY, endX, endY }: DrawLineArgs) {
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(startX, startY);
   ctx.lineTo(endX, endY);
   ctx.stroke();
 }
-export function drawArrow({ ctx, startX, startY, endX, endY }: Line) {
+export function drawArrow({ ctx, startX, startY, endX, endY }: DrawLineArgs) {
   const dx = endX - startX;
   const dy = endY - startY;
   const lineLength = Math.sqrt(dx * dx + dy * dy);
@@ -111,18 +102,19 @@ export function drawArrow({ ctx, startX, startY, endX, endY }: Line) {
   ctx.stroke();
 }
 
-export function drawPencil({ ctx, points, lastX, lastY }: Pencil) {
+export function drawPencil({ ctx, points }: DrawPencilArgs) {
   const strokeOption = {
     size: 10,
     thinning: 0.5,
-    streamline: 0.5,
+    streamline: 0.4,
     easing: (t: number) => t,
     start: { cap: true, taper: 60 },
     end: { cap: true, taper: 60 },
     simulatePressure: true,
   };
-  const stroke = getStroke(points, strokeOption);
-  const pathData = getSvgPathFromStroke(stroke);
+
+  const stroke = getStroke(points, strokeOption); //return:- An array of `[x, y]` coordinate pairs that form the outer boundary (outline) of the stroke.
+  const pathData = getSvgPathFromStroke(stroke); //return:- A string in SVG Path Data format
   const myPath = new Path2D(pathData);
 
   ctx.fill(myPath);
@@ -140,7 +132,9 @@ function getSvgPathFromStroke(points: number[][], closed = true) {
   let a = points[0];
   let b = points[1];
   const c = points[2];
-
+  //`M` (MoveTo) command: Sets the starting point of the path
+  //`Q` command:  is the control point for this curve
+  //`T` command: "draw another quadratic Bezier curve, where its control point is a reflection of the *previous* control point
   let result = `M${a[0].toFixed(2)},${a[1].toFixed(2)} Q${b[0].toFixed(
     2
   )},${b[1].toFixed(2)} ${average(b[0], c[0]).toFixed(2)},${average(
