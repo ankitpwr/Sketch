@@ -1,5 +1,3 @@
-import { Shape } from "./types";
-
 export async function getExistingShape() {
   const rawShapes = localStorage.getItem("shape");
 

@@ -1,14 +1,12 @@
-import { start } from "repl";
-import {
-  drawArrow,
-  drawDiamond,
-  drawEllipse,
-  drawLine,
-  drawPencil,
-  drawRectangle,
-} from "./draw";
-import { getExistingShape } from "./http";
-import { Action, Points, Shape, Tool } from "./types";
+import { Action, Points, Shape, Tool } from "./types/types";
+import { drawRectangle } from "./draw/drawRectangle";
+import { drawEllipse } from "./draw/drawEllipse";
+import { drawDiamond } from "./draw/drawDiamond";
+import { drawLine } from "./draw/drawLine";
+import { drawArrow } from "./draw/drawArrow";
+import { drawPencil } from "./draw/drawPencil";
+import { getExistingShape } from "./utils/storage";
+import { isNeartheShape } from "./utils/geometry";
 
 export class CanvasEngine {
   private canvas: HTMLCanvasElement;
@@ -21,6 +19,11 @@ export class CanvasEngine {
   private startY: number;
   private previewShape: Shape | null;
   public points: Points[];
+  private panX: number;
+  private panY: number;
+  private scale: number;
+  private pressedKey: string | null;
+  private scaleOffset: { x: number; y: number };
 
   constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
     this.canvas = canvas;
@@ -33,20 +36,28 @@ export class CanvasEngine {
     this.startY = 0;
     this.previewShape = null;
     this.points = [];
+    this.panX = 0;
+    this.panY = 0;
+    this.scale = 1;
+    this.scaleOffset = { x: 0, y: 0 };
     this.init();
     this.mouseHandler();
+    this.pressedKey = null;
   }
 
   async init() {
     this.existingShapes = await getExistingShape();
     this.render();
-
-    this.existingShapes.forEach((shape) => console.log(shape));
   }
 
   render() {
     this.ctx.save();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.translate(
+      this.panX * this.scale - this.scaleOffset.x,
+      this.panY * this.scale - this.scaleOffset.y
+    );
+    this.ctx.scale(this.scale, this.scale);
     const drawShape = (s: Shape) => {
       //prettier-ignore
       switch (s.type) {
@@ -126,60 +137,19 @@ export class CanvasEngine {
     this.points = [];
   };
 
-  isNeartheShape = (currentX: number, currentY: number, s: Shape) => {
-    //prettier-ignore
-    if(s.type=="Diamond"|| s.type=="Rectangle" || s.type=="Ellipse"){
-          const minX = Math.min(s.startX, s.endX);
-          const minY = Math.min(s.startY, s.endY);
-          const maxX = Math.max(s.startX, s.endX);
-          const maxY = Math.max(s.startY, s.endY);
-          return minX<=currentX && minY<=currentY &&  maxX>=currentX && maxY>=currentY;
-      }
-    else if (s.type == "Line" || s.type == "Arrow") {
-      const distanceX = Math.abs(s.startX - s.endX);
-      const distanceY = Math.abs(s.startY - s.endY);
-      return (
-        distanceX ==
-          Math.abs(currentX - s.startX) + Math.abs(s.endX - currentX) &&
-        distanceY == Math.abs(currentY - s.startY) + Math.abs(s.endY - currentY)
-      );
-    }
-    else if(s.type=="Pencil"){
-      let isEqual:boolean= false;
-      const threshold=5;
-      for(let i=0; i<s.points.length-1; i++){
-        const point1= s.points[i];
-        const point2= s.points[i+1];
-        const distanceX= Math.abs(point1[0]- point2[0]);
-        const distanceY= Math.abs(point1[1]-point2[1]);
-        const currentPointDistX= Math.abs(currentX-point1[0])+Math.abs(currentX-point2[0]);
-        const currentPointDistY= Math.abs(currentY-point1[1])+Math.abs(currentY-point2[1]);
-        const diffenceInDistX= Math.abs(distanceX-currentPointDistX);
-        const diffenceInDistY= Math.abs(distanceY-currentPointDistY);
-        if(diffenceInDistX<=threshold && diffenceInDistY<=threshold) {
-          isEqual=true;
-          break;
-        }
-      }
-      return isEqual
-    }
-  };
   handleMouseMove = (e: MouseEvent) => {
     if (!this.mouseDown) return;
     const currentX = this.getCoordinates(e)[0];
     const currentY = this.getCoordinates(e)[1];
     if (this.currentTool == "Eraser") {
-      this.existingShapes.forEach((s, index) => {
-        if (this.isNeartheShape(currentX, currentY, s)) {
-          console.log("there is one");
-          this.existingShapes = this.existingShapes.filter(
-            (s, i) => i != index
-          );
-        }
-        return;
+      const shapeToKeep = this.existingShapes.filter((s, index) => {
+        return !isNeartheShape(currentX, currentY, s);
       });
-      localStorage.setItem("shape", JSON.stringify(this.existingShapes));
-      this.render();
+      if (shapeToKeep.length < this.existingShapes.length) {
+        this.existingShapes = shapeToKeep;
+        localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+        this.render();
+      }
     } else if (
       this.currentTool == "Rectangle" ||
       this.currentTool == "Ellipse" ||
@@ -213,6 +183,32 @@ export class CanvasEngine {
     this.previewShape = null;
   };
 
+  handleWheelEvent = (e: WheelEvent) => {
+    if (this.pressedKey == "Control") {
+      console.log("clicked");
+      this.handleZoom(e.deltaY * -0.01);
+    } else {
+      this.panX -= e.deltaX;
+      this.panY -= e.deltaY;
+    }
+    this.render();
+  };
+  handleZoom = (val: number) => {
+    this.scale = this.scale + val;
+    const scaledWidth = this.canvas.width * this.scale;
+    const scaleHeigth = this.canvas.height * this.scale;
+    this.scaleOffset.x = (scaledWidth - this.canvas.width) / 2;
+    this.scaleOffset.y = (scaleHeigth - this.canvas.height) / 2;
+  };
+  handleKeyDown = (e: KeyboardEvent) => {
+    this.pressedKey = e.key;
+    console.log(this.pressedKey);
+  };
+  handleKeyUp = (e: KeyboardEvent) => {
+    this.pressedKey = null;
+    console.log(this.pressedKey);
+  };
+
   destroy() {
     this.canvas.removeEventListener("mousedown", this.handleMouseDown);
     this.canvas.removeEventListener("mouseup", this.handleMouseUp);
@@ -222,10 +218,15 @@ export class CanvasEngine {
     this.canvas.addEventListener("mousedown", this.handleMouseDown);
     this.canvas.addEventListener("mouseup", this.handleMouseUp);
     this.canvas.addEventListener("mousemove", this.handleMouseMove);
+    this.canvas.addEventListener("wheel", this.handleWheelEvent);
+    window.addEventListener("keydown", this.handleKeyDown);
+    window.addEventListener("keyup", this.handleKeyUp);
   }
   getCoordinates = (e: MouseEvent) => {
-    const X = e.offsetX;
-    const Y = e.offsetY;
+    const X =
+      (e.offsetX - this.panX * this.scale + this.scaleOffset.x) / this.scale;
+    const Y =
+      (e.offsetY - this.panY * this.scale + this.scaleOffset.y) / this.scale;
     return [X, Y];
   };
 }

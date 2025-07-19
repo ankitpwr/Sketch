@@ -2,7 +2,7 @@
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import React, { useEffect, useRef, useState } from "react";
 import Button from "./button";
-import { Tool } from "@/canvas/types";
+import { Tool } from "@/canvas/types/types";
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
