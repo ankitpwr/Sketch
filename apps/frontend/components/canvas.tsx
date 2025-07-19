@@ -34,7 +34,7 @@ export default function Canvas() {
     if (!ctx) return;
     const engine = new CanvasEngine(canvas, ctx);
     setcanvasEngine(engine);
-  }, [canvasRef]);
+  }, [canvasRef, size]);
 
   return (
     <div className="w-screen h-screen">
