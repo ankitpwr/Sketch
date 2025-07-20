@@ -1,4 +1,4 @@
-import { Action, Points, Shape, Tool } from "./types/types";
+import { Action, Points, Shape, ShapeType, Tool } from "./types/types";
 import { drawRectangle } from "./draw/drawRectangle";
 import { drawEllipse } from "./draw/drawEllipse";
 import { drawDiamond } from "./draw/drawDiamond";
@@ -23,6 +23,12 @@ export class CanvasEngine {
   private panY: number;
   private scale: number;
   private pressedKey: string | null;
+  private selectedShape: {
+    type: ShapeType | null;
+    index: number;
+    offsetX: number;
+    offsetY: number;
+  };
   private scaleOffset: { x: number; y: number };
 
   constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
@@ -40,6 +46,7 @@ export class CanvasEngine {
     this.panY = 0;
     this.scale = 1;
     this.scaleOffset = { x: 0, y: 0 };
+    this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
     this.init();
     this.mouseHandler();
     this.pressedKey = null;
@@ -89,10 +96,21 @@ export class CanvasEngine {
 
   handleMouseDown = (e: MouseEvent) => {
     console.log("mousedown");
-
     this.mouseDown = true;
     this.startX = this.getCoordinates(e)[0];
     this.startY = this.getCoordinates(e)[1];
+    if (this.currentTool == "Select") {
+      for (let i = 0; i < this.existingShapes.length; i++) {
+        if (isNeartheShape(this.startX, this.startY, this.existingShapes[i])) {
+          this.selectedShape.index = i;
+          this.selectedShape.type = this.existingShapes[i].type;
+          this.selectedShape.offsetX = this.startX;
+          this.selectedShape.offsetY = this.startY;
+          break;
+        }
+      }
+    }
+    console.log(this.selectedShape.type);
   };
   handleMouseUp = (e: MouseEvent) => {
     console.log("mouseup");
@@ -101,6 +119,11 @@ export class CanvasEngine {
 
     const currentX = this.getCoordinates(e)[0];
     const currentY = this.getCoordinates(e)[1];
+
+    if (this.currentTool == "Select" && this.selectedShape.index != -1) {
+      localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+      this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
+    }
 
     if (
       this.currentTool == "Rectangle" ||
@@ -130,18 +153,48 @@ export class CanvasEngine {
         };
         this.existingShapes.push(tempShape);
       }
-
       localStorage.setItem("shape", JSON.stringify(this.existingShapes));
       this.render();
+      this.points = [];
     }
-    this.points = [];
+  };
+
+  handleShapeMovement = (currentX: number, currentY: number) => {
+    const index = this.selectedShape.index;
+    const shape = this.existingShapes[index];
+    const deltaX = currentX - this.selectedShape.offsetX;
+    const deltaY = currentY - this.selectedShape.offsetY;
+    switch (shape.type) {
+      case "Rectangle":
+      case "Diamond":
+      case "Ellipse":
+      case "Line":
+      case "Arrow":
+        shape.startX += deltaX;
+        shape.startY += deltaY;
+        shape.endX += deltaX;
+        shape.endY += deltaY;
+        this.render();
+      case "Pencil":
+        if (shape.type == "Pencil") {
+          shape.points = shape.points.map((point) => {
+            return [point[0] + deltaX, point[1] + deltaY];
+          });
+        }
+        this.render();
+    }
+
+    this.selectedShape.offsetX = currentX;
+    this.selectedShape.offsetY = currentY;
   };
 
   handleMouseMove = (e: MouseEvent) => {
-    if (!this.mouseDown) return;
     const currentX = this.getCoordinates(e)[0];
     const currentY = this.getCoordinates(e)[1];
-    if (this.currentTool == "Eraser") {
+    if (!this.mouseDown) return;
+    else if (this.currentTool == "Select" && this.selectedShape.index != -1) {
+      this.handleShapeMovement(currentX, currentY);
+    } else if (this.currentTool == "Eraser") {
       const shapeToKeep = this.existingShapes.filter((s, index) => {
         return !isNeartheShape(currentX, currentY, s);
       });
@@ -177,10 +230,9 @@ export class CanvasEngine {
         };
         this.previewShape = tempShape;
       }
+      this.render();
+      this.previewShape = null;
     }
-
-    this.render();
-    this.previewShape = null;
   };
 
   handleWheelEvent = (e: WheelEvent) => {
