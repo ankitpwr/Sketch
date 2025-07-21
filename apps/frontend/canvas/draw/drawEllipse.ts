@@ -1,8 +1,8 @@
 import { DrawEllipseArgs } from "../types/types";
 
 export function drawEllipse({ ctx, minX, minY, maxX, maxY }: DrawEllipseArgs) {
-  const width = maxX - minX;
-  const height = maxY - minY;
+  const width = Math.abs(maxX - minX);
+  const height = Math.abs(maxY - minY);
   const centerX = minX + width / 2;
   const centerY = minY + height / 2;
   ctx.beginPath();
