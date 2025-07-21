@@ -33,6 +33,10 @@ export interface PencilShape extends BaseShape {
   points: Points[];
 }
 
+export interface ResizeHandlers extends BoundedShape {
+  type: "Rectangle";
+  side: "TopLeft" | "TopRight" | "BottomLeft" | "BottomRight";
+}
 export interface DrawRectangleArgs {
   ctx: CanvasRenderingContext2D;
   minX: number;
@@ -71,7 +75,7 @@ export type Action =
   | "drawing"
   | "panning"
   | "zooming"
-  | "moving-shape"
+  | "moving"
   | "resizing"
   | "none";
 export type Tool = "Pan" | "Select" | ShapeType | "Eraser" | "Text";

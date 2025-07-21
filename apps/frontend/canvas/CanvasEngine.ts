@@ -1,5 +1,12 @@
-import { Action, Points, Shape, ShapeType, Tool } from "./types/types";
-import { drawRectangle } from "./draw/drawRectangle";
+import {
+  Action,
+  Points,
+  ResizeHandlers,
+  Shape,
+  ShapeType,
+  Tool,
+} from "./types/types";
+import { drawRoundedRectangle } from "./draw/drawRoundedRectangle";
 import { drawEllipse } from "./draw/drawEllipse";
 import { drawDiamond } from "./draw/drawDiamond";
 import { drawLine } from "./draw/drawLine";
@@ -29,6 +36,14 @@ export class CanvasEngine {
     offsetX: number;
     offsetY: number;
   };
+  private resizeHandlers: ResizeHandlers[];
+  private resizeoffset: { x: number; y: number };
+  private resizeSide:
+    | "TopLeft"
+    | "TopRight"
+    | "BottomLeft"
+    | "BottomRight"
+    | null;
   private scaleOffset: { x: number; y: number };
 
   constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
@@ -47,6 +62,9 @@ export class CanvasEngine {
     this.scale = 1;
     this.scaleOffset = { x: 0, y: 0 };
     this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
+    this.resizeoffset = { x: 0, y: 0 };
+    this.resizeHandlers = [];
+    this.resizeSide = null;
     this.init();
     this.mouseHandler();
     this.pressedKey = null;
@@ -54,6 +72,7 @@ export class CanvasEngine {
 
   async init() {
     this.existingShapes = await getExistingShape();
+    console.log(this.existingShapes);
     this.render();
   }
 
@@ -75,7 +94,7 @@ export class CanvasEngine {
           const minY = Math.min(s.startY, s.endY);
           const maxX = Math.max(s.startX, s.endX);
           const maxY = Math.max(s.startY, s.endY);
-          if(s.type=="Rectangle") drawRectangle({ctx:this.ctx, minX:minX, minY:minY, maxX:maxX, maxY:maxY});
+          if(s.type=="Rectangle") drawRoundedRectangle({ctx:this.ctx, minX:minX, minY:minY, maxX:maxX, maxY:maxY});
           if(s.type=="Ellipse") drawEllipse({ctx:this.ctx, minX:minX, minY:minY, maxX:maxX, maxY:maxY});
           if(s.type=="Diamond") drawDiamond({ctx:this.ctx, minX:minX, minY:minY, maxX:maxX, maxY:maxY});
           break;
@@ -91,14 +110,115 @@ export class CanvasEngine {
     if (this.previewShape) {
       drawShape(this.previewShape);
     }
+
+    if (this.selectedShape.index != -1) {
+      this.drawBoundBox();
+    }
     this.ctx.restore();
   }
+  drawBoundBox = () => {
+    const index = this.selectedShape.index;
+    const shape = this.existingShapes[index];
+    const extra = shape.type == "Arrow" ? 16 : shape.type == "Line" ? 10 : 5;
+    const width = 5 / this.scale;
+    this.resizeHandlers = [];
+    switch (shape.type) {
+      case "Rectangle":
+      case "Diamond":
+      case "Ellipse":
+      case "Line":
+      case "Arrow":
+        const minX = Math.min(shape.startX, shape.endX) - extra;
+        const minY = Math.min(shape.startY, shape.endY) - extra;
+        const maxX = Math.max(shape.startX, shape.endX) + extra;
+        const maxY = Math.max(shape.startY, shape.endY) + extra;
+        this.ctx.strokeStyle = "rgba(102,51,1)";
+        this.ctx.lineWidth = 2 / this.scale;
+        this.ctx.strokeRect(minX, minY, maxX - minX, maxY - minY);
+        this.ctx.fillStyle = "blue";
+        drawRoundedRectangle({
+          ctx: this.ctx,
+          minX: minX - width,
+          minY: minY - width,
+          maxX: minX + width,
+          maxY: minY + width,
+        });
+        //prettier-ignore
+        const rect1:ResizeHandlers= {type:"Rectangle",side:"TopLeft", startX:minX-width, startY:minY-width, endX:minX+width, endY:minY+width};
+        this.resizeHandlers.push(rect1);
+        drawRoundedRectangle({
+          ctx: this.ctx,
+          minX: minX - width,
+          minY: maxY - width,
+          maxX: minX + width,
+          maxY: maxY + width,
+        });
+        const rect2: ResizeHandlers = {
+          type: "Rectangle",
+          side: "BottomLeft",
+          startX: minX - width,
+          startY: maxY - width,
+          endX: minX + width,
+          endY: maxY + width,
+        };
+        this.resizeHandlers.push(rect2);
+        drawRoundedRectangle({
+          ctx: this.ctx,
+          minX: maxX - width,
+          minY: maxY - width,
+          maxX: maxX + width,
+          maxY: maxY + width,
+        });
+        const rect3: ResizeHandlers = {
+          type: "Rectangle",
+          side: "BottomRight",
+          startX: maxX - width,
+          startY: maxY - width,
+          endX: maxX + width,
+          endY: maxY + width,
+        };
+        this.resizeHandlers.push(rect3);
+        drawRoundedRectangle({
+          ctx: this.ctx,
+          minX: maxX - width,
+          minY: minY - width,
+          maxX: maxX + width,
+          maxY: minY + width,
+        });
+        const rect4: ResizeHandlers = {
+          type: "Rectangle",
+          side: "TopRight",
+          startX: minX - width,
+          startY: minY - width,
+          endX: maxX + width,
+          endY: minY + width,
+        };
+        this.resizeHandlers.push(rect4);
+        break;
+    }
+  };
 
   handleMouseDown = (e: MouseEvent) => {
     console.log("mousedown");
     this.mouseDown = true;
     this.startX = this.getCoordinates(e)[0];
     this.startY = this.getCoordinates(e)[1];
+
+    if (this.currentTool == "Select" && this.selectedShape.index != -1) {
+      for (let i = 0; i < this.resizeHandlers.length; i++) {
+        const currentHandler = this.resizeHandlers[i];
+        if (isNeartheShape(this.startX, this.startY, currentHandler)) {
+          console.log("found one resize handler");
+          this.resizeSide = currentHandler.side;
+          this.action = "resizing";
+          this.resizeoffset = { x: this.startX, y: this.startY };
+          this.render();
+          return;
+        }
+      }
+      console.log(`action is ${this.action} resizeside is ${this.resizeSide}`);
+    }
+
     if (this.currentTool == "Select") {
       for (let i = 0; i < this.existingShapes.length; i++) {
         if (isNeartheShape(this.startX, this.startY, this.existingShapes[i])) {
@@ -106,26 +226,40 @@ export class CanvasEngine {
           this.selectedShape.type = this.existingShapes[i].type;
           this.selectedShape.offsetX = this.startX;
           this.selectedShape.offsetY = this.startY;
+          this.action = "moving";
+          console.log("ready to move");
+          console.log(this.selectedShape);
+          this.render();
           break;
         }
       }
     }
-    console.log(this.selectedShape.type);
+    if (
+      this.currentTool == "Select" &&
+      this.selectedShape.index == -1 &&
+      this.action != "resizing"
+    ) {
+      this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
+      this.resizeHandlers = [];
+      this.render();
+    }
   };
   handleMouseUp = (e: MouseEvent) => {
     console.log("mouseup");
-
     this.mouseDown = false;
-
     const currentX = this.getCoordinates(e)[0];
     const currentY = this.getCoordinates(e)[1];
-
-    if (this.currentTool == "Select" && this.selectedShape.index != -1) {
-      localStorage.setItem("shape", JSON.stringify(this.existingShapes));
-      this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
+    if (this.action == "resizing") {
+      this.action = "none";
+      this.resizeHandlers = [];
+      this.render();
     }
-
-    if (
+    if (this.action == "moving") {
+      // this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
+      localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+      this.action = "none";
+      this.render();
+    } else if (
       this.currentTool == "Rectangle" ||
       this.currentTool == "Ellipse" ||
       this.currentTool == "Diamond" ||
@@ -160,6 +294,7 @@ export class CanvasEngine {
   };
 
   handleShapeMovement = (currentX: number, currentY: number) => {
+    console.log("shape movement");
     const index = this.selectedShape.index;
     const shape = this.existingShapes[index];
     const deltaX = currentX - this.selectedShape.offsetX;
@@ -175,24 +310,55 @@ export class CanvasEngine {
         shape.endX += deltaX;
         shape.endY += deltaY;
         this.render();
+        break;
       case "Pencil":
-        if (shape.type == "Pencil") {
-          shape.points = shape.points.map((point) => {
-            return [point[0] + deltaX, point[1] + deltaY];
-          });
-        }
+        shape.points = shape.points.map((point) => {
+          return [point[0] + deltaX, point[1] + deltaY];
+        });
         this.render();
+        break;
     }
 
     this.selectedShape.offsetX = currentX;
     this.selectedShape.offsetY = currentY;
   };
+  handleResizeShape = (currentX: number, currentY: number) => {
+    console.log("resizing");
+    const index = this.selectedShape.index;
+    const shape = this.existingShapes[index];
+    if (!shape) {
+      console.log("error shape not defined");
+      return;
+    }
+    const deltaX = currentX - this.resizeoffset.x;
+    const deltaY = currentY - this.resizeoffset.y;
+    console.log(this.resizeSide);
+    switch (this.resizeSide) {
+      case "TopLeft":
+        switch (shape.type) {
+          case "Rectangle":
+            console.log(`previous shape Coordinates ${shape}`);
+            shape.startX += deltaX;
+            shape.startY += deltaY;
+            console.log(`new shape Coordinates ${shape}`);
+            this.render();
+            break;
+        }
+        break;
+    }
+    this.resizeoffset = { x: currentX, y: currentY };
+  };
 
   handleMouseMove = (e: MouseEvent) => {
     const currentX = this.getCoordinates(e)[0];
     const currentY = this.getCoordinates(e)[1];
+    console.log(this.action);
     if (!this.mouseDown) return;
-    else if (this.currentTool == "Select" && this.selectedShape.index != -1) {
+    else if (this.action == "resizing") {
+      this.handleResizeShape(currentX, currentY);
+    } else if (this.action == "moving") {
+      console.log("moving now");
+      console.log(this.selectedShape);
       this.handleShapeMovement(currentX, currentY);
     } else if (this.currentTool == "Eraser") {
       const shapeToKeep = this.existingShapes.filter((s, index) => {

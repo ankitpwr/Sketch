@@ -1,6 +1,6 @@
 import { DrawRectangleArgs } from "../types/types";
 
-export function drawRectangle({
+export function drawRoundedRectangle({
   ctx,
   minX,
   minY,
@@ -11,7 +11,7 @@ export function drawRectangle({
   const height = maxY - minY;
   const radius = Math.min(width, height) / 8;
   ctx.beginPath();
-  ctx.rect(minX, minY, width, height);
+  ctx.roundRect(minX, minY, width, height, radius);
   ctx.closePath();
   ctx.stroke();
 }
