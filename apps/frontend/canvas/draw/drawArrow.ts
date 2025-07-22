@@ -7,7 +7,7 @@ export function drawArrow({ ctx, startX, startY, endX, endY }: DrawLineArgs) {
   let headlen = lineLength * 0.15;
   headlen = Math.min(30, Math.max(headlen, 10));
   const angle = Math.atan2(dy, dx);
-  ctx.lineWidth = 4;
+
   ctx.beginPath();
   ctx.moveTo(startX, startY);
   ctx.lineCap = "round";
