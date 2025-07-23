@@ -2,14 +2,15 @@
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Button from "./button";
-import { Tool } from "@/canvas/types/types";
+import { TextShape, Tool } from "@/canvas/types/types";
 import Tools from "./tools";
+import TextArea from "./textArea";
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [canvasEngine, setcanvasEngine] = useState<CanvasEngine>();
   const [tool, setTool] = useState<Tool>("Pan");
-  const [size, setSize] = useState({ w: 0, h: 0 });
+  const textRef = useRef(null);
 
   const updateCanvasDimension = useCallback(() => {
     if (canvasRef.current) {
@@ -30,15 +31,15 @@ export default function Canvas() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const engine = new CanvasEngine(canvas, ctx);
+    if (!textRef.current) return;
+    const engine = new CanvasEngine(canvas, ctx, textRef.current);
     setcanvasEngine(engine);
     updateCanvasDimension();
-  }, [canvasRef]);
+  }, [canvasRef, textRef.current]);
 
   useEffect(() => {
     if (!canvasEngine || !canvasEngine.currentTool) return;
     canvasEngine.currentTool = tool;
-    console.log("Current tool set to:", tool);
   }, [tool, canvasEngine]);
 
   useEffect(() => {
@@ -46,6 +47,7 @@ export default function Canvas() {
     const observer = new ResizeObserver((entries) => {
       updateCanvasDimension();
     });
+    //starts monitoring the canvas element
     observer.observe(canvasRef.current);
 
     return () => {
@@ -54,9 +56,9 @@ export default function Canvas() {
   }, [updateCanvasDimension]);
 
   return (
-    <div className="w-screen h-screen ">
+    <div className="w-screen h-screen relative ">
       <canvas ref={canvasRef} className="w-full h-full"></canvas>
-
+      <TextArea refer={textRef} />
       <Tools setTool={setTool} currentTool={tool} />
     </div>
   );

@@ -82,19 +82,19 @@ export class ShapeManager {
     }
 
     switch (true) {
-      case this.resizeSide == "TopLeft" && "startX" in shape:
+      case this.resizeSide == "TopLeft" && "endX" in shape:
         shape.startX = currentX;
         shape.startY = currentY;
         break;
-      case this.resizeSide == "BottomRight" && "startX" in shape:
+      case this.resizeSide == "BottomRight" && "endX" in shape:
         shape.endX = currentX;
         shape.endY = currentY;
         break;
-      case this.resizeSide == "TopRight" && "startX" in shape:
+      case this.resizeSide == "TopRight" && "endX" in shape:
         shape.startY = currentY;
         shape.endX = currentX;
         break;
-      case this.resizeSide == "BottomLeft" && "startX" in shape:
+      case this.resizeSide == "BottomLeft" && "endX" in shape:
         shape.startX = currentX;
         shape.endY = currentY;
         break;

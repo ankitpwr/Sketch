@@ -4,14 +4,16 @@ export type ShapeType =
   | "Ellipse"
   | "Line"
   | "Arrow"
-  | "Pencil";
+  | "Pencil"
+  | "Text";
 export type Shape =
   | RectangleShape
   | EllipseShape
   | DiamondShape
   | LineShape
   | ArrowShape
-  | PencilShape;
+  | PencilShape
+  | TextShape;
 
 export interface BaseShape {
   type: ShapeType;
@@ -32,10 +34,21 @@ export interface PencilShape extends BaseShape {
   type: "Pencil";
   points: Points[];
 }
-
+export interface TextShape extends BaseShape {
+  type: "Text";
+  text: string;
+  startX: number;
+  startY: number;
+}
 export interface ResizeHandlers extends BoundedShape {
   type: "Rectangle";
   side: "TopLeft" | "TopRight" | "BottomLeft" | "BottomRight";
+}
+export interface DrawTextAgrs {
+  ctx: CanvasRenderingContext2D;
+  text: string;
+  startX: number;
+  startY: number;
 }
 export interface DrawRectangleArgs {
   ctx: CanvasRenderingContext2D;
@@ -77,6 +90,7 @@ export type Action =
   | "zooming"
   | "moving"
   | "resizing"
+  | "writing"
   | "none";
 export type Tool = "Pan" | "Select" | ShapeType | "Eraser" | "Text";
 export type Points = [number, number];

@@ -4,6 +4,7 @@ import {
   ResizeHandlers,
   Shape,
   ShapeType,
+  TextShape,
   Tool,
 } from "./types/types";
 import { drawRoundedRectangle } from "./draw/drawRoundedRectangle";
@@ -16,14 +17,13 @@ import { getExistingShape } from "./utils/storage";
 import { isNeartheShape } from "./utils/geometry";
 import { ShapeManager } from "./ShapeManager";
 import { ShieldPlus } from "lucide-react";
-
-//------0-0-0-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+import { drawText } from "./draw/drawText";
 
 export class CanvasEngine {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private existingShapes: Shape[];
-  private action: Action;
+  public action: Action;
   public currentTool: Tool;
   private mouseDown: boolean;
   private startX: number;
@@ -40,20 +40,18 @@ export class CanvasEngine {
     offsetX: number;
     offsetY: number;
   };
-  private resizeHandlers: ResizeHandlers[];
-  private resizeoffset: { x: number; y: number };
-  private resizeSide:
-    | "TopLeft"
-    | "TopRight"
-    | "BottomLeft"
-    | "BottomRight"
-    | null;
+
   private scaleOffset: { x: number; y: number };
   private shapeMangager: ShapeManager;
-
-  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+  private textArea: HTMLTextAreaElement;
+  constructor(
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D,
+    textArea: HTMLTextAreaElement
+  ) {
     this.canvas = canvas;
     this.ctx = ctx;
+    this.textArea = textArea;
     this.existingShapes = [];
     this.action = "none";
     this.currentTool = "Pan";
@@ -67,11 +65,9 @@ export class CanvasEngine {
     this.scale = 1;
     this.scaleOffset = { x: 0, y: 0 };
     this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
-    this.resizeoffset = { x: 0, y: 0 };
-    this.resizeHandlers = [];
-    this.resizeSide = null;
     this.init();
     this.mouseHandler();
+
     this.pressedKey = null;
 
     this.shapeMangager = new ShapeManager({
@@ -114,6 +110,7 @@ export class CanvasEngine {
         case "Line": drawLine({ctx:this.ctx, startX:s.startX, startY:s.startY ,endX:s.endX, endY:s.endY}); break;
         case "Arrow": drawArrow({ctx:this.ctx, startX:s.startX, startY:s.startY ,endX:s.endX, endY:s.endY});break;
         case "Pencil":drawPencil({ctx:this.ctx, points:s.points}); break;
+        case "Text": drawText({ctx:this.ctx, text:s.text, startX:s.startX, startY:s.startY}); break;
 
          
       }
@@ -128,12 +125,48 @@ export class CanvasEngine {
     }
     this.ctx.restore();
   }
+  handleText = () => {
+    console.log(this.startX);
+    this.textArea.style.left = this.startX + "px";
+    this.textArea.style.top = this.startY + "px";
+    this.textArea.value = "";
+    this.textArea.style.display = "block";
+    this.textArea.focus();
+  };
+  finalizeText = () => {
+    const textData = this.textArea.value.trim();
+    if (textData.length != 0) {
+      const textShape: TextShape = {
+        type: "Text",
+        startX: this.startX,
+        startY: this.startY,
+        text: this.textArea.value,
+      };
+      this.existingShapes.push(textShape);
+      console.log(this.existingShapes);
+      this.render();
+    }
+    this.action = "none";
+    this.textArea.style.display = "none";
+  };
 
   handleMouseDown = (e: MouseEvent) => {
+    if (this.action == "writing") {
+      this.finalizeText();
+      console.log("inside finalize");
+      return;
+    }
     console.log("mousedown");
     this.mouseDown = true;
     this.startX = this.getCoordinates(e)[0];
     this.startY = this.getCoordinates(e)[1];
+
+    if (this.currentTool == "Text") {
+      e.preventDefault();
+      this.action = "writing";
+      console.log("inside the writing");
+      this.handleText();
+    }
 
     if (this.currentTool == "Select" && this.selectedShape.index != -1) {
       const resizeHandlers = this.shapeMangager.resizeHandlers;
@@ -172,10 +205,13 @@ export class CanvasEngine {
       this.shapeMangager.clearResizeHandler();
       this.render();
     }
+    console.log(this.mouseDown);
   };
+
   handleMouseUp = (e: MouseEvent) => {
     console.log("mouseup");
     this.mouseDown = false;
+
     const currentX = this.getCoordinates(e)[0];
     const currentY = this.getCoordinates(e)[1];
 
@@ -201,10 +237,9 @@ export class CanvasEngine {
       this.action = "none";
       localStorage.setItem("shape", JSON.stringify(this.existingShapes));
       this.shapeMangager.clearResizeHandler();
-      console.log(this.selectedShape);
+
       this.render();
-    }
-    if (this.action == "moving") {
+    } else if (this.action == "moving") {
       localStorage.setItem("shape", JSON.stringify(this.existingShapes));
       this.action = "none";
       this.render();
