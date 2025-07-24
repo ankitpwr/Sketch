@@ -1,4 +1,8 @@
-export type StrokeStyle = "solid" | "dashed" | "dotted";
+export enum StrokeType {
+  Solid = "solid",
+  Dashed = "dashed",
+  Dotted = "dotted",
+}
 export enum StrokeColor {
   PrimaryBlack = "#1e1e1e",
   PrimaryRed = "#e03131",
@@ -18,18 +22,64 @@ export enum StrokeWidth {
   Bold = 2.5,
   ExtraBold = 4,
 }
+
+export enum StrokeSizePencil {
+  Thin = 2,
+  Bold = 5,
+  ExtraBold = 10,
+}
+
+export enum Tapper {
+  None = 0,
+  Subtle = 34,
+  Sharp = 64,
+}
+export enum Thinning {
+  None = 0,
+  Medium = 0.5,
+  High = 0.9,
+}
 export interface ShapeStyles {
   strokeWidth: StrokeWidth;
   strokeStyle: StrokeColor;
   fill: string;
-  strokeType: StrokeStyle;
+  strokeType: StrokeType;
   background: BackgroundColor;
 }
 
+export interface PencilStyles {
+  fillStyle: StrokeColor;
+  strokeWidth: StrokeSizePencil;
+  tapper: Tapper;
+  thinning: Thinning;
+}
+export const DEFAULT_STYLES_PENCIL: PencilStyles = {
+  fillStyle: StrokeColor.PrimaryBlack,
+  strokeWidth: StrokeSizePencil.ExtraBold,
+  tapper: Tapper.Sharp,
+  thinning: Thinning.Medium,
+};
+
 export const DEFAULT_STYLES: ShapeStyles = {
-  strokeType: "solid",
+  strokeType: StrokeType.Dotted,
   strokeWidth: StrokeWidth.Thin,
   strokeStyle: StrokeColor.PrimaryRed,
   fill: "transparent",
   background: BackgroundColor.Transparent,
 };
+
+export function getLineDashPattern(
+  strokeStyle: StrokeType,
+  strokeWidth: StrokeWidth
+) {
+  switch (strokeStyle) {
+    case StrokeType.Solid:
+      return [];
+    case StrokeType.Dashed:
+      return [10, 10];
+    case StrokeType.Dotted:
+      return [3, 3];
+    default:
+      return [];
+  }
+}

@@ -1,4 +1,4 @@
-import { ShapeStyles } from "../utils/drawingConfig";
+import { PencilStyles, ShapeStyles } from "../utils/drawingConfig";
 
 export type ShapeType =
   | "Rectangle"
@@ -37,7 +37,7 @@ export type ArrowShape = BoundedShape & { type: "Arrow" };
 export interface PencilShape extends BaseShape {
   type: "Pencil";
   points: Points[];
-  style: ShapeStyles;
+  style: PencilStyles;
 }
 export interface TextShape extends BaseShape {
   type: "Text";

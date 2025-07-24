@@ -18,7 +18,7 @@ import { isNeartheShape } from "./utils/geometry";
 import { ShapeManager } from "./ShapeManager";
 import { ShieldPlus } from "lucide-react";
 import { drawText } from "./draw/drawText";
-import { DEFAULT_STYLES } from "./utils/drawingConfig";
+import { DEFAULT_STYLES, DEFAULT_STYLES_PENCIL } from "./utils/drawingConfig";
 
 export class CanvasEngine {
   private canvas: HTMLCanvasElement;
@@ -114,7 +114,7 @@ export class CanvasEngine {
         case "Line": drawLine(this.ctx, s); break;
         case "Arrow": drawArrow(this.ctx, s);break;
         case "Pencil":drawPencil(this.ctx, s); break;
-        case "Text": drawText({ctx:this.ctx, text:s.text, startX:s.startX, startY:s.startY}); break;
+        case "Text": drawText(this.ctx, s); break;
 
          
       }
@@ -264,7 +264,7 @@ export class CanvasEngine {
         const tempShape: Shape = {
           type: "Pencil",
           points: this.points,
-          style: DEFAULT_STYLES,
+          style: DEFAULT_STYLES_PENCIL,
         };
         this.existingShapes.push(tempShape);
       } else if (currentShape == "Line" || currentShape == "Arrow") {
@@ -329,7 +329,7 @@ export class CanvasEngine {
         this.previewShape = {
           type: "Pencil",
           points: this.points,
-          style: DEFAULT_STYLES,
+          style: DEFAULT_STYLES_PENCIL,
         };
       } else if (currentShape == "Line" || currentShape == "Arrow") {
         const tempShape: Shape = {

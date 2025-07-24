@@ -2,11 +2,13 @@ import getStroke from "perfect-freehand";
 import { PencilShape } from "../types/types";
 
 export function drawPencil(ctx: CanvasRenderingContext2D, shape: PencilShape) {
+  ctx.save();
   const points = shape.points;
   const strokeOption = {
-    size: shape.style.strokeWidth * 5,
-    thinning: 0.5,
-    streamline: 0.4,
+    size: shape.style.strokeWidth,
+    thinning: shape.style.thinning, // pressure sensitivity
+    streamline: 0.5,
+    smoothing: 0.58,
     easing: (t: number) => t,
     start: { cap: true, taper: 10 },
     end: { cap: true, taper: 10 },
@@ -16,8 +18,9 @@ export function drawPencil(ctx: CanvasRenderingContext2D, shape: PencilShape) {
   const stroke = getStroke(points, strokeOption); //return:- An array of `[x, y]` coordinate pairs that form the outer boundary (outline) of the stroke.
   const pathData = getSvgPathFromStroke(stroke); //return:- A string in SVG Path Data format
   const myPath = new Path2D(pathData);
-  ctx.fillStyle = shape.style.strokeStyle;
+  ctx.fillStyle = shape.style.fillStyle;
   ctx.fill(myPath);
+  ctx.restore();
 }
 
 const average = (a: number, b: number) => (a + b) / 2;

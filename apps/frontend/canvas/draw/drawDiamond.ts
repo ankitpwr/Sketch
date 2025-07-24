@@ -1,4 +1,5 @@
 import { DiamondShape, Shape } from "../types/types";
+import { getLineDashPattern } from "../utils/drawingConfig";
 
 export function drawDiamond(
   ctx: CanvasRenderingContext2D,
@@ -14,10 +15,14 @@ export function drawDiamond(
   const leftPoint = { x: shape.startX, y: centerY };
   const cornerRadius = Math.min(width / 2, height / 2) * 0.4;
   const actualRadius = Math.max(2, Math.min(cornerRadius, 15));
-
+  ctx.save();
   ctx.fillStyle = shape.style.background;
   ctx.strokeStyle = shape.style.strokeStyle;
   ctx.lineWidth = shape.style.strokeWidth;
+  ctx.setLineDash(
+    getLineDashPattern(shape.style.strokeType, shape.style.strokeWidth)
+  );
+  ctx.lineCap = "round";
   ctx.beginPath();
   ctx.moveTo(
     // moving to midpoint of left to top edge
@@ -43,4 +48,5 @@ export function drawDiamond(
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
+  ctx.restore();
 }
