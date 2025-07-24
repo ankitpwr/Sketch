@@ -1,22 +1,19 @@
-import { DrawRectangleArgs } from "../types/types";
+import { RectangleShape } from "../types/types";
 
-export function drawRoundedRectangle({
-  ctx,
-  minX,
-  minY,
-  maxX,
-  maxY,
-}: DrawRectangleArgs) {
-  const width = maxX - minX;
-  const height = maxY - minY;
+export function drawRoundedRectangle(
+  ctx: CanvasRenderingContext2D,
+  shape: RectangleShape
+) {
+  const width = shape.endX - shape.startX;
+  const height = shape.endY - shape.startY;
   const radius = Math.abs(Math.min(width, height) / 8);
+
+  ctx.fillStyle = shape.style.background;
+  ctx.strokeStyle = shape.style.strokeStyle;
+  ctx.lineWidth = shape.style.strokeWidth;
   ctx.beginPath();
-  ctx.roundRect(minX, minY, width, height, radius);
+  ctx.roundRect(shape.startX, shape.startY, width, height, radius);
   ctx.closePath();
+  ctx.fill();
   ctx.stroke();
 }
-
-// const minX = Math.min(s.startX, s.endX);
-//       const minY = Math.min(s.startY, s.endY);
-//       const maxX = Math.max(s.startX, s.endX);
-//       const maxY = Math.max(s.startY, s.endY);

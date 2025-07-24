@@ -1,3 +1,5 @@
+import { ShapeStyles } from "../utils/drawingConfig";
+
 export type ShapeType =
   | "Rectangle"
   | "Diamond"
@@ -24,64 +26,29 @@ interface BoundedShape extends BaseShape {
   startY: number;
   endX: number;
   endY: number;
+  style: ShapeStyles;
 }
 export type RectangleShape = BoundedShape & { type: "Rectangle" };
 export type EllipseShape = BoundedShape & { type: "Ellipse" };
 export type DiamondShape = BoundedShape & { type: "Diamond" };
 export type LineShape = BoundedShape & { type: "Line" };
 export type ArrowShape = BoundedShape & { type: "Arrow" };
+
 export interface PencilShape extends BaseShape {
   type: "Pencil";
   points: Points[];
+  style: ShapeStyles;
 }
 export interface TextShape extends BaseShape {
   type: "Text";
   text: string;
   startX: number;
   startY: number;
+  style: ShapeStyles;
 }
 export interface ResizeHandlers extends BoundedShape {
   type: "Rectangle";
   side: "TopLeft" | "TopRight" | "BottomLeft" | "BottomRight";
-}
-export interface DrawTextAgrs {
-  ctx: CanvasRenderingContext2D;
-  text: string;
-  startX: number;
-  startY: number;
-}
-export interface DrawRectangleArgs {
-  ctx: CanvasRenderingContext2D;
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-}
-export interface DrawEllipseArgs {
-  ctx: CanvasRenderingContext2D;
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-}
-export interface DrawDiamondArgs {
-  ctx: CanvasRenderingContext2D;
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-}
-
-export interface DrawLineArgs {
-  ctx: CanvasRenderingContext2D;
-  startX: number;
-  startY: number;
-  endX: number;
-  endY: number;
-}
-export interface DrawPencilArgs {
-  ctx: CanvasRenderingContext2D;
-  points: Points[];
 }
 
 export type Action =

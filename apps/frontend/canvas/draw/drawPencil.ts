@@ -1,21 +1,22 @@
 import getStroke from "perfect-freehand";
-import { DrawPencilArgs } from "../types/types";
+import { PencilShape } from "../types/types";
 
-export function drawPencil({ ctx, points }: DrawPencilArgs) {
+export function drawPencil(ctx: CanvasRenderingContext2D, shape: PencilShape) {
+  const points = shape.points;
   const strokeOption = {
-    size: 10,
+    size: shape.style.strokeWidth * 5,
     thinning: 0.5,
     streamline: 0.4,
     easing: (t: number) => t,
-    start: { cap: true, taper: 60 },
-    end: { cap: true, taper: 60 },
+    start: { cap: true, taper: 10 },
+    end: { cap: true, taper: 10 },
     simulatePressure: true,
   };
 
   const stroke = getStroke(points, strokeOption); //return:- An array of `[x, y]` coordinate pairs that form the outer boundary (outline) of the stroke.
   const pathData = getSvgPathFromStroke(stroke); //return:- A string in SVG Path Data format
   const myPath = new Path2D(pathData);
-
+  ctx.fillStyle = shape.style.strokeStyle;
   ctx.fill(myPath);
 }
 

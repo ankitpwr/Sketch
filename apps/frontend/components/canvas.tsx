@@ -11,6 +11,7 @@ export default function Canvas() {
   const [canvasEngine, setcanvasEngine] = useState<CanvasEngine>();
   const [tool, setTool] = useState<Tool>("Pan");
   const textRef = useRef(null);
+  const [dpr, setdpr] = useState(1);
 
   const updateCanvasDimension = useCallback(() => {
     if (canvasRef.current) {
@@ -18,24 +19,29 @@ export default function Canvas() {
       const rect = canvas.getBoundingClientRect();
       const newWidth = Math.floor(rect.width);
       const newHeight = Math.floor(rect.height);
-      if (canvas.width != newWidth || canvas.height != newHeight) {
-        canvas.width = newWidth;
-        canvas.height = newHeight;
+      if (canvas.width != newWidth * dpr || canvas.height != newHeight * dpr) {
+        canvas.width = newWidth * dpr;
+        canvas.height = newHeight * dpr;
+        const ctx = canvas.getContext("2d");
+        ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
         if (canvasEngine) canvasEngine.handleCanvasResize();
       }
     }
-  }, [canvasEngine]);
+  }, [canvasEngine, dpr]);
 
   useEffect(() => {
+    if (typeof window != undefined) {
+      setdpr(window.devicePixelRatio || 1);
+    }
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     if (!textRef.current) return;
-    const engine = new CanvasEngine(canvas, ctx, textRef.current);
+    const engine = new CanvasEngine(canvas, ctx, textRef.current, dpr);
     setcanvasEngine(engine);
     updateCanvasDimension();
-  }, [canvasRef, textRef.current]);
+  }, [canvasRef, textRef.current, dpr]);
 
   useEffect(() => {
     if (!canvasEngine || !canvasEngine.currentTool) return;

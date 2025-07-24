@@ -1,16 +1,23 @@
-import { DrawDiamondArgs } from "../types/types";
+import { DiamondShape, Shape } from "../types/types";
 
-export function drawDiamond({ ctx, minX, minY, maxX, maxY }: DrawDiamondArgs) {
-  const width = maxX - minX;
-  const height = maxY - minY;
-  const centerX = minX + width / 2;
-  const centerY = minY + height / 2;
-  const topPoint = { x: centerX, y: minY };
-  const rightPoint = { x: maxX, y: centerY };
-  const bottomPoint = { x: centerX, y: maxY };
-  const leftPoint = { x: minX, y: centerY };
+export function drawDiamond(
+  ctx: CanvasRenderingContext2D,
+  shape: DiamondShape
+) {
+  const width = shape.endX - shape.startX;
+  const height = shape.endY - shape.startY;
+  const centerX = shape.startX + width / 2;
+  const centerY = shape.startY + height / 2;
+  const topPoint = { x: centerX, y: shape.startY };
+  const rightPoint = { x: shape.endX, y: centerY };
+  const bottomPoint = { x: centerX, y: shape.endY };
+  const leftPoint = { x: shape.startX, y: centerY };
   const cornerRadius = Math.min(width / 2, height / 2) * 0.4;
   const actualRadius = Math.max(2, Math.min(cornerRadius, 15));
+
+  ctx.fillStyle = shape.style.background;
+  ctx.strokeStyle = shape.style.strokeStyle;
+  ctx.lineWidth = shape.style.strokeWidth;
   ctx.beginPath();
   ctx.moveTo(
     // moving to midpoint of left to top edge
@@ -34,5 +41,6 @@ export function drawDiamond({ ctx, minX, minY, maxX, maxY }: DrawDiamondArgs) {
   );
   ctx.arcTo(leftPoint.x, leftPoint.y, topPoint.x, topPoint.y, actualRadius);
   ctx.closePath();
+  ctx.fill();
   ctx.stroke();
 }

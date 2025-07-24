@@ -18,6 +18,7 @@ import { isNeartheShape } from "./utils/geometry";
 import { ShapeManager } from "./ShapeManager";
 import { ShieldPlus } from "lucide-react";
 import { drawText } from "./draw/drawText";
+import { DEFAULT_STYLES } from "./utils/drawingConfig";
 
 export class CanvasEngine {
   private canvas: HTMLCanvasElement;
@@ -40,18 +41,20 @@ export class CanvasEngine {
     offsetX: number;
     offsetY: number;
   };
-
+  private dpr: number;
   private scaleOffset: { x: number; y: number };
   private shapeMangager: ShapeManager;
   private textArea: HTMLTextAreaElement;
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
-    textArea: HTMLTextAreaElement
+    textArea: HTMLTextAreaElement,
+    dpr: number
   ) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.textArea = textArea;
+    this.dpr = dpr;
     this.existingShapes = [];
     this.action = "none";
     this.currentTool = "Pan";
@@ -65,6 +68,7 @@ export class CanvasEngine {
     this.scale = 1;
     this.scaleOffset = { x: 0, y: 0 };
     this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
+    this.ctx.scale(this.dpr, this.dpr);
     this.init();
     this.mouseHandler();
 
@@ -102,14 +106,14 @@ export class CanvasEngine {
         case "Rectangle":
         case "Ellipse":
         case "Diamond":
-          if(s.type=="Rectangle") drawRoundedRectangle({ctx:this.ctx, minX:s.startX, minY:s.startY, maxX:s.endX, maxY:s.endY});
-          if(s.type=="Ellipse") drawEllipse({ctx:this.ctx, minX:s.startX, minY:s.startY, maxX:s.endX, maxY:s.endY});
-          if(s.type=="Diamond") drawDiamond({ctx:this.ctx, minX:s.startX, minY:s.startY, maxX:s.endX, maxY:s.endY});
+          if(s.type=="Rectangle") drawRoundedRectangle(this.ctx, s);
+          if(s.type=="Ellipse") drawEllipse(this.ctx, s);
+          if(s.type=="Diamond") drawDiamond(this.ctx, s);
           break;
 
-        case "Line": drawLine({ctx:this.ctx, startX:s.startX, startY:s.startY ,endX:s.endX, endY:s.endY}); break;
-        case "Arrow": drawArrow({ctx:this.ctx, startX:s.startX, startY:s.startY ,endX:s.endX, endY:s.endY});break;
-        case "Pencil":drawPencil({ctx:this.ctx, points:s.points}); break;
+        case "Line": drawLine(this.ctx, s); break;
+        case "Arrow": drawArrow(this.ctx, s);break;
+        case "Pencil":drawPencil(this.ctx, s); break;
         case "Text": drawText({ctx:this.ctx, text:s.text, startX:s.startX, startY:s.startY}); break;
 
          
@@ -141,6 +145,7 @@ export class CanvasEngine {
         startX: this.startX,
         startY: this.startY,
         text: this.textArea.value,
+        style: DEFAULT_STYLES,
       };
       this.existingShapes.push(textShape);
       console.log(this.existingShapes);
@@ -259,6 +264,7 @@ export class CanvasEngine {
         const tempShape: Shape = {
           type: "Pencil",
           points: this.points,
+          style: DEFAULT_STYLES,
         };
         this.existingShapes.push(tempShape);
       } else if (currentShape == "Line" || currentShape == "Arrow") {
@@ -268,6 +274,7 @@ export class CanvasEngine {
           startY: this.startY,
           endX: currentX,
           endY: currentY,
+          style: DEFAULT_STYLES,
         };
         this.existingShapes.push(tempShape);
       } else {
@@ -277,6 +284,7 @@ export class CanvasEngine {
           startY: Math.min(this.startY, currentY),
           endX: Math.max(this.startX, currentX),
           endY: Math.max(this.startY, currentY),
+          style: DEFAULT_STYLES,
         };
         this.existingShapes.push(tempShape);
       }
@@ -321,6 +329,7 @@ export class CanvasEngine {
         this.previewShape = {
           type: "Pencil",
           points: this.points,
+          style: DEFAULT_STYLES,
         };
       } else if (currentShape == "Line" || currentShape == "Arrow") {
         const tempShape: Shape = {
@@ -329,6 +338,7 @@ export class CanvasEngine {
           startY: this.startY,
           endX: currentX,
           endY: currentY,
+          style: DEFAULT_STYLES,
         };
         this.previewShape = tempShape;
       } else {
@@ -338,6 +348,7 @@ export class CanvasEngine {
           startY: Math.min(this.startY, currentY),
           endX: Math.max(this.startX, currentX),
           endY: Math.max(this.startY, currentY),
+          style: DEFAULT_STYLES,
         };
         this.previewShape = tempShape;
       }
@@ -350,8 +361,8 @@ export class CanvasEngine {
     if (this.pressedKey == "Control") {
       this.handleZoom(e.deltaY * -0.01);
     } else {
-      this.panX -= e.deltaX;
-      this.panY -= e.deltaY;
+      this.panX -= e.deltaX / this.scale;
+      this.panY -= e.deltaY / this.scale;
     }
     this.render();
   };
