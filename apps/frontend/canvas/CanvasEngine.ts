@@ -1,7 +1,6 @@
 import {
   Action,
   Points,
-  ResizeHandlers,
   Shape,
   ShapeType,
   TextShape,
@@ -16,9 +15,14 @@ import { drawPencil } from "./draw/drawPencil";
 import { getExistingShape } from "./utils/storage";
 import { isNeartheShape } from "./utils/geometry";
 import { ShapeManager } from "./ShapeManager";
-import { ShieldPlus } from "lucide-react";
+
 import { drawText } from "./draw/drawText";
-import { DEFAULT_STYLES, DEFAULT_STYLES_PENCIL } from "./utils/drawingConfig";
+import {
+  DefaultPencilStyles,
+  DefaultShapeStyles,
+  ShapeStyles,
+  PencilStyles,
+} from "./utils/drawingConfig";
 
 export class CanvasEngine {
   private canvas: HTMLCanvasElement;
@@ -45,6 +49,8 @@ export class CanvasEngine {
   private scaleOffset: { x: number; y: number };
   private shapeMangager: ShapeManager;
   private textArea: HTMLTextAreaElement;
+  public CurrentShapeStyles: ShapeStyles;
+  public CurrentPencilStyles: PencilStyles;
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
@@ -71,6 +77,8 @@ export class CanvasEngine {
     this.ctx.scale(this.dpr, this.dpr);
     this.init();
     this.mouseHandler();
+    this.CurrentShapeStyles = DefaultShapeStyles;
+    this.CurrentPencilStyles = DefaultPencilStyles;
 
     this.pressedKey = null;
 
@@ -102,21 +110,28 @@ export class CanvasEngine {
     this.ctx.scale(this.scale, this.scale);
     const drawShape = (s: Shape) => {
       //prettier-ignore
+
       switch (s.type) {
         case "Rectangle":
         case "Ellipse":
         case "Diamond":
-          if(s.type=="Rectangle") drawRoundedRectangle(this.ctx, s);
-          if(s.type=="Ellipse") drawEllipse(this.ctx, s);
-          if(s.type=="Diamond") drawDiamond(this.ctx, s);
+          if (s.type == "Rectangle") drawRoundedRectangle(this.ctx, s);
+          if (s.type == "Ellipse") drawEllipse(this.ctx, s);
+          if (s.type == "Diamond") drawDiamond(this.ctx, s);
           break;
 
-        case "Line": drawLine(this.ctx, s); break;
-        case "Arrow": drawArrow(this.ctx, s);break;
-        case "Pencil":drawPencil(this.ctx, s); break;
-        case "Text": drawText(this.ctx, s); break;
-
-         
+        case "Line":
+          drawLine(this.ctx, s);
+          break;
+        case "Arrow":
+          drawArrow(this.ctx, s);
+          break;
+        case "Pencil":
+          drawPencil(this.ctx, s);
+          break;
+        case "Text":
+          drawText(this.ctx, s);
+          break;
       }
     };
     this.existingShapes.forEach(drawShape);
@@ -145,7 +160,7 @@ export class CanvasEngine {
         startX: this.startX,
         startY: this.startY,
         text: this.textArea.value,
-        style: DEFAULT_STYLES,
+        style: { ...this.CurrentShapeStyles },
       };
       this.existingShapes.push(textShape);
       console.log(this.existingShapes);
@@ -264,7 +279,7 @@ export class CanvasEngine {
         const tempShape: Shape = {
           type: "Pencil",
           points: this.points,
-          style: DEFAULT_STYLES_PENCIL,
+          style: { ...this.CurrentPencilStyles },
         };
         this.existingShapes.push(tempShape);
       } else if (currentShape == "Line" || currentShape == "Arrow") {
@@ -274,7 +289,7 @@ export class CanvasEngine {
           startY: this.startY,
           endX: currentX,
           endY: currentY,
-          style: DEFAULT_STYLES,
+          style: { ...this.CurrentShapeStyles },
         };
         this.existingShapes.push(tempShape);
       } else {
@@ -284,12 +299,15 @@ export class CanvasEngine {
           startY: Math.min(this.startY, currentY),
           endX: Math.max(this.startX, currentX),
           endY: Math.max(this.startY, currentY),
-          style: DEFAULT_STYLES,
+          style: { ...this.CurrentShapeStyles },
         };
         this.existingShapes.push(tempShape);
       }
+      console.log("in mouse up");
+      console.log(this.existingShapes);
 
       localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+
       this.render();
       this.points = [];
     }
@@ -329,7 +347,7 @@ export class CanvasEngine {
         this.previewShape = {
           type: "Pencil",
           points: this.points,
-          style: DEFAULT_STYLES_PENCIL,
+          style: { ...this.CurrentPencilStyles },
         };
       } else if (currentShape == "Line" || currentShape == "Arrow") {
         const tempShape: Shape = {
@@ -338,7 +356,7 @@ export class CanvasEngine {
           startY: this.startY,
           endX: currentX,
           endY: currentY,
-          style: DEFAULT_STYLES,
+          style: { ...this.CurrentShapeStyles },
         };
         this.previewShape = tempShape;
       } else {
@@ -348,10 +366,11 @@ export class CanvasEngine {
           startY: Math.min(this.startY, currentY),
           endX: Math.max(this.startX, currentX),
           endY: Math.max(this.startY, currentY),
-          style: DEFAULT_STYLES,
+          style: { ...this.CurrentShapeStyles },
         };
         this.previewShape = tempShape;
       }
+
       this.render();
       this.previewShape = null;
     }

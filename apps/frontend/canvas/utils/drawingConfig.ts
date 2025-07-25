@@ -53,17 +53,25 @@ export interface PencilStyles {
   tapper: Tapper;
   thinning: Thinning;
 }
-export const DEFAULT_STYLES_PENCIL: PencilStyles = {
-  fillStyle: StrokeColor.PrimaryBlack,
+export const DefaultPencilStyles: PencilStyles = {
+  fillStyle: StrokeColor.PrimaryBlue,
   strokeWidth: StrokeSizePencil.ExtraBold,
   tapper: Tapper.Sharp,
   thinning: Thinning.Medium,
 };
 
-export const DEFAULT_STYLES: ShapeStyles = {
+export const DefaultShapeStyles: ShapeStyles = {
   strokeType: StrokeType.Dotted,
   strokeWidth: StrokeWidth.Thin,
-  strokeStyle: StrokeColor.PrimaryRed,
+  strokeStyle: StrokeColor.PrimaryBlue,
+  fill: "transparent",
+  background: BackgroundColor.Transparent,
+};
+
+export const BoundingBorderStyles: ShapeStyles = {
+  strokeType: StrokeType.Solid,
+  strokeWidth: StrokeWidth.Thin,
+  strokeStyle: StrokeColor.PrimaryBlue,
   fill: "transparent",
   background: BackgroundColor.Transparent,
 };

@@ -1,2 +1,26 @@
 @import "tailwindcss";
 @source "../../../node_modules/@repo/ui";
+
+.bg-transparent-pattern {
+  background: repeating-conic-gradient(
+      #d7d7d7 0% 25%,
+      #eee 0% 50%,
+      #ddd9d9 0% 75%,
+      #eee 0% 100%
+    )
+    0 / 15px 15px;
+}
+@theme {
+  /*primary colors*/
+  --color-primary-red: #e03131;
+  --color-primary-blue: #1971c2;
+  --color-primary-green: #2f9e44;
+  --color-primary-yellow: #f08c00;
+  --color-primary-black: #1e1e1e;
+  /*background colors*/
+  --color-transparent: #00000000;
+  --color-light-red: #ffc9c9;
+  --color-light-blue: #a5d8ff;
+  --color-light-green: #b2f2bb;
+  --color-light-yellow: #ffec99;
+}

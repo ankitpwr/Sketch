@@ -59,5 +59,5 @@ export type Action =
   | "resizing"
   | "writing"
   | "none";
-export type Tool = "Pan" | "Select" | ShapeType | "Eraser" | "Text";
+export type Tool = "Pan" | "Select" | ShapeType | "Eraser";
 export type Points = [number, number];

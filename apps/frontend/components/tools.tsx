@@ -25,7 +25,7 @@ export default function Tools({
     setTool(tool);
   };
   return (
-    <div className="fixed top-5 left-1/2 -translate-x-1/2 px-1 py-1 flex gap-2 rounded-md shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] ">
+    <div className="fixed top-5 left-1/2 -translate-x-1/2 px-1 py-1 flex gap-2 rounded-lg shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] ">
       <Button
         isActive={currentTool == "Pan" ? true : false}
         onClickhandler={() => handleTool("Pan")}

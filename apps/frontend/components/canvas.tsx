@@ -5,6 +5,7 @@ import Button from "./button";
 import { TextShape, Tool } from "@/canvas/types/types";
 import Tools from "./tools";
 import TextArea from "./textArea";
+import AppMenu from "./appMenu";
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -12,6 +13,18 @@ export default function Canvas() {
   const [tool, setTool] = useState<Tool>("Pan");
   const textRef = useRef(null);
   const [dpr, setdpr] = useState(1);
+
+  const isShapeTool = () => {
+    return (
+      tool == "Rectangle" ||
+      tool == "Diamond" ||
+      tool == "Ellipse" ||
+      tool == "Line" ||
+      tool == "Arrow" ||
+      tool == "Text" ||
+      tool == "Pencil"
+    );
+  };
 
   const updateCanvasDimension = useCallback(() => {
     if (canvasRef.current) {
@@ -66,6 +79,7 @@ export default function Canvas() {
       <canvas ref={canvasRef} className="w-full h-full"></canvas>
       <TextArea refer={textRef} />
       <Tools setTool={setTool} currentTool={tool} />
+      {isShapeTool() && canvasEngine && <AppMenu canvasEngine={canvasEngine} />}
     </div>
   );
 }

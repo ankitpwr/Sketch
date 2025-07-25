@@ -8,7 +8,7 @@ const VarientStyle = {
 
 const Size = {
   sm: `w-24 h-8 rounded-md   gap-1 text-md`,
-  md: ` rounded-md  gap-2 text-lg `,
+  md: ` rounded-lg  gap-2 text-lg `,
 };
 export default function Button({
   varient,
