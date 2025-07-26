@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import ColorPicker from "./colorPicker";
+import React, { useEffect, useRef, useState } from "react";
+
 import {
   BoldLineIcon,
   Dashed,
@@ -9,65 +9,175 @@ import {
 } from "./svgIcons";
 import Stroke from "./stroke";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
-import { StrokeColor } from "@/canvas/utils/drawingConfig";
+import { BackgroundColor, StrokeColor } from "@/canvas/utils/drawingConfig";
+import Button from "./button";
+import ColorSelection from "./colorSelector";
+import ColorPicker from "./colorPicker";
 
 export default function AppMenu({
   canvasEngine,
 }: {
   canvasEngine: CanvasEngine;
 }) {
-  const [currentColor, setCurrentColor] = useState<StrokeColor>(
+  const [strokeColor, setCurrentStrokeColor] = useState<StrokeColor | string>(
     canvasEngine.CurrentShapeStyles.strokeStyle
   );
-  const handleStrokeColor = (color: StrokeColor) => {
+  const [backgroundColor, setBackgroundColor] = useState<
+    BackgroundColor | string
+  >(canvasEngine.CurrentShapeStyles.background);
+  const [strokeColorPicker, setStrokeColorPicker] = useState<boolean>(false);
+  const [backgrColorPicker, setBackgroundColorPicker] =
+    useState<boolean>(false);
+  const strokeInputRef = useRef<HTMLInputElement | null>(null);
+  const backgroundInputRef = useRef<HTMLInputElement | null>(null);
+
+  function isHexColor(hex: string) {
+    var hexaPattern = /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/;
+    return hexaPattern.test(hex);
+  }
+  const handleStrokeColor = (color: StrokeColor | string) => {
+    if (!isHexColor(color)) {
+      return;
+    }
+
     canvasEngine.CurrentShapeStyles.strokeStyle = color;
-    setCurrentColor(color);
-    console.log(canvasEngine.CurrentShapeStyles.strokeStyle);
+    setCurrentStrokeColor(color);
   };
-  const isActive = (strokeColor: StrokeColor) => {
+
+  const handleBackgroundColor = (color: BackgroundColor | string) => {
+    if (!isHexColor(color)) return;
+    canvasEngine.CurrentShapeStyles.background = color;
+    setBackgroundColor(color);
+    console.log("background color is");
+    console.log(canvasEngine.CurrentShapeStyles.background);
+  };
+  const isActiveStroke = (strokeColor: StrokeColor) => {
     return canvasEngine.CurrentShapeStyles.strokeStyle == strokeColor;
   };
+  const isActiveBackground = (backgroundColor: BackgroundColor) => {
+    return canvasEngine.CurrentShapeStyles.background == backgroundColor;
+  };
+
+  const handleStrokeColorSelction = () => {
+    setBackgroundColorPicker(false);
+    setStrokeColorPicker(true);
+  };
+  const handleBackgroundColorSelction = () => {
+    setStrokeColorPicker(false);
+    setBackgroundColorPicker(true);
+  };
+
+  useEffect(() => {
+    function handleMouseDown() {
+      console.log("handle color");
+      setStrokeColorPicker(false);
+      setBackgroundColorPicker(false);
+      console.log(strokeInputRef);
+      console.log(backgroundInputRef);
+      if (strokeInputRef.current) {
+        handleStrokeColor(strokeInputRef.current.value);
+      }
+
+      if (backgroundInputRef.current) {
+        handleBackgroundColor(backgroundInputRef.current.value);
+      }
+    }
+    canvasEngine.canvas.addEventListener("mousedown", handleMouseDown);
+
+    return () =>
+      canvasEngine.canvas.removeEventListener("mousedown", handleMouseDown);
+  }, []);
   return (
-    <div className="flex flex-col gap-6 rounded-lg fixed px-3 py-5 left-5 top-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+    <div className="flex flex-col   gap-6 rounded-lg fixed px-3 py-5 left-5 top-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
       <div className="flex flex-col gap-2">
         <h1 className="text-sm text-gray-900">Stroke</h1>
-        <div className="flex gap-1">
-          <ColorPicker
+        <div className="flex gap-2">
+          <ColorSelection
             onClick={() => handleStrokeColor(StrokeColor.PrimaryBlack)}
             color={StrokeColor.PrimaryBlack}
-            isActive={isActive(StrokeColor.PrimaryBlack)}
+            isActive={isActiveStroke(StrokeColor.PrimaryBlack)}
           />
-          <ColorPicker
+          <ColorSelection
             onClick={() => handleStrokeColor(StrokeColor.PrimaryRed)}
             color={StrokeColor.PrimaryRed}
-            isActive={isActive(StrokeColor.PrimaryRed)}
+            isActive={isActiveStroke(StrokeColor.PrimaryRed)}
           />
-          <ColorPicker
+          <ColorSelection
             onClick={() => handleStrokeColor(StrokeColor.PrimaryGreen)}
             color={StrokeColor.PrimaryGreen}
-            isActive={isActive(StrokeColor.PrimaryGreen)}
+            isActive={isActiveStroke(StrokeColor.PrimaryGreen)}
           />
-          <ColorPicker
+          <ColorSelection
             onClick={() => handleStrokeColor(StrokeColor.PrimaryBlue)}
             color={StrokeColor.PrimaryBlue}
-            isActive={isActive(StrokeColor.PrimaryBlue)}
+            isActive={isActiveStroke(StrokeColor.PrimaryBlue)}
           />
-          <ColorPicker
+          <ColorSelection
             onClick={() => handleStrokeColor(StrokeColor.PrimaryYellow)}
             color={StrokeColor.PrimaryYellow}
-            isActive={isActive(StrokeColor.PrimaryYellow)}
+            isActive={isActiveStroke(StrokeColor.PrimaryYellow)}
           />
+          <div className="w-2"></div>
+
+          <ColorSelection
+            color={strokeColor}
+            isActive={false}
+            isColorPicker={true}
+            onClick={handleStrokeColorSelction}
+          />
+          {strokeColorPicker && (
+            <ColorPicker
+              isStrokeColorPicker={true}
+              currentHexCode={strokeColor}
+              refer={strokeInputRef}
+            />
+          )}
         </div>
       </div>
 
       <div className="flex flex-col gap-2">
         <h1 className="text-sm text-gray-900">Background</h1>
-        <div className="flex gap-1">
-          {/* <ColorPicker color={"transparent"} />
-          <ColorPicker color={"#e03131"} />
-          <ColorPicker color={"#1971c2"} />
-          <ColorPicker color={"#2f9e44"} />
-          <ColorPicker color={"#f08c00"} /> */}
+        <div className="flex gap-2">
+          <ColorSelection
+            onClick={() => handleBackgroundColor(BackgroundColor.Transparent)}
+            color={BackgroundColor.Transparent}
+            isActive={isActiveBackground(BackgroundColor.Transparent)}
+          />
+          <ColorSelection
+            onClick={() => handleBackgroundColor(BackgroundColor.BG_Red)}
+            color={BackgroundColor.BG_Red}
+            isActive={isActiveBackground(BackgroundColor.BG_Red)}
+          />
+          <ColorSelection
+            onClick={() => handleBackgroundColor(BackgroundColor.BG_Green)}
+            color={BackgroundColor.BG_Green}
+            isActive={isActiveBackground(BackgroundColor.BG_Green)}
+          />
+          <ColorSelection
+            onClick={() => handleBackgroundColor(BackgroundColor.BG_Blue)}
+            color={BackgroundColor.BG_Blue}
+            isActive={isActiveBackground(BackgroundColor.BG_Blue)}
+          />
+          <ColorSelection
+            onClick={() => handleBackgroundColor(BackgroundColor.BG_Yellow)}
+            color={BackgroundColor.BG_Yellow}
+            isActive={isActiveBackground(BackgroundColor.BG_Yellow)}
+          />
+          <div className="w-2"></div>
+
+          <ColorSelection
+            color={backgroundColor}
+            isActive={false}
+            isColorPicker={true}
+            onClick={handleBackgroundColorSelction}
+          />
+          {backgrColorPicker && (
+            <ColorPicker
+              isStrokeColorPicker={false}
+              currentHexCode={backgroundColor}
+              refer={backgroundInputRef}
+            />
+          )}
         </div>
       </div>
 

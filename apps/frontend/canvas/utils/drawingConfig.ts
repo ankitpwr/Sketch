@@ -11,7 +11,7 @@ export enum StrokeColor {
   PrimaryYellow = "#f08c00",
 }
 export enum BackgroundColor {
-  Transparent = "transparent",
+  Transparent = "#00000000",
   BG_Red = "#ffc9c9",
   BG_Green = "#b2f2bb",
   BG_Blue = "#a5d8ff",
@@ -41,10 +41,10 @@ export enum Thinning {
 }
 export interface ShapeStyles {
   strokeWidth: StrokeWidth;
-  strokeStyle: StrokeColor;
+  strokeStyle: StrokeColor | string;
   fill: string;
   strokeType: StrokeType;
-  background: BackgroundColor;
+  background: BackgroundColor | string;
 }
 
 export interface PencilStyles {

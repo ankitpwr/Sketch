@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@source "../../../node_modules/@repo/ui";
 
 .bg-transparent-pattern {
   background: repeating-conic-gradient(
@@ -24,3 +23,4 @@
   --color-light-green: #b2f2bb;
   --color-light-yellow: #ffec99;
 }
+/*---break---*/

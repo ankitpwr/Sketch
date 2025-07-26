@@ -25,7 +25,7 @@ import {
 } from "./utils/drawingConfig";
 
 export class CanvasEngine {
-  private canvas: HTMLCanvasElement;
+  public canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private existingShapes: Shape[];
   public action: Action;
@@ -145,7 +145,6 @@ export class CanvasEngine {
     this.ctx.restore();
   }
   handleText = () => {
-    console.log(this.startX);
     this.textArea.style.left = this.startX + "px";
     this.textArea.style.top = this.startY + "px";
     this.textArea.value = "";
@@ -163,7 +162,6 @@ export class CanvasEngine {
         style: { ...this.CurrentShapeStyles },
       };
       this.existingShapes.push(textShape);
-      console.log(this.existingShapes);
       this.render();
     }
     this.action = "none";
@@ -225,7 +223,6 @@ export class CanvasEngine {
       this.shapeMangager.clearResizeHandler();
       this.render();
     }
-    console.log(this.mouseDown);
   };
 
   handleMouseUp = (e: MouseEvent) => {
@@ -303,8 +300,6 @@ export class CanvasEngine {
         };
         this.existingShapes.push(tempShape);
       }
-      console.log("in mouse up");
-      console.log(this.existingShapes);
 
       localStorage.setItem("shape", JSON.stringify(this.existingShapes));
 

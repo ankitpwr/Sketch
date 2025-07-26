@@ -53,6 +53,9 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
         <Input refer={passwordRef} placeholder={"Password"} type={"text"} />
 
         <Button
+          varient={"primary"}
+          size={"sm"}
+          isActive={false}
           onClickhandler={handleSubmit}
           title={isSignin ? "Sign in" : "Sign up"}
         />
