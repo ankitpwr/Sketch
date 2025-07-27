@@ -9,7 +9,12 @@ import {
 } from "./svgIcons";
 import Stroke from "./stroke";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
-import { BackgroundColor, StrokeColor } from "@/canvas/utils/drawingConfig";
+import {
+  BackgroundColor,
+  StrokeColor,
+  StrokeType,
+  StrokeWidth,
+} from "@/canvas/utils/drawingConfig";
 import Button from "./button";
 import ColorSelection from "./colorSelector";
 import ColorPicker from "./colorPicker";
@@ -28,18 +33,22 @@ export default function AppMenu({
   const [strokeColorPicker, setStrokeColorPicker] = useState<boolean>(false);
   const [backgrColorPicker, setBackgroundColorPicker] =
     useState<boolean>(false);
+  const [strokeWidth, setStokeWidth] = useState<StrokeWidth>(
+    canvasEngine.CurrentShapeStyles.strokeWidth
+  );
+  const [strokeStyle, setStokeStyle] = useState<StrokeType>(
+    canvasEngine.CurrentShapeStyles.strokeType
+  );
+
   const strokeInputRef = useRef<HTMLInputElement | null>(null);
   const backgroundInputRef = useRef<HTMLInputElement | null>(null);
 
   function isHexColor(hex: string) {
     var hexaPattern = /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/;
-    return hexaPattern.test(hex);
+    return hexaPattern.test(hex) || hex == "#00000000";
   }
   const handleStrokeColor = (color: StrokeColor | string) => {
-    if (!isHexColor(color)) {
-      return;
-    }
-
+    if (!isHexColor(color)) return;
     canvasEngine.CurrentShapeStyles.strokeStyle = color;
     setCurrentStrokeColor(color);
   };
@@ -48,14 +57,6 @@ export default function AppMenu({
     if (!isHexColor(color)) return;
     canvasEngine.CurrentShapeStyles.background = color;
     setBackgroundColor(color);
-    console.log("background color is");
-    console.log(canvasEngine.CurrentShapeStyles.background);
-  };
-  const isActiveStroke = (strokeColor: StrokeColor) => {
-    return canvasEngine.CurrentShapeStyles.strokeStyle == strokeColor;
-  };
-  const isActiveBackground = (backgroundColor: BackgroundColor) => {
-    return canvasEngine.CurrentShapeStyles.background == backgroundColor;
   };
 
   const handleStrokeColorSelction = () => {
@@ -65,6 +66,27 @@ export default function AppMenu({
   const handleBackgroundColorSelction = () => {
     setStrokeColorPicker(false);
     setBackgroundColorPicker(true);
+  };
+
+  const handleStrokeWidth = (width: StrokeWidth) => {
+    canvasEngine.CurrentShapeStyles.strokeWidth = width;
+    setStokeWidth(width);
+  };
+  const handleStrokeStyle = (style: StrokeType) => {
+    canvasEngine.CurrentShapeStyles.strokeType = style;
+    setStokeStyle(style);
+  };
+  const isActiveStroke = (strokeColor: StrokeColor) => {
+    return canvasEngine.CurrentShapeStyles.strokeStyle == strokeColor;
+  };
+  const isActiveBackground = (backgroundColor: BackgroundColor) => {
+    return canvasEngine.CurrentShapeStyles.background == backgroundColor;
+  };
+  const isActiveWidth = (width: StrokeWidth) => {
+    return width == canvasEngine.CurrentShapeStyles.strokeWidth;
+  };
+  const isActiveWidthStyle = (style: StrokeType) => {
+    return style == canvasEngine.CurrentShapeStyles.strokeType;
   };
 
   useEffect(() => {
@@ -88,10 +110,10 @@ export default function AppMenu({
       canvasEngine.canvas.removeEventListener("mousedown", handleMouseDown);
   }, []);
   return (
-    <div className="flex flex-col   gap-6 rounded-lg fixed px-3 py-5 left-5 top-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+    <div className="flex flex-col bg-white   gap-6 rounded-lg fixed px-5 py-5 left-5 top-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
       <div className="flex flex-col gap-2">
         <h1 className="text-sm text-gray-900">Stroke</h1>
-        <div className="flex gap-2">
+        <div className="flex gap-2 justify-center items-center">
           <ColorSelection
             onClick={() => handleStrokeColor(StrokeColor.PrimaryBlack)}
             color={StrokeColor.PrimaryBlack}
@@ -117,7 +139,7 @@ export default function AppMenu({
             color={StrokeColor.PrimaryYellow}
             isActive={isActiveStroke(StrokeColor.PrimaryYellow)}
           />
-          <div className="w-2"></div>
+          <div className="w-[1.5px] h-5 rounded-md bg-gray-200"></div>
 
           <ColorSelection
             color={strokeColor}
@@ -137,7 +159,7 @@ export default function AppMenu({
 
       <div className="flex flex-col gap-2">
         <h1 className="text-sm text-gray-900">Background</h1>
-        <div className="flex gap-2">
+        <div className="flex gap-2 justify-center items-center">
           <ColorSelection
             onClick={() => handleBackgroundColor(BackgroundColor.Transparent)}
             color={BackgroundColor.Transparent}
@@ -163,8 +185,7 @@ export default function AppMenu({
             color={BackgroundColor.BG_Yellow}
             isActive={isActiveBackground(BackgroundColor.BG_Yellow)}
           />
-          <div className="w-2"></div>
-
+          <div className="w-[1.5px] h-5 rounded-md bg-gray-200"></div>
           <ColorSelection
             color={backgroundColor}
             isActive={false}
@@ -184,33 +205,49 @@ export default function AppMenu({
       <div className="flex flex-col gap-2">
         <h1 className="text-sm text-gray-900">Stroke width</h1>
         <div className="flex gap-2">
-          <Stroke>
+          <Stroke
+            onClick={() => handleStrokeWidth(StrokeWidth.Thin)}
+            isActive={isActiveWidth(StrokeWidth.Thin)}
+          >
             <ThinLineIcon size={24} color={"black"} />
           </Stroke>
-          <Stroke>
+          <Stroke
+            onClick={() => handleStrokeWidth(StrokeWidth.Bold)}
+            isActive={isActiveWidth(StrokeWidth.Bold)}
+          >
             <BoldLineIcon size={24} color={"black"} />
           </Stroke>
-          <Stroke>
+          <Stroke
+            onClick={() => handleStrokeWidth(StrokeWidth.ExtraBold)}
+            isActive={isActiveWidth(StrokeWidth.ExtraBold)}
+          >
             <ExtraBold size={24} color={"black"} />
           </Stroke>
         </div>
-        <div></div>
       </div>
 
       <div className="flex flex-col gap-2">
         <h1 className="text-sm text-gray-900">Stroke style</h1>
         <div className="flex gap-2">
-          <Stroke>
+          <Stroke
+            onClick={() => handleStrokeStyle(StrokeType.Solid)}
+            isActive={isActiveWidthStyle(StrokeType.Solid)}
+          >
             <ThinLineIcon size={24} color={"black"} />
           </Stroke>
-          <Stroke>
+          <Stroke
+            onClick={() => handleStrokeStyle(StrokeType.Dashed)}
+            isActive={isActiveWidthStyle(StrokeType.Dashed)}
+          >
             <Dashed size={24} color={"black"} />
           </Stroke>
-          <Stroke>
+          <Stroke
+            onClick={() => handleStrokeStyle(StrokeType.Dotted)}
+            isActive={isActiveWidthStyle(StrokeType.Dotted)}
+          >
             <Dotted size={24} color={"black"} />
           </Stroke>
         </div>
-        <div></div>
       </div>
     </div>
   );

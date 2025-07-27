@@ -84,9 +84,9 @@ export function getLineDashPattern(
     case StrokeType.Solid:
       return [];
     case StrokeType.Dashed:
-      return [10, 10];
+      return [8, 8];
     case StrokeType.Dotted:
-      return [3, 3];
+      return [4, 4];
     default:
       return [];
   }

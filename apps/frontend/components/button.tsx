@@ -27,7 +27,7 @@ export default function Button({
   return (
     <button
       onClick={onClickhandler}
-      className={`${VarientStyle[varient]} ${Size[size]} flex items-center justify-center hover:bg-purple-200 cursor-pointer ${isActive && "bg-purple-200"}`}
+      className={`${VarientStyle[varient]} ${Size[size]} flex items-center justify-center hover:bg-[#f1f0ff] cursor-pointer ${isActive && "bg-[#e0dfff]"}`}
     >
       {children}
     </button>
