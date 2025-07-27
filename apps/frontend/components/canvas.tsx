@@ -79,7 +79,9 @@ export default function Canvas() {
       <canvas ref={canvasRef} className="w-full h-full"></canvas>
       <TextArea refer={textRef} />
       <Tools setTool={setTool} currentTool={tool} />
-      {isShapeTool() && canvasEngine && <AppMenu canvasEngine={canvasEngine} />}
+      {isShapeTool() && canvasEngine && (
+        <AppMenu tool={tool} canvasEngine={canvasEngine} />
+      )}
     </div>
   );
 }

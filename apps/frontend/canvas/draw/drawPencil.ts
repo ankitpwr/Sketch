@@ -7,18 +7,18 @@ export function drawPencil(ctx: CanvasRenderingContext2D, shape: PencilShape) {
   const strokeOption = {
     size: shape.style.strokeWidth,
     thinning: shape.style.thinning, // pressure sensitivity
-    streamline: 0.5,
+    streamline: 0.6,
     smoothing: 0.58,
     easing: (t: number) => t,
-    start: { cap: true, taper: 10 },
-    end: { cap: true, taper: 10 },
+    start: { cap: true, taper: shape.style.tapper },
+    end: { cap: true, taper: shape.style.tapper },
     simulatePressure: true,
   };
 
   const stroke = getStroke(points, strokeOption); //return:- An array of `[x, y]` coordinate pairs that form the outer boundary (outline) of the stroke.
   const pathData = getSvgPathFromStroke(stroke); //return:- A string in SVG Path Data format
   const myPath = new Path2D(pathData);
-  ctx.fillStyle = shape.style.fillStyle;
+  ctx.fillStyle = shape.style.StrokeStyle;
   ctx.fill(myPath);
   ctx.restore();
 }

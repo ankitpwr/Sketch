@@ -31,8 +31,8 @@ export enum StrokeSizePencil {
 
 export enum Tapper {
   None = 0,
-  Subtle = 34,
-  Sharp = 64,
+  Subtle = 35,
+  Sharp = 70,
 }
 export enum Thinning {
   None = 0,
@@ -48,22 +48,22 @@ export interface ShapeStyles {
 }
 
 export interface PencilStyles {
-  fillStyle: StrokeColor;
+  StrokeStyle: StrokeColor | string;
   strokeWidth: StrokeSizePencil;
   tapper: Tapper;
   thinning: Thinning;
 }
 export const DefaultPencilStyles: PencilStyles = {
-  fillStyle: StrokeColor.PrimaryBlue,
+  StrokeStyle: StrokeColor.PrimaryBlue,
   strokeWidth: StrokeSizePencil.ExtraBold,
   tapper: Tapper.Sharp,
   thinning: Thinning.Medium,
 };
 
 export const DefaultShapeStyles: ShapeStyles = {
-  strokeType: StrokeType.Dotted,
+  strokeType: StrokeType.Solid,
   strokeWidth: StrokeWidth.Thin,
-  strokeStyle: StrokeColor.PrimaryBlue,
+  strokeStyle: StrokeColor.PrimaryBlack,
   fill: "transparent",
   background: BackgroundColor.Transparent,
 };

@@ -13,16 +13,22 @@ import {
   BackgroundColor,
   StrokeColor,
   StrokeType,
-  StrokeWidth,
 } from "@/canvas/utils/drawingConfig";
 import Button from "./button";
 import ColorSelection from "./colorSelector";
 import ColorPicker from "./colorPicker";
+import PencilMenu from "./pencilSetting";
+import StrokeWidth from "./strokewidth";
+import StrokeWidthSelector from "./strokewidth";
+import StrokeStyleSelector from "./strokeStyleSelector";
+import { Tool } from "@/canvas/types/types";
 
 export default function AppMenu({
   canvasEngine,
+  tool,
 }: {
   canvasEngine: CanvasEngine;
+  tool: Tool;
 }) {
   const [strokeColor, setCurrentStrokeColor] = useState<StrokeColor | string>(
     canvasEngine.CurrentShapeStyles.strokeStyle
@@ -33,12 +39,6 @@ export default function AppMenu({
   const [strokeColorPicker, setStrokeColorPicker] = useState<boolean>(false);
   const [backgrColorPicker, setBackgroundColorPicker] =
     useState<boolean>(false);
-  const [strokeWidth, setStokeWidth] = useState<StrokeWidth>(
-    canvasEngine.CurrentShapeStyles.strokeWidth
-  );
-  const [strokeStyle, setStokeStyle] = useState<StrokeType>(
-    canvasEngine.CurrentShapeStyles.strokeType
-  );
 
   const strokeInputRef = useRef<HTMLInputElement | null>(null);
   const backgroundInputRef = useRef<HTMLInputElement | null>(null);
@@ -50,6 +50,7 @@ export default function AppMenu({
   const handleStrokeColor = (color: StrokeColor | string) => {
     if (!isHexColor(color)) return;
     canvasEngine.CurrentShapeStyles.strokeStyle = color;
+    canvasEngine.CurrentPencilStyles.StrokeStyle = color;
     setCurrentStrokeColor(color);
   };
 
@@ -67,26 +68,11 @@ export default function AppMenu({
     setStrokeColorPicker(false);
     setBackgroundColorPicker(true);
   };
-
-  const handleStrokeWidth = (width: StrokeWidth) => {
-    canvasEngine.CurrentShapeStyles.strokeWidth = width;
-    setStokeWidth(width);
-  };
-  const handleStrokeStyle = (style: StrokeType) => {
-    canvasEngine.CurrentShapeStyles.strokeType = style;
-    setStokeStyle(style);
-  };
   const isActiveStroke = (strokeColor: StrokeColor) => {
     return canvasEngine.CurrentShapeStyles.strokeStyle == strokeColor;
   };
   const isActiveBackground = (backgroundColor: BackgroundColor) => {
     return canvasEngine.CurrentShapeStyles.background == backgroundColor;
-  };
-  const isActiveWidth = (width: StrokeWidth) => {
-    return width == canvasEngine.CurrentShapeStyles.strokeWidth;
-  };
-  const isActiveWidthStyle = (style: StrokeType) => {
-    return style == canvasEngine.CurrentShapeStyles.strokeType;
   };
 
   useEffect(() => {
@@ -111,7 +97,7 @@ export default function AppMenu({
   }, []);
   return (
     <div className="flex flex-col bg-white   gap-6 rounded-lg fixed px-5 py-5 left-5 top-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
-      <div className="flex flex-col gap-2">
+      <div id="stroke-color-section" className="flex flex-col gap-2">
         <h1 className="text-sm text-gray-900">Stroke</h1>
         <div className="flex gap-2 justify-center items-center">
           <ColorSelection
@@ -157,7 +143,7 @@ export default function AppMenu({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div id="background-color-selection" className="flex flex-col gap-2">
         <h1 className="text-sm text-gray-900">Background</h1>
         <div className="flex gap-2 justify-center items-center">
           <ColorSelection
@@ -202,53 +188,11 @@ export default function AppMenu({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900">Stroke width</h1>
-        <div className="flex gap-2">
-          <Stroke
-            onClick={() => handleStrokeWidth(StrokeWidth.Thin)}
-            isActive={isActiveWidth(StrokeWidth.Thin)}
-          >
-            <ThinLineIcon size={24} color={"black"} />
-          </Stroke>
-          <Stroke
-            onClick={() => handleStrokeWidth(StrokeWidth.Bold)}
-            isActive={isActiveWidth(StrokeWidth.Bold)}
-          >
-            <BoldLineIcon size={24} color={"black"} />
-          </Stroke>
-          <Stroke
-            onClick={() => handleStrokeWidth(StrokeWidth.ExtraBold)}
-            isActive={isActiveWidth(StrokeWidth.ExtraBold)}
-          >
-            <ExtraBold size={24} color={"black"} />
-          </Stroke>
-        </div>
-      </div>
+      {tool != "Pencil" && <StrokeWidthSelector canvasEngine={canvasEngine} />}
 
-      <div className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900">Stroke style</h1>
-        <div className="flex gap-2">
-          <Stroke
-            onClick={() => handleStrokeStyle(StrokeType.Solid)}
-            isActive={isActiveWidthStyle(StrokeType.Solid)}
-          >
-            <ThinLineIcon size={24} color={"black"} />
-          </Stroke>
-          <Stroke
-            onClick={() => handleStrokeStyle(StrokeType.Dashed)}
-            isActive={isActiveWidthStyle(StrokeType.Dashed)}
-          >
-            <Dashed size={24} color={"black"} />
-          </Stroke>
-          <Stroke
-            onClick={() => handleStrokeStyle(StrokeType.Dotted)}
-            isActive={isActiveWidthStyle(StrokeType.Dotted)}
-          >
-            <Dotted size={24} color={"black"} />
-          </Stroke>
-        </div>
-      </div>
+      {tool != "Pencil" && <StrokeStyleSelector canvasEngine={canvasEngine} />}
+
+      {tool == "Pencil" && <PencilMenu canvasEngine={canvasEngine} />}
     </div>
   );
 }
