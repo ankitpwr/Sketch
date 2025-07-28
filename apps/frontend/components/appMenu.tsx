@@ -1,27 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import {
-  BoldLineIcon,
-  Dashed,
-  Dotted,
-  ExtraBold,
-  ThinLineIcon,
-} from "./svgIcons";
-import Stroke from "./stroke";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import {
   BackgroundColor,
   StrokeColor,
   StrokeType,
 } from "@/canvas/utils/drawingConfig";
-import Button from "./button";
+
 import ColorSelection from "./colorSelector";
 import ColorPicker from "./colorPicker";
 import PencilMenu from "./pencilSetting";
-import StrokeWidth from "./strokewidth";
+
 import StrokeWidthSelector from "./strokewidth";
 import StrokeStyleSelector from "./strokeStyleSelector";
 import { Tool } from "@/canvas/types/types";
+import TextSelector from "./TextSelector";
 
 export default function AppMenu({
   canvasEngine,
@@ -51,6 +44,7 @@ export default function AppMenu({
     if (!isHexColor(color)) return;
     canvasEngine.CurrentShapeStyles.strokeStyle = color;
     canvasEngine.CurrentPencilStyles.StrokeStyle = color;
+    canvasEngine.CurrentTextStyle.strokeStyle = color;
     setCurrentStrokeColor(color);
   };
 
@@ -98,7 +92,7 @@ export default function AppMenu({
   return (
     <div className="flex flex-col bg-white   gap-6 rounded-lg fixed px-5 py-5 left-5 top-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
       <div id="stroke-color-section" className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900">Stroke</h1>
+        <h1 className="text-sm text-gray-900  ">Stroke</h1>
         <div className="flex gap-2 justify-center items-center">
           <ColorSelection
             onClick={() => handleStrokeColor(StrokeColor.PrimaryBlack)}
@@ -188,11 +182,17 @@ export default function AppMenu({
         </div>
       </div>
 
-      {tool != "Pencil" && <StrokeWidthSelector canvasEngine={canvasEngine} />}
+      {tool != "Pencil" && tool != "Text" && (
+        <StrokeWidthSelector canvasEngine={canvasEngine} />
+      )}
 
-      {tool != "Pencil" && <StrokeStyleSelector canvasEngine={canvasEngine} />}
+      {tool != "Pencil" && tool != "Text" && (
+        <StrokeStyleSelector canvasEngine={canvasEngine} />
+      )}
 
       {tool == "Pencil" && <PencilMenu canvasEngine={canvasEngine} />}
+
+      {tool == "Text" && <TextSelector canvasEngine={canvasEngine} />}
     </div>
   );
 }

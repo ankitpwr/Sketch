@@ -1,4 +1,4 @@
-import { PencilStyles, ShapeStyles } from "../utils/drawingConfig";
+import { PencilStyles, ShapeStyles, TextStyle } from "../utils/drawingConfig";
 
 export type ShapeType =
   | "Rectangle"
@@ -44,7 +44,7 @@ export interface TextShape extends BaseShape {
   text: string;
   startX: number;
   startY: number;
-  style: ShapeStyles;
+  style: TextStyle;
 }
 export interface ResizeHandlers extends BoundedShape {
   type: "Rectangle";

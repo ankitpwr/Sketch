@@ -23,6 +23,19 @@ export enum StrokeWidth {
   ExtraBold = 4,
 }
 
+export enum FontFamily {
+  Normal = "Nunito",
+  HandDrawn = "Architects Daughter",
+  Comic = "Comic Relief",
+  Code = "Fira Code",
+}
+export enum FontSize {
+  Small = "15px",
+  Medium = "25px",
+  Large = "35px",
+  Xl = "45px",
+}
+
 export enum StrokeSizePencil {
   Thin = 2,
   Bold = 5,
@@ -39,6 +52,12 @@ export enum Thinning {
   Medium = 0.5,
   High = 0.9,
 }
+
+export interface TextStyle {
+  strokeStyle: StrokeColor | string;
+  fontsize: FontSize;
+  fontfamily: FontFamily;
+}
 export interface ShapeStyles {
   strokeWidth: StrokeWidth;
   strokeStyle: StrokeColor | string;
@@ -46,7 +65,11 @@ export interface ShapeStyles {
   strokeType: StrokeType;
   background: BackgroundColor | string;
 }
-
+export const DefaultTextStyle: TextStyle = {
+  strokeStyle: StrokeColor.PrimaryRed,
+  fontsize: FontSize.Medium,
+  fontfamily: FontFamily.Normal,
+};
 export interface PencilStyles {
   StrokeStyle: StrokeColor | string;
   strokeWidth: StrokeSizePencil;

@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+
+import { Geist, Geist_Mono, Architects_Daughter } from "next/font/google";
+
+import { Fira_Code, Nunito, Comic_Relief } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -10,6 +13,27 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const architects = Architects_Daughter({
+  variable: "--font-architect",
+  subsets: ["latin"],
+  weight: "400",
+});
+const code = Fira_Code({
+  variable: "--font-code",
+  subsets: ["latin"],
+});
+
+const inter = Nunito({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const comic = Comic_Relief({
+  variable: "--font-comic",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -25,7 +49,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable}  ${architects.variable} ${code.variable} antialiased`}
       >
         {children}
       </body>

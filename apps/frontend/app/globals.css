@@ -23,4 +23,10 @@
   --color-light-green: #b2f2bb;
   --color-light-yellow: #ffec99;
 }
-/*---break---*/
+
+@theme {
+  --font-architect: var(--font-architect);
+  --font-code: var(--font-code);
+  --font-nunito: var(--font-nunito);
+  --font-comic: var(--font-comic);
+}

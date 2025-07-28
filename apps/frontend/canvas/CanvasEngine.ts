@@ -22,6 +22,8 @@ import {
   DefaultShapeStyles,
   ShapeStyles,
   PencilStyles,
+  TextStyle,
+  DefaultTextStyle,
 } from "./utils/drawingConfig";
 
 export class CanvasEngine {
@@ -51,6 +53,7 @@ export class CanvasEngine {
   private textArea: HTMLTextAreaElement;
   public CurrentShapeStyles: ShapeStyles;
   public CurrentPencilStyles: PencilStyles;
+  public CurrentTextStyle: TextStyle;
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
@@ -61,6 +64,7 @@ export class CanvasEngine {
     this.ctx = ctx;
     this.textArea = textArea;
     this.dpr = dpr;
+    this.ctx.scale(this.dpr, this.dpr);
     this.existingShapes = [];
     this.action = "none";
     this.currentTool = "Pan";
@@ -74,11 +78,12 @@ export class CanvasEngine {
     this.scale = 1;
     this.scaleOffset = { x: 0, y: 0 };
     this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
-    this.ctx.scale(this.dpr, this.dpr);
+
     this.init();
     this.mouseHandler();
     this.CurrentShapeStyles = DefaultShapeStyles;
     this.CurrentPencilStyles = DefaultPencilStyles;
+    this.CurrentTextStyle = DefaultTextStyle;
 
     this.pressedKey = null;
 
@@ -103,6 +108,7 @@ export class CanvasEngine {
   render() {
     this.ctx.save();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
     this.ctx.translate(
       this.panX * this.scale - this.scaleOffset.x,
       this.panY * this.scale - this.scaleOffset.y
@@ -144,12 +150,23 @@ export class CanvasEngine {
     }
     this.ctx.restore();
   }
-  handleText = () => {
-    this.textArea.style.left = this.startX + "px";
-    this.textArea.style.top = this.startY + "px";
+  handleText = (x: number, y: number) => {
+    console.log(this.startX);
+    this.textArea.style.left = x + "px";
+    this.textArea.style.top = y + "px";
+    this.textArea.style.fontSize = this.CurrentTextStyle.fontsize;
+    this.textArea.style.fontFamily = this.CurrentTextStyle.fontfamily;
+    this.textArea.style.color = this.CurrentTextStyle.strokeStyle;
+    this.textArea.style.padding = "0";
+    this.textArea.style.margin = "0";
+
+    this.textArea.style.border = "1px solid";
+    this.textArea.style.outline = "none";
     this.textArea.value = "";
     this.textArea.style.display = "block";
     this.textArea.focus();
+
+    this.textArea.onblur = () => this.finalizeText();
   };
   finalizeText = () => {
     const textData = this.textArea.value.trim();
@@ -159,22 +176,20 @@ export class CanvasEngine {
         startX: this.startX,
         startY: this.startY,
         text: this.textArea.value,
-        style: { ...this.CurrentShapeStyles },
+        style: { ...this.CurrentTextStyle },
       };
       this.existingShapes.push(textShape);
-      this.render();
+      localStorage.setItem("shape", JSON.stringify(this.existingShapes));
     }
+    this.render();
     this.action = "none";
     this.textArea.style.display = "none";
   };
 
   handleMouseDown = (e: MouseEvent) => {
     if (this.action == "writing") {
-      this.finalizeText();
-      console.log("inside finalize");
       return;
     }
-    console.log("mousedown");
     this.mouseDown = true;
     this.startX = this.getCoordinates(e)[0];
     this.startY = this.getCoordinates(e)[1];
@@ -182,8 +197,11 @@ export class CanvasEngine {
     if (this.currentTool == "Text") {
       e.preventDefault();
       this.action = "writing";
-      console.log("inside the writing");
-      this.handleText();
+      const screenX =
+        this.startX * this.scale + this.panX * this.scale - this.scaleOffset.x;
+      const screenY =
+        this.startY * this.scale + this.panY * this.scale - this.scaleOffset.y;
+      this.handleText(screenX, screenY);
     }
 
     if (this.currentTool == "Select" && this.selectedShape.index != -1) {
@@ -404,6 +422,7 @@ export class CanvasEngine {
     this.canvas.addEventListener("mouseup", this.handleMouseUp);
     this.canvas.addEventListener("mousemove", this.handleMouseMove);
     this.canvas.addEventListener("wheel", this.handleWheelEvent);
+
     window.addEventListener("keydown", this.handleKeyDown);
     window.addEventListener("keyup", this.handleKeyUp);
   }
