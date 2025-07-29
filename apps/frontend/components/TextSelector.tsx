@@ -6,9 +6,12 @@ import {
   CodeIcon,
   ComicFontFamilyIcon,
   FontLargeIcon,
+  FontMediumIcon,
+  FontSmallIcon,
   NormalFontFamilyIcon,
+  XLIcon,
 } from "./svgIcons";
-import { FontFamily } from "@/canvas/utils/drawingConfig";
+import { FontFamily, FontSize } from "@/canvas/utils/drawingConfig";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 
 export default function TextSelector({
@@ -16,10 +19,24 @@ export default function TextSelector({
 }: {
   canvasEngine: CanvasEngine;
 }) {
-  const [fontFamily, setFontFamily] = useState<FontFamily>();
+  const [fontFamily, setFontFamily] = useState<FontFamily>(
+    canvasEngine.CurrentTextStyle.fontfamily
+  );
+  const [fontSize, setFontSize] = useState<FontSize>(
+    canvasEngine.CurrentTextStyle.fontsize
+  );
   const handleFontFamily = (newFontFamily: FontFamily) => {
     canvasEngine.CurrentTextStyle.fontfamily = newFontFamily;
     setFontFamily(newFontFamily);
+  };
+
+  const handleFontSize = (newFontSize: FontSize) => {
+    canvasEngine.CurrentTextStyle.fontsize = newFontSize;
+    setFontSize(newFontSize);
+  };
+
+  const isActiveFontSize = (fontSize: FontSize) => {
+    return canvasEngine.CurrentTextStyle.fontsize == fontSize;
   };
 
   const isActiveFontFamily = (fontFamily: FontFamily) => {
@@ -57,6 +74,39 @@ export default function TextSelector({
             isActive={isActiveFontFamily(FontFamily.Comic)}
           >
             <ComicFontFamilyIcon size={20} color={"#1b1b1f"} />
+          </Stroke>
+        </div>
+      </div>
+
+      <div id="text-selector" className="flex flex-col gap-2">
+        <h1 className="text-sm text-gray-900 font-comic ">Font Family</h1>
+        <div className="flex gap-2">
+          <Stroke
+            onClick={() => handleFontSize(FontSize.Small)}
+            isActive={isActiveFontSize(FontSize.Small)}
+          >
+            <FontSmallIcon size={20} color={"#1b1b1f"} />
+          </Stroke>
+
+          <Stroke
+            onClick={() => handleFontSize(FontSize.Medium)}
+            isActive={isActiveFontSize(FontSize.Medium)}
+          >
+            <FontMediumIcon size={20} color={"#1b1b1f"} />
+          </Stroke>
+
+          <Stroke
+            onClick={() => handleFontSize(FontSize.Large)}
+            isActive={isActiveFontSize(FontSize.Large)}
+          >
+            <FontLargeIcon size={18} color={"#1b1b1f"} />
+          </Stroke>
+
+          <Stroke
+            onClick={() => handleFontSize(FontSize.Xl)}
+            isActive={isActiveFontSize(FontSize.Xl)}
+          >
+            <XLIcon size={20} color={"#1b1b1f"} />
           </Stroke>
         </div>
       </div>

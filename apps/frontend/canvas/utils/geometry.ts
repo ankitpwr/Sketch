@@ -38,4 +38,18 @@ export function isNeartheShape(currentX: number, currentY: number, s: Shape) {
       }
       return isEqual
     }
+    else if(s.type=="Text"){
+        const minX = s.startX;
+  const minY = s.startY;
+  const maxX = s.startX + s.width;
+  const maxY = s.startY + s.height
+
+   const threshold =1;
+  return (
+    currentX >= minX - threshold &&
+    currentX <= maxX + threshold &&
+    currentY >= minY - threshold &&
+    currentY <= maxY + threshold
+  );
+    }
 }

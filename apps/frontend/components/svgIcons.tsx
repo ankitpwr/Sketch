@@ -311,13 +311,6 @@ export function ComicFontFamilyIcon({
       focusable="false"
       role="img"
     >
-      {/* This path uses a cubic Bézier curve to draw the 'C' shape.
-        - M16 3: Starts the path at the top-right.
-        - C 3 6, 3 17, 15 17: Defines the curve.
-          - (3, 6) is the first control point, pulling the line left and down.
-          - (3, 17) is the second control point, creating the wide belly of the 'C' on the left.
-          - (15, 17) is the end point at the bottom-right.
-      */}
       <path
         d="M16 3 C 3 6, 3 17, 15 17"
         stroke={color}
@@ -325,6 +318,84 @@ export function ComicFontFamilyIcon({
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+}
+
+export function FontSmallIcon({
+  size,
+  color,
+}: {
+  size: number;
+  color: string;
+}) {
+  return (
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      role="img"
+      viewBox="0 0 20 20"
+      className="w-4 h-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width={size}
+      height={size}
+    >
+      <g clipPath="url(#a)">
+        <path
+          d="M14.167 6.667a3.333 3.333 0 0 0-3.334-3.334H9.167a3.333 3.333 0 0 0 0 6.667h1.666a3.333 3.333 0 0 1 0 6.667H9.167a3.333 3.333 0 0 1-3.334-3.334"
+          stroke="currentColor"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        ></path>
+      </g>
+      <defs>
+        <clipPath id="a">
+          <path fill="#fff" d="M0 0h20v20H0z"></path>
+        </clipPath>
+      </defs>
+    </svg>
+  );
+}
+
+export function FontMediumIcon({
+  size,
+  color,
+}: {
+  size: number;
+  color: string;
+}) {
+  return (
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      role="img"
+      viewBox="0 0 20 20"
+      className="w-4 h-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width={size}
+      height={size}
+    >
+      <g clipPath="url(#a)">
+        <path
+          d="M5 16.667V3.333L10 15l5-11.667v13.334"
+          stroke="currentColor"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        ></path>
+      </g>
+      <defs>
+        <clipPath id="a">
+          <path fill="#fff" d="M0 0h20v20H0z"></path>
+        </clipPath>
+      </defs>
     </svg>
   );
 }
@@ -363,6 +434,31 @@ export function FontLargeIcon({
           <path fill="#fff" d="M0 0h20v20H0z"></path>
         </clipPath>
       </defs>
+    </svg>
+  );
+}
+
+export function XLIcon({ size, color }: { size: number; color: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      role="img"
+      viewBox="0 0 22 20"
+      fill="none"
+      stroke={color}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      height={size}
+      width={size}
+    >
+      <path
+        d="M2 3L9 17 M2 17L9 3 M13 3V17H20"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
     </svg>
   );
 }

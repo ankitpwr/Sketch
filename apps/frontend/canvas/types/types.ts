@@ -45,6 +45,8 @@ export interface TextShape extends BaseShape {
   startX: number;
   startY: number;
   style: TextStyle;
+  width: number;
+  height: number;
 }
 export interface ResizeHandlers extends BoundedShape {
   type: "Rectangle";

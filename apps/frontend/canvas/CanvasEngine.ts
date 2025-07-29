@@ -159,14 +159,36 @@ export class CanvasEngine {
     this.textArea.style.color = this.CurrentTextStyle.strokeStyle;
     this.textArea.style.padding = "0";
     this.textArea.style.margin = "0";
-
-    this.textArea.style.border = "1px solid";
+    this.textArea.style.height = "auto";
+    this.textArea.style.resize = "none";
+    this.textArea.style.border = "none";
     this.textArea.style.outline = "none";
     this.textArea.value = "";
+    this.textArea.oninput = this.autoResizeTextArea;
+    this.textArea.style.width = "2px";
+    this.autoResizeTextArea();
     this.textArea.style.display = "block";
     this.textArea.focus();
 
     this.textArea.onblur = () => this.finalizeText();
+  };
+  autoResizeTextArea = () => {
+    const text = this.textArea.value || this.textArea.placeholder || "";
+    let mirror = document.getElementById(`texxt-mirror-span`);
+    if (!mirror) {
+      mirror = document.createElement("span");
+      mirror.id = "text-mirror-span";
+      mirror.style.visibility = "hidden";
+      mirror.style.position = "fixed";
+      mirror.style.whiteSpace = "pre";
+      document.body.appendChild(mirror);
+    }
+
+    mirror.style.fontSize = this.CurrentTextStyle.fontsize;
+    mirror.style.fontFamily = this.CurrentTextStyle.fontfamily;
+    mirror.textContent = text + " ";
+    const newWidth = mirror.offsetWidth + 2;
+    this.textArea.style.width = newWidth + "px";
   };
   finalizeText = () => {
     const textData = this.textArea.value.trim();
@@ -177,6 +199,8 @@ export class CanvasEngine {
         startY: this.startY,
         text: this.textArea.value,
         style: { ...this.CurrentTextStyle },
+        width: this.textArea.scrollWidth,
+        height: this.textArea.scrollHeight,
       };
       this.existingShapes.push(textShape);
       localStorage.setItem("shape", JSON.stringify(this.existingShapes));
