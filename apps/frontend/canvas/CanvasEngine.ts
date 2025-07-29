@@ -104,7 +104,6 @@ export class CanvasEngine {
   handleCanvasResize = () => {
     this.render();
   };
-
   render() {
     this.ctx.save();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -423,7 +422,8 @@ export class CanvasEngine {
     this.render();
   };
   handleZoom = (val: number) => {
-    this.scale = this.scale + val;
+    this.scale = Math.min(Math.max(this.scale + val, 0.15), 40);
+    console.log(this.scale);
     const scaledWidth = this.canvas.width * this.scale;
     const scaleHeigth = this.canvas.height * this.scale;
     this.scaleOffset.x = (scaledWidth - this.canvas.width) / 2;

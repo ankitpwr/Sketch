@@ -3,7 +3,11 @@ import { getLineDashPattern } from "../utils/drawingConfig";
 
 export function drawRoundedRectangle(
   ctx: CanvasRenderingContext2D,
-  shape: RectangleShape
+  shape: RectangleShape,
+  boundingBox: { isBoundingBox: boolean; scale: number } = {
+    isBoundingBox: false,
+    scale: 1,
+  }
 ) {
   const width = shape.endX - shape.startX;
   const height = shape.endY - shape.startY;
@@ -11,7 +15,8 @@ export function drawRoundedRectangle(
   ctx.save();
   ctx.fillStyle = shape.style.background;
   ctx.strokeStyle = shape.style.strokeStyle;
-  ctx.lineWidth = shape.style.strokeWidth;
+  // ctx.lineWidth = shape.style.strokeWidth;
+  ctx.lineWidth = boundingBox.isBoundingBox ? 0.1 : shape.style.strokeWidth;
   ctx.setLineDash(
     getLineDashPattern(shape.style.strokeType, shape.style.strokeWidth)
   );

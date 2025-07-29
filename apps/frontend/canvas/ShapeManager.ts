@@ -123,29 +123,37 @@ export class ShapeManager {
         const minY = Math.min(shape.startY, shape.endY) - extra;
         const maxX = Math.max(shape.startX, shape.endX) + extra;
         const maxY = Math.max(shape.startY, shape.endY) + extra;
-        this.ctx.strokeStyle = "#8d8ae3";
-        this.ctx.lineWidth = 2 / this.scale;
+        this.ctx.strokeStyle = "#6741d9";
+        this.ctx.lineWidth = 0.5 / this.scale;
         this.ctx.strokeRect(minX, minY, maxX - minX, maxY - minY);
-        // this.ctx.fillStyle = "blue";
-        drawRoundedRectangle(this.ctx, {
-          type: "Rectangle",
-          startX: minX - width,
-          startY: minY - width,
-          endX: minX + width,
-          endY: minY + width,
-          style: BoundingBorderStyles,
-        });
+
+        drawRoundedRectangle(
+          this.ctx,
+          {
+            type: "Rectangle",
+            startX: minX - width,
+            startY: minY - width,
+            endX: minX + width,
+            endY: minY + width,
+            style: BoundingBorderStyles,
+          },
+          { isBoundingBox: false, scale: this.scale }
+        );
         //prettier-ignore
         const rect1:ResizeHandlers= {type:"Rectangle",side:"TopLeft", startX:minX-width, startY:minY-width, endX:minX+width, endY:minY+width, style:BoundingBorderStyles};
         this.resizeHandlers.push(rect1);
-        drawRoundedRectangle(this.ctx, {
-          type: "Rectangle",
-          startX: minX - width,
-          startY: maxY - width,
-          endX: minX + width,
-          endY: maxY + width,
-          style: BoundingBorderStyles,
-        });
+        drawRoundedRectangle(
+          this.ctx,
+          {
+            type: "Rectangle",
+            startX: minX - width,
+            startY: maxY - width,
+            endX: minX + width,
+            endY: maxY + width,
+            style: BoundingBorderStyles,
+          },
+          { isBoundingBox: false, scale: this.scale }
+        );
         const rect2: ResizeHandlers = {
           type: "Rectangle",
           side: "BottomLeft",
@@ -156,14 +164,18 @@ export class ShapeManager {
           style: BoundingBorderStyles,
         };
         this.resizeHandlers.push(rect2);
-        drawRoundedRectangle(this.ctx, {
-          type: "Rectangle",
-          startX: maxX - width,
-          startY: maxY - width,
-          endX: maxX + width,
-          endY: maxY + width,
-          style: BoundingBorderStyles,
-        });
+        drawRoundedRectangle(
+          this.ctx,
+          {
+            type: "Rectangle",
+            startX: maxX - width,
+            startY: maxY - width,
+            endX: maxX + width,
+            endY: maxY + width,
+            style: BoundingBorderStyles,
+          },
+          { isBoundingBox: false, scale: this.scale }
+        );
         const rect3: ResizeHandlers = {
           type: "Rectangle",
           side: "BottomRight",
@@ -174,14 +186,18 @@ export class ShapeManager {
           style: BoundingBorderStyles,
         };
         this.resizeHandlers.push(rect3);
-        drawRoundedRectangle(this.ctx, {
-          type: "Rectangle",
-          startX: maxX - width,
-          startY: minY - width,
-          endX: maxX + width,
-          endY: minY + width,
-          style: BoundingBorderStyles,
-        });
+        drawRoundedRectangle(
+          this.ctx,
+          {
+            type: "Rectangle",
+            startX: maxX - width,
+            startY: minY - width,
+            endX: maxX + width,
+            endY: minY + width,
+            style: BoundingBorderStyles,
+          },
+          { isBoundingBox: false, scale: this.scale }
+        );
         const rect4: ResizeHandlers = {
           type: "Rectangle",
           side: "TopRight",

@@ -94,7 +94,7 @@ export const DefaultShapeStyles: ShapeStyles = {
 export const BoundingBorderStyles: ShapeStyles = {
   strokeType: StrokeType.Solid,
   strokeWidth: StrokeWidth.Thin,
-  strokeStyle: StrokeColor.PrimaryBlue,
+  strokeStyle: "#6741d9",
   fill: "transparent",
   background: BackgroundColor.Transparent,
 };
