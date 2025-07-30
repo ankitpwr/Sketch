@@ -32,7 +32,7 @@ export default function Tools({
         varient={"secondary"}
         size={"md"}
       >
-        <Hand color="#1b1b1f" size={20} strokeWidth={1.5} />{" "}
+        <Hand color="#1b1b1f" size={18} strokeWidth={1.5} />{" "}
       </Button>
       <Button
         isActive={currentTool == "Select" ? true : false}
@@ -41,7 +41,12 @@ export default function Tools({
         size={"md"}
       >
         {" "}
-        <MousePointer color="#1b1b1f" size={20} strokeWidth={1.5} />
+        <MousePointer
+          fill={currentTool == "Select" ? "#030063" : "transparent"}
+          color="#1b1b1f"
+          size={18}
+          strokeWidth={currentTool == "Select" ? 1 : 1.5}
+        />
       </Button>
       <Button
         isActive={currentTool == "Rectangle" ? true : false}
@@ -50,7 +55,12 @@ export default function Tools({
         varient={"secondary"}
       >
         {" "}
-        <Square color="#1b1b1f" size={20} strokeWidth={1.5} />{" "}
+        <Square
+          fill={currentTool == "Rectangle" ? "#030063" : "transparent"}
+          color="#1b1b1f"
+          size={18}
+          strokeWidth={currentTool == "Rectangle" ? 0 : 1.5}
+        />{" "}
       </Button>
       <Button
         isActive={currentTool == "Diamond" ? true : false}
@@ -58,7 +68,12 @@ export default function Tools({
         varient={"secondary"}
         size={"md"}
       >
-        <Diamond color="#1b1b1f" size={20} strokeWidth={1.5} />
+        <Diamond
+          fill={currentTool == "Diamond" ? "#030063" : "transparent"}
+          color="#1b1b1f"
+          size={18}
+          strokeWidth={currentTool == "Diamond" ? 0 : 1.5}
+        />
       </Button>
       <Button
         isActive={currentTool == "Ellipse" ? true : false}
@@ -66,7 +81,12 @@ export default function Tools({
         varient={"secondary"}
         size={"md"}
       >
-        <Circle color="#1b1b1f" size={20} strokeWidth={1.5} />
+        <Circle
+          fill={currentTool == "Ellipse" ? "#030063" : "transparent"}
+          color="#1b1b1f"
+          size={18}
+          strokeWidth={currentTool == "Ellipse" ? 0 : 1.5}
+        />
       </Button>
       <Button
         isActive={currentTool == "Arrow" ? true : false}
@@ -82,7 +102,7 @@ export default function Tools({
         varient={"secondary"}
         size={"md"}
       >
-        <Minus color="#1b1b1f" size={20} strokeWidth={1.5} />
+        <Minus color="#1b1b1f" size={18} strokeWidth={1.5} />
       </Button>
 
       <Button
@@ -91,7 +111,7 @@ export default function Tools({
         varient={"secondary"}
         size={"md"}
       >
-        <Pencil color="#1b1b1f" size={20} strokeWidth={1.5} />
+        <Pencil color="#1b1b1f" size={18} strokeWidth={1.5} />
       </Button>
       <Button
         isActive={currentTool == "Eraser" ? true : false}
@@ -99,7 +119,7 @@ export default function Tools({
         varient={"secondary"}
         size={"md"}
       >
-        <Eraser color="#1b1b1f" size={20} strokeWidth={1.5} />
+        <Eraser color="#1b1b1f" size={18} strokeWidth={1.5} />
       </Button>
       <Button
         isActive={currentTool == "Text" ? true : false}
@@ -107,7 +127,7 @@ export default function Tools({
         varient={"secondary"}
         size={"md"}
       >
-        <TypeOutline color="#1b1b1f" size={20} strokeWidth={1.5} />
+        <TypeOutline color="#1b1b1f" size={18} strokeWidth={1.5} />
       </Button>
     </div>
   );

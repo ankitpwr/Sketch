@@ -49,14 +49,16 @@ export class CanvasEngine {
     offsetY: number;
   };
   private dpr: number;
-  private scaleOffset: { x: number; y: number };
+  // private scaleOffset: { x: number; y: number };
   private shapeMangager: ShapeManager;
   private textArea: HTMLTextAreaElement;
   public CurrentShapeStyles: ShapeStyles;
   public CurrentPencilStyles: PencilStyles;
   public CurrentTextStyle: TextStyle;
   public CanvasColor: CanvasColor;
-
+  private initialPintchDistance: number | null = null;
+  private initialPintchMidPoint: { x: number; y: number } | null = null;
+  private lastScale: number = 1;
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
@@ -79,7 +81,7 @@ export class CanvasEngine {
     this.panX = 0;
     this.panY = 0;
     this.scale = 1;
-    this.scaleOffset = { x: 0, y: 0 };
+    // this.scaleOffset = { x: 0, y: 0 };
     this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
     this.init();
     this.mouseHandler();
@@ -88,6 +90,7 @@ export class CanvasEngine {
     this.CurrentTextStyle = DefaultTextStyle;
     this.CanvasColor = CanvasColor.Light_Yellow;
     this.pressedKey = null;
+
     this.shapeMangager = new ShapeManager({
       ctx: this.ctx,
       existingShapes: this.existingShapes,
@@ -124,10 +127,7 @@ export class CanvasEngine {
       this.canvas.width / this.dpr,
       this.canvas.height / this.dpr
     );
-    this.ctx.translate(
-      this.panX * this.scale - this.scaleOffset.x,
-      this.panY * this.scale - this.scaleOffset.y
-    );
+    this.ctx.translate(this.panX, this.panY);
     this.ctx.scale(this.scale, this.scale);
     const drawShape = (s: Shape) => {
       //prettier-ignore
@@ -236,10 +236,8 @@ export class CanvasEngine {
     if (this.currentTool == "Text") {
       e.preventDefault();
       this.action = "writing";
-      const screenX =
-        this.startX * this.scale + this.panX * this.scale - this.scaleOffset.x;
-      const screenY =
-        this.startY * this.scale + this.panY * this.scale - this.scaleOffset.y;
+      const screenX = this.startX * this.scale + this.panX * this.scale;
+      const screenY = this.startY * this.scale + this.panY * this.scale;
       this.handleText(screenX, screenY);
     }
 
@@ -368,6 +366,7 @@ export class CanvasEngine {
   handleMouseMove = (e: MouseEvent) => {
     const currentX = this.getCoordinates(e)[0];
     const currentY = this.getCoordinates(e)[1];
+
     if (!this.mouseDown) return;
     else if (this.action == "resizing") {
       this.shapeMangager.handleResizeShape(currentX, currentY);
@@ -429,21 +428,23 @@ export class CanvasEngine {
   };
 
   handleWheelEvent = (e: WheelEvent) => {
-    if (this.pressedKey == "Control") {
-      this.handleZoom(e.deltaY * -0.01);
+    e.preventDefault();
+    if (e.ctrlKey) {
+      this.handleZoom(e.deltaY * -0.01, e.offsetX, e.offsetY);
     } else {
       this.panX -= e.deltaX / this.scale;
       this.panY -= e.deltaY / this.scale;
     }
     this.render();
   };
-  handleZoom = (val: number) => {
-    this.scale = Math.min(Math.max(this.scale + val, 0.15), 40);
-    console.log(this.scale);
-    const scaledWidth = this.canvas.width * this.scale;
-    const scaleHeigth = this.canvas.height * this.scale;
-    this.scaleOffset.x = (scaledWidth - this.canvas.width) / 2;
-    this.scaleOffset.y = (scaleHeigth - this.canvas.height) / 2;
+  handleZoom = (val: number, pivotX: number, pivotY: number) => {
+    const oldScale = this.scale;
+    const newScale = Math.min(Math.max(this.scale + val, 0.15), 40);
+    const worldX = (pivotX - this.panX) / oldScale;
+    const worldY = (pivotY - this.panY) / oldScale;
+    this.panX = pivotX - worldX * newScale;
+    this.panY = pivotY - worldY * newScale;
+    this.scale = newScale;
   };
   handleKeyDown = (e: KeyboardEvent) => {
     this.pressedKey = e.key;
@@ -462,15 +463,12 @@ export class CanvasEngine {
     this.canvas.addEventListener("mouseup", this.handleMouseUp);
     this.canvas.addEventListener("mousemove", this.handleMouseMove);
     this.canvas.addEventListener("wheel", this.handleWheelEvent);
-
     window.addEventListener("keydown", this.handleKeyDown);
     window.addEventListener("keyup", this.handleKeyUp);
   }
   getCoordinates = (e: MouseEvent) => {
-    const X =
-      (e.offsetX - this.panX * this.scale + this.scaleOffset.x) / this.scale;
-    const Y =
-      (e.offsetY - this.panY * this.scale + this.scaleOffset.y) / this.scale;
+    const X = (e.offsetX - this.panX * this.scale) / this.scale;
+    const Y = (e.offsetY - this.panY * this.scale) / this.scale;
     return [X, Y];
   };
 }

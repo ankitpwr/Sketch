@@ -114,6 +114,10 @@ export default function DropDown({
           </div>
 
           <div
+            id="border-line"
+            className="w-full h-[1px] rounded-md bg-gray-200"
+          ></div>
+          <div
             id="background-color-selection  "
             className="flex flex-col gap-1 pl-3"
           >
