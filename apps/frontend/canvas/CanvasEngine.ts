@@ -24,6 +24,7 @@ import {
   PencilStyles,
   TextStyle,
   DefaultTextStyle,
+  CanvasColor,
 } from "./utils/drawingConfig";
 
 export class CanvasEngine {
@@ -54,6 +55,8 @@ export class CanvasEngine {
   public CurrentShapeStyles: ShapeStyles;
   public CurrentPencilStyles: PencilStyles;
   public CurrentTextStyle: TextStyle;
+  public CanvasColor: CanvasColor;
+
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
@@ -78,15 +81,13 @@ export class CanvasEngine {
     this.scale = 1;
     this.scaleOffset = { x: 0, y: 0 };
     this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
-
     this.init();
     this.mouseHandler();
     this.CurrentShapeStyles = DefaultShapeStyles;
     this.CurrentPencilStyles = DefaultPencilStyles;
     this.CurrentTextStyle = DefaultTextStyle;
-
+    this.CanvasColor = CanvasColor.Light_Yellow;
     this.pressedKey = null;
-
     this.shapeMangager = new ShapeManager({
       ctx: this.ctx,
       existingShapes: this.existingShapes,
@@ -104,10 +105,25 @@ export class CanvasEngine {
   handleCanvasResize = () => {
     this.render();
   };
+  ChangeCanvasColor = (color: CanvasColor) => {
+    this.CanvasColor = color;
+    this.render();
+  };
   render() {
     this.ctx.save();
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
+    this.ctx.clearRect(
+      0,
+      0,
+      this.canvas.width / this.dpr,
+      this.canvas.height / this.dpr
+    );
+    this.ctx.fillStyle = this.CanvasColor;
+    this.ctx.fillRect(
+      0,
+      0,
+      this.canvas.width / this.dpr,
+      this.canvas.height / this.dpr
+    );
     this.ctx.translate(
       this.panX * this.scale - this.scaleOffset.x,
       this.panY * this.scale - this.scaleOffset.y

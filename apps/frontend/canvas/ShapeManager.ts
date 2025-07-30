@@ -1,6 +1,6 @@
 import { drawRoundedRectangle } from "./draw/drawRoundedRectangle";
 import { ResizeHandlers, Shape, ShapeType } from "./types/types";
-import { BoundingBorderStyles } from "./utils/drawingConfig";
+import { BoundingBorderStyles, StrokeColor } from "./utils/drawingConfig";
 
 interface ShapeManagerDependencies {
   ctx: CanvasRenderingContext2D;
@@ -123,8 +123,8 @@ export class ShapeManager {
         const minY = Math.min(shape.startY, shape.endY) - extra;
         const maxX = Math.max(shape.startX, shape.endX) + extra;
         const maxY = Math.max(shape.startY, shape.endY) + extra;
-        this.ctx.strokeStyle = "#6741d9";
-        this.ctx.lineWidth = 0.5 / this.scale;
+        this.ctx.strokeStyle = StrokeColor.PrimaryViolet;
+        this.ctx.lineWidth = 1 / this.scale;
         this.ctx.strokeRect(minX, minY, maxX - minX, maxY - minY);
 
         drawRoundedRectangle(
@@ -137,7 +137,7 @@ export class ShapeManager {
             endY: minY + width,
             style: BoundingBorderStyles,
           },
-          { isBoundingBox: false, scale: this.scale }
+          { isBoundingBox: true, scale: this.scale }
         );
         //prettier-ignore
         const rect1:ResizeHandlers= {type:"Rectangle",side:"TopLeft", startX:minX-width, startY:minY-width, endX:minX+width, endY:minY+width, style:BoundingBorderStyles};
@@ -152,7 +152,7 @@ export class ShapeManager {
             endY: maxY + width,
             style: BoundingBorderStyles,
           },
-          { isBoundingBox: false, scale: this.scale }
+          { isBoundingBox: true, scale: this.scale }
         );
         const rect2: ResizeHandlers = {
           type: "Rectangle",
@@ -174,7 +174,7 @@ export class ShapeManager {
             endY: maxY + width,
             style: BoundingBorderStyles,
           },
-          { isBoundingBox: false, scale: this.scale }
+          { isBoundingBox: true, scale: this.scale }
         );
         const rect3: ResizeHandlers = {
           type: "Rectangle",
@@ -196,7 +196,7 @@ export class ShapeManager {
             endY: minY + width,
             style: BoundingBorderStyles,
           },
-          { isBoundingBox: false, scale: this.scale }
+          { isBoundingBox: true, scale: this.scale }
         );
         const rect4: ResizeHandlers = {
           type: "Rectangle",

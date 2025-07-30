@@ -2,13 +2,16 @@
 import React, { ReactNode } from "react";
 
 const VarientStyle = {
-  primary: "px-3 py-3 rounded-md bg-purple-400 text-white",
-  secondary: "p-2.5 rounded-md",
+  primary: "flex gap-3 items-center  rounded-md px-3 py-2 w-56",
+  secondary: "p-2.5 rounded-md flex items-center justify-center ",
+  dropdown:
+    "px-2 py-2 rounded-md flex items-center justify-center bg-[#ececf4] text-white hover:bg-#6741d9",
+  theme: "p-2 rounded-md flex items-center justify-center ",
 };
 
 const Size = {
-  sm: `w-24 h-8 rounded-md   gap-1 text-md`,
-  md: ` rounded-lg  gap-2 text-lg `,
+  sm: `w-24 h-8 gap-1 text-md`,
+  md: `rounded-lg`,
 };
 export default function Button({
   varient,
@@ -27,7 +30,7 @@ export default function Button({
   return (
     <button
       onClick={onClickhandler}
-      className={`${VarientStyle[varient]} ${Size[size]} flex items-center justify-center hover:bg-[#f1f0ff] cursor-pointer ${isActive && "bg-[#e0dfff]"}`}
+      className={`${VarientStyle[varient]} ${Size[size]}  hover:bg-[#f1f0ff] cursor-pointer ${isActive && "bg-[#e0dfff]"}`}
     >
       {children}
     </button>

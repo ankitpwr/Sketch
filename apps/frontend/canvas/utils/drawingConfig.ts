@@ -9,6 +9,7 @@ export enum StrokeColor {
   PrimaryBlue = "#1971c2",
   PrimaryGreen = "#2f9e44",
   PrimaryYellow = "#f08c00",
+  PrimaryViolet = "#6741d9",
 }
 export enum BackgroundColor {
   Transparent = "#00000000",
@@ -16,6 +17,17 @@ export enum BackgroundColor {
   BG_Green = "#b2f2bb",
   BG_Blue = "#a5d8ff",
   BG_Yellow = "#ffec99",
+  BG_White = "#ffffff",
+}
+
+export enum CanvasColor {
+  white = "#ffffff",
+  Light_Blue = "#f5faff",
+  Light_Yellow = "#fffce8",
+  Light_Red = "#fdf8f6",
+  Light_Grey = "#f8f9fa",
+  Areo_Blue = "#CAF1DE",
+  Light_Green = "#f0fdf4",
 }
 export enum StrokeWidth {
   Thin = 1,
@@ -94,9 +106,9 @@ export const DefaultShapeStyles: ShapeStyles = {
 export const BoundingBorderStyles: ShapeStyles = {
   strokeType: StrokeType.Solid,
   strokeWidth: StrokeWidth.Thin,
-  strokeStyle: "#6741d9",
+  strokeStyle: StrokeColor.PrimaryViolet,
   fill: "transparent",
-  background: BackgroundColor.Transparent,
+  background: BackgroundColor.BG_White,
 };
 
 export function getLineDashPattern(

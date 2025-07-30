@@ -11,12 +11,16 @@ export function drawRoundedRectangle(
 ) {
   const width = shape.endX - shape.startX;
   const height = shape.endY - shape.startY;
-  const radius = Math.abs(Math.min(width, height) / 8);
+  // const radius = Math.abs(Math.min(width, height) / 6);
+  const radius = boundingBox.isBoundingBox
+    ? width / 3
+    : Math.abs(Math.min(width, height) / 6);
   ctx.save();
   ctx.fillStyle = shape.style.background;
   ctx.strokeStyle = shape.style.strokeStyle;
   // ctx.lineWidth = shape.style.strokeWidth;
-  ctx.lineWidth = boundingBox.isBoundingBox ? 0.1 : shape.style.strokeWidth;
+  ctx.lineWidth = boundingBox.isBoundingBox ? 1 : shape.style.strokeWidth;
+  if (boundingBox.isBoundingBox) console.log(ctx.lineWidth);
   ctx.setLineDash(
     getLineDashPattern(shape.style.strokeType, shape.style.strokeWidth)
   );

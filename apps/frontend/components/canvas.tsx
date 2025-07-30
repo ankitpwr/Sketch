@@ -6,6 +6,7 @@ import { TextShape, Tool } from "@/canvas/types/types";
 import Tools from "./tools";
 import TextArea from "./textArea";
 import AppMenu from "./appMenu";
+import DropDown from "./dropDown";
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -82,6 +83,7 @@ export default function Canvas() {
       {isShapeTool() && canvasEngine && (
         <AppMenu tool={tool} canvasEngine={canvasEngine} />
       )}
+      {canvasEngine && <DropDown tool={tool} canvasEngine={canvasEngine} />}
     </div>
   );
 }
