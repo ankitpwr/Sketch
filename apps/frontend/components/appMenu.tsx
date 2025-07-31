@@ -15,6 +15,7 @@ import StrokeWidthSelector from "./strokewidth";
 import StrokeStyleSelector from "./strokeStyleSelector";
 import { Tool } from "@/canvas/types/types";
 import TextSelector from "./TextSelector";
+import AppMenuContainer from "./appMenuContainer";
 
 export default function AppMenu({
   canvasEngine,
@@ -90,109 +91,8 @@ export default function AppMenu({
       canvasEngine.canvas.removeEventListener("mousedown", handleMouseDown);
   }, []);
   return (
-    <div className="flex flex-col bg-white   gap-6 rounded-lg fixed px-5 py-5 left-5 top-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
-      <div id="stroke-color-section" className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900  ">Stroke</h1>
-        <div className="flex gap-2 justify-center items-center">
-          <ColorSelection
-            onClick={() => handleStrokeColor(StrokeColor.PrimaryBlack)}
-            color={StrokeColor.PrimaryBlack}
-            isActive={isActiveStroke(StrokeColor.PrimaryBlack)}
-          />
-          <ColorSelection
-            onClick={() => handleStrokeColor(StrokeColor.PrimaryRed)}
-            color={StrokeColor.PrimaryRed}
-            isActive={isActiveStroke(StrokeColor.PrimaryRed)}
-          />
-          <ColorSelection
-            onClick={() => handleStrokeColor(StrokeColor.PrimaryGreen)}
-            color={StrokeColor.PrimaryGreen}
-            isActive={isActiveStroke(StrokeColor.PrimaryGreen)}
-          />
-          <ColorSelection
-            onClick={() => handleStrokeColor(StrokeColor.PrimaryBlue)}
-            color={StrokeColor.PrimaryBlue}
-            isActive={isActiveStroke(StrokeColor.PrimaryBlue)}
-          />
-          <ColorSelection
-            onClick={() => handleStrokeColor(StrokeColor.PrimaryYellow)}
-            color={StrokeColor.PrimaryYellow}
-            isActive={isActiveStroke(StrokeColor.PrimaryYellow)}
-          />
-          <div className="w-[1.5px] h-5 rounded-md bg-gray-200"></div>
-
-          <ColorSelection
-            color={strokeColor}
-            isActive={false}
-            isColorPicker={true}
-            onClick={handleStrokeColorSelction}
-          />
-          {strokeColorPicker && (
-            <ColorPicker
-              isStrokeColorPicker={true}
-              currentHexCode={strokeColor}
-              refer={strokeInputRef}
-            />
-          )}
-        </div>
-      </div>
-
-      <div id="background-color-selection" className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900">Background</h1>
-        <div className="flex gap-2 justify-center items-center">
-          <ColorSelection
-            onClick={() => handleBackgroundColor(BackgroundColor.Transparent)}
-            color={BackgroundColor.Transparent}
-            isActive={isActiveBackground(BackgroundColor.Transparent)}
-          />
-          <ColorSelection
-            onClick={() => handleBackgroundColor(BackgroundColor.BG_Red)}
-            color={BackgroundColor.BG_Red}
-            isActive={isActiveBackground(BackgroundColor.BG_Red)}
-          />
-          <ColorSelection
-            onClick={() => handleBackgroundColor(BackgroundColor.BG_Green)}
-            color={BackgroundColor.BG_Green}
-            isActive={isActiveBackground(BackgroundColor.BG_Green)}
-          />
-          <ColorSelection
-            onClick={() => handleBackgroundColor(BackgroundColor.BG_Blue)}
-            color={BackgroundColor.BG_Blue}
-            isActive={isActiveBackground(BackgroundColor.BG_Blue)}
-          />
-          <ColorSelection
-            onClick={() => handleBackgroundColor(BackgroundColor.BG_Yellow)}
-            color={BackgroundColor.BG_Yellow}
-            isActive={isActiveBackground(BackgroundColor.BG_Yellow)}
-          />
-          <div className="w-[1.5px] h-5 rounded-md bg-gray-200"></div>
-          <ColorSelection
-            color={backgroundColor}
-            isActive={false}
-            isColorPicker={true}
-            onClick={handleBackgroundColorSelction}
-          />
-          {backgrColorPicker && (
-            <ColorPicker
-              isStrokeColorPicker={false}
-              currentHexCode={backgroundColor}
-              refer={backgroundInputRef}
-            />
-          )}
-        </div>
-      </div>
-
-      {tool != "Pencil" && tool != "Text" && (
-        <StrokeWidthSelector canvasEngine={canvasEngine} />
-      )}
-
-      {tool != "Pencil" && tool != "Text" && (
-        <StrokeStyleSelector canvasEngine={canvasEngine} />
-      )}
-
-      {tool == "Pencil" && <PencilMenu canvasEngine={canvasEngine} />}
-
-      {tool == "Text" && <TextSelector canvasEngine={canvasEngine} />}
+    <div className=" invisible md:visible rounded-lg fixed left-5 top-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+      <AppMenuContainer tool={tool} canvasEngine={canvasEngine} />
     </div>
   );
 }

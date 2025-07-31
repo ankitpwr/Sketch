@@ -88,7 +88,7 @@ export class CanvasEngine {
     this.CurrentShapeStyles = DefaultShapeStyles;
     this.CurrentPencilStyles = DefaultPencilStyles;
     this.CurrentTextStyle = DefaultTextStyle;
-    this.CanvasColor = CanvasColor.Light_Yellow;
+    this.CanvasColor = CanvasColor.white;
     this.pressedKey = null;
 
     this.shapeMangager = new ShapeManager({
@@ -453,6 +453,53 @@ export class CanvasEngine {
     this.pressedKey = null;
   };
 
+  handleTouchStart = (e: TouchEvent) => {
+    console.log("touch start");
+    if (e.touches.length != 2) return;
+
+    const touch1 = e.touches[0];
+    const touch2 = e.touches[2];
+    console.log(touch1);
+    this.initialPintchDistance = Math.hypot(
+      touch2.clientX - touch1.clientX,
+      touch2.clientY - touch2.clientY
+    );
+    this.initialPintchMidPoint = {
+      x: (touch2.clientX + touch1.clientX) / 2,
+      y: (touch2.clientY + touch2.clientY) / 2,
+    };
+    this.lastScale = this.scale;
+  };
+  handleTouchMove = (e: TouchEvent) => {
+    e.preventDefault();
+    console.log("touch move");
+    if (e.touches.length != 2) return;
+    const touch1 = e.touches[0];
+    const touch2 = e.touches[1];
+    const currentPinchDistance = Math.hypot(
+      touch2.clientX - touch1.clientX,
+      touch2.clientY - touch2.clientY
+    );
+    if (!this.initialPintchDistance) return;
+    const scaleFactor = currentPinchDistance / this.initialPintchDistance;
+    const newScale = this.lastScale * scaleFactor;
+    if (this.initialPintchMidPoint) {
+      const clientX = this.initialPintchMidPoint.x;
+      const clientY = this.initialPintchMidPoint.y;
+      const rect = this.canvas.getBoundingClientRect();
+      const canvasX = (clientX - rect.left - this.panX) / this.scale;
+      const canvasY = (clientY - rect.top - this.panY) / this.scale;
+      this.panX = clientX - rect.left - canvasX * newScale;
+      this.panY = clientY - rect.top - canvasY * newScale;
+    }
+    this.render;
+  };
+  handleTouchEnd = (e: TouchEvent) => {
+    this.initialPintchDistance = null;
+    this.initialPintchMidPoint = null;
+    this.lastScale = this.scale;
+  };
+
   destroy() {
     this.canvas.removeEventListener("mousedown", this.handleMouseDown);
     this.canvas.removeEventListener("mouseup", this.handleMouseUp);
@@ -465,6 +512,14 @@ export class CanvasEngine {
     this.canvas.addEventListener("wheel", this.handleWheelEvent);
     window.addEventListener("keydown", this.handleKeyDown);
     window.addEventListener("keyup", this.handleKeyUp);
+    this.canvas.addEventListener("touchstart", this.handleTouchStart, {
+      passive: false,
+    });
+    (this.canvas.addEventListener("touchmove", this.handleTouchMove),
+      {
+        passive: false,
+      });
+    this.canvas.addEventListener("touchend", this.handleTouchEnd);
   }
   getCoordinates = (e: MouseEvent) => {
     const X = (e.offsetX - this.panX * this.scale) / this.scale;

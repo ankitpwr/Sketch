@@ -15,7 +15,7 @@ export default function ColorPicker({
   const [hexcode, setHexcode] = useState(currentHexCode);
   return (
     <div
-      className={`fixed py-4 px-4 left-65 ${isStrokeColorPicker ? "top-30" : "top-50"} rounded bg-white   shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]`}
+      className={`fixed py-4 px-4 left-65 md:left-65 ${isStrokeColorPicker ? "md:top-30" : "md:top-50"} rounded bg-white   shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]`}
     >
       <div className="flex flex-col gap-2">
         <h1 className="text-sm text-gray-900 ">Hex code</h1>
