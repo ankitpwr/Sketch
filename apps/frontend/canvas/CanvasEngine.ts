@@ -114,19 +114,9 @@ export class CanvasEngine {
   };
   render() {
     this.ctx.save();
-    this.ctx.clearRect(
-      0,
-      0,
-      this.canvas.width / this.dpr,
-      this.canvas.height / this.dpr
-    );
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.fillStyle = this.CanvasColor;
-    this.ctx.fillRect(
-      0,
-      0,
-      this.canvas.width / this.dpr,
-      this.canvas.height / this.dpr
-    );
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.panX, this.panY);
     this.ctx.scale(this.scale, this.scale);
     const drawShape = (s: Shape) => {
@@ -445,6 +435,7 @@ export class CanvasEngine {
     this.panX = pivotX - worldX * newScale;
     this.panY = pivotY - worldY * newScale;
     this.scale = newScale;
+    this.shapeMangager.scale = newScale;
   };
   handleKeyDown = (e: KeyboardEvent) => {
     this.pressedKey = e.key;
@@ -522,8 +513,8 @@ export class CanvasEngine {
     this.canvas.addEventListener("touchend", this.handleTouchEnd);
   }
   getCoordinates = (e: MouseEvent) => {
-    const X = (e.offsetX - this.panX * this.scale) / this.scale;
-    const Y = (e.offsetY - this.panY * this.scale) / this.scale;
+    const X = (e.offsetX - this.panX) / this.scale;
+    const Y = (e.offsetY - this.panY) / this.scale;
     return [X, Y];
   };
 }

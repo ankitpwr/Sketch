@@ -23,7 +23,7 @@ export class ShapeManager {
     offsetX: number;
     offsetY: number;
   };
-  private scale: number;
+  public scale: number;
   public resizeHandlers: ResizeHandlers[];
   public resizeSide:
     | "TopLeft"
