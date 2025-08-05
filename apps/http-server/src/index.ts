@@ -121,4 +121,4 @@ app.get("/room-messages", authMiddleware, async (req, res) => {
 
 app.get;
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT);

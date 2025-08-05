@@ -10,7 +10,15 @@ import DropDown from "./dropDown";
 import MobileAppBar from "./mobileAppBar";
 import Share from "./Share";
 
-export default function Canvas() {
+export default function Canvas({
+  standalone,
+  socket,
+  roomId = "",
+}: {
+  standalone: boolean;
+  socket: WebSocket | null;
+  roomId?: string;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [canvasEngine, setcanvasEngine] = useState<CanvasEngine>();
   const [tool, setTool] = useState<Tool>("Pan");
@@ -54,7 +62,15 @@ export default function Canvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     if (!textRef.current) return;
-    const engine = new CanvasEngine(canvas, ctx, textRef.current, dpr);
+    const engine = new CanvasEngine(
+      canvas,
+      ctx,
+      textRef.current,
+      dpr,
+      standalone,
+      socket,
+      roomId
+    );
     setcanvasEngine(engine);
     updateCanvasDimension();
   }, [canvasRef, textRef.current, dpr]);

@@ -34,7 +34,7 @@ wss.on("connection", (ws: WebSocket, request) => {
   const token = queryParams.get("token") || "";
   console.log(`token ${token}`);
   const isVerified = veifyToken(token);
-  console.log(`is isVerified :- ${isVerified}`);
+
   if (!isVerified) {
     console.log("Invalied token");
     return ws.close(1008, "Invalid User");
@@ -92,14 +92,20 @@ wss.on("connection", (ws: WebSocket, request) => {
       } else if (parsedData.type == "MESSAGE") {
         const roomId = parsedData.roomId;
         const message = parsedData.message;
+        console.log("message is");
+        console.log(message);
         if (!message) {
           ws.send("Empty message is not allowed");
           return;
         }
         let roomConnections = Rooms.get(parsedData.roomId);
+        console.log("room connection is");
+        console.log(roomConnections);
         if (!roomConnections) return;
 
         //db call
+        console.log("above db call");
+        console.log(message);
         await prisma.shape.create({
           data: {
             userId: userId,
@@ -112,7 +118,7 @@ wss.on("connection", (ws: WebSocket, request) => {
         roomConnections?.forEach((socket) => {
           socket.send(
             JSON.stringify({
-              type: "Message",
+              type: "MESSAGE",
               message: parsedData.message,
               roomId: parsedData.roomId,
               userId: userId,
@@ -132,7 +138,7 @@ wss.on("connection", (ws: WebSocket, request) => {
     Rooms.forEach((socket, roomId) => {
       socket = socket.filter((s) => s != ws);
       if (socket.length == 0) Rooms.delete(roomId);
-      else Rooms.set(roomId, socket); //do i need to put this line?
+      else Rooms.set(roomId, socket);
     });
   });
 });

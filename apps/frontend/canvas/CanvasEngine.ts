@@ -15,6 +15,7 @@ import { drawPencil } from "./draw/drawPencil";
 import { getExistingShape } from "./utils/storage";
 import { isNeartheShape } from "./utils/geometry";
 import { ShapeManager } from "./ShapeManager";
+import { SocketHandler } from "./SocketHandler";
 
 import { drawText } from "./draw/drawText";
 import {
@@ -59,15 +60,22 @@ export class CanvasEngine {
   private initialPintchDistance: number | null = null;
   private initialPintchMidPoint: { x: number; y: number } | null = null;
   private lastScale: number = 1;
+  private standalone: boolean;
+  private sockethandler?: SocketHandler;
+  private roomId: string = "";
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
     textArea: HTMLTextAreaElement,
-    dpr: number
+    dpr: number,
+    standalone: boolean,
+    socket: WebSocket | null,
+    roomId: string
   ) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.textArea = textArea;
+    this.standalone = standalone;
     this.dpr = dpr;
     this.ctx.scale(this.dpr, this.dpr);
     this.existingShapes = [];
@@ -81,7 +89,7 @@ export class CanvasEngine {
     this.panX = 0;
     this.panY = 0;
     this.scale = 1;
-    // this.scaleOffset = { x: 0, y: 0 };
+
     this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
     this.init();
     this.mouseHandler();
@@ -90,7 +98,6 @@ export class CanvasEngine {
     this.CurrentTextStyle = DefaultTextStyle;
     this.CanvasColor = CanvasColor.white;
     this.pressedKey = null;
-
     this.shapeMangager = new ShapeManager({
       ctx: this.ctx,
       existingShapes: this.existingShapes,
@@ -98,13 +105,24 @@ export class CanvasEngine {
       scale: this.scale,
       triggerRender: () => this.render(),
     });
+
+    if (socket) {
+      this.roomId = roomId;
+      this.sockethandler = new SocketHandler(
+        socket,
+        this.existingShapes,
+        this.render,
+        roomId
+      );
+    }
   }
 
   async init() {
-    const loadedShaped = await getExistingShape();
+    const loadedShaped = await getExistingShape(this.standalone);
     this.existingShapes.push(...loadedShaped);
     this.render();
   }
+
   handleCanvasResize = () => {
     this.render();
   };
@@ -112,7 +130,7 @@ export class CanvasEngine {
     this.CanvasColor = color;
     this.render();
   };
-  render() {
+  render = () => {
     this.ctx.save();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.fillStyle = this.CanvasColor;
@@ -154,7 +172,7 @@ export class CanvasEngine {
       this.shapeMangager.drawBoundBox();
     }
     this.ctx.restore();
-  }
+  };
 
   clearCanvas = () => {
     console.log("clear canvas called");
@@ -305,7 +323,9 @@ export class CanvasEngine {
         shape.endY = Math.max(tempStartY, tempEndY);
       }
       this.action = "none";
+
       localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+
       this.shapeMangager.clearResizeHandler();
 
       this.render();
@@ -322,18 +342,19 @@ export class CanvasEngine {
       this.currentTool == "Pencil"
     ) {
       const currentShape = this.currentTool;
+      let tempShape: Shape;
       if (currentShape == "Pencil") {
         if (this.points.length == 0)
           this.points.push([this.startX, this.startY]);
         this.points.push([currentX, currentY]);
-        const tempShape: Shape = {
+        tempShape = {
           type: "Pencil",
           points: this.points,
           style: { ...this.CurrentPencilStyles },
         };
         this.existingShapes.push(tempShape);
       } else if (currentShape == "Line" || currentShape == "Arrow") {
-        const tempShape: Shape = {
+        tempShape = {
           type: currentShape,
           startX: this.startX,
           startY: this.startY,
@@ -343,7 +364,7 @@ export class CanvasEngine {
         };
         this.existingShapes.push(tempShape);
       } else {
-        const tempShape = {
+        tempShape = {
           type: currentShape,
           startX: Math.min(this.startX, currentX),
           startY: Math.min(this.startY, currentY),
@@ -353,9 +374,11 @@ export class CanvasEngine {
         };
         this.existingShapes.push(tempShape);
       }
-
-      localStorage.setItem("shape", JSON.stringify(this.existingShapes));
-
+      if (this.standalone) {
+        localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+      } else {
+        this.sockethandler?.sendMessage(tempShape);
+      }
       this.render();
       this.points = [];
     }

@@ -57,8 +57,9 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
           size={"sm"}
           isActive={false}
           onClickhandler={handleSubmit}
-          title={isSignin ? "Sign in" : "Sign up"}
-        />
+        >
+          {isSignin ? "Sign in" : "Sign up"}
+        </Button>
       </div>
     </div>
   );
