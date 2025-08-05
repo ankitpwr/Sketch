@@ -8,6 +8,7 @@ import TextArea from "./textArea";
 import AppMenu from "./appMenu";
 import DropDown from "./dropDown";
 import MobileAppBar from "./mobileAppBar";
+import Share from "./Share";
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -86,6 +87,8 @@ export default function Canvas() {
       )}
       {canvasEngine && <DropDown tool={tool} canvasEngine={canvasEngine} />}
       {canvasEngine && <MobileAppBar tool={tool} canvasEngine={canvasEngine} />}
+
+      <Share />
     </div>
   );
 }

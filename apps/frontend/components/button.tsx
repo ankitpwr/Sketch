@@ -2,7 +2,7 @@
 import React, { ReactNode } from "react";
 
 const VarientStyle = {
-  primary: "flex gap-3 items-center  rounded-md px-3 py-2 w-56",
+  primary: "flex justify-center  rounded-md px-3 py-2  bg-[#6965db] text-white",
   secondary: "p-2.5 rounded-md flex items-center justify-center ",
   dropdown:
     "px-2 py-2 rounded-md flex items-center justify-center bg-[#ececf4] text-white hover:bg-#6741d9",
