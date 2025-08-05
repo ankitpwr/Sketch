@@ -35,17 +35,26 @@ export default function DropDownContainer({
     return canvasEngine.CanvasColor == color;
   };
 
+  const handleClearCanvas = () => {
+    canvasEngine.clearCanvas();
+  };
+
   return (
     <div
       id="drop-down-menu"
-      className="flex flex-col bg-white gap-2.5 rounded-lg fixed px-3 py-5 bottom-20  w-full md:w-auto md:left-5 md:top-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
+      className="flex flex-col bg-white gap-2.5 rounded-lg fixed px-3 py-5 bottom-20  w-full h-fit md:w-auto md:left-5 md:top-20 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
     >
       <Button varient={"primary"} size={"md"} isActive={false}>
         <Users size={18} />
         <h1 className="text-sm text-gray-900  ">Live Collaboration</h1>
       </Button>
 
-      <Button varient={"primary"} size={"md"} isActive={false}>
+      <Button
+        onClickhandler={handleClearCanvas}
+        varient={"primary"}
+        size={"md"}
+        isActive={false}
+      >
         <Trash size={18} />
         <h1 className="text-sm text-gray-900  ">Reset the canvas</h1>
       </Button>

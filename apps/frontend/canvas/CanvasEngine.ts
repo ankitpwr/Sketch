@@ -155,6 +155,14 @@ export class CanvasEngine {
     }
     this.ctx.restore();
   }
+
+  clearCanvas = () => {
+    console.log("clear canvas called");
+    this.existingShapes.length = 0;
+    localStorage.removeItem("shape");
+    this.render();
+  };
+
   handleText = (x: number, y: number) => {
     console.log(this.startX);
     this.textArea.style.left = x + "px";
