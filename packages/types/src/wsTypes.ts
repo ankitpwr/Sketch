@@ -1,5 +1,11 @@
+export enum MessageType {
+  JOIN = "JOIN",
+  LEAVE = "LEAVE",
+  MESSAGE = "MESSAGE",
+}
+
 export interface WebsocketMessage {
-  type: "JOIN" | "LEAVE" | "MESSAGE";
+  type: MessageType;
   roomId: string;
   message: string | null;
 }

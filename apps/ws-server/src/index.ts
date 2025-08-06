@@ -1,5 +1,9 @@
 import { WebSocketServer, WebSocket } from "ws";
-import { WebsocketMessage, CustomWebSocket } from "@repo/types/wsTypes";
+import {
+  WebsocketMessage,
+  CustomWebSocket,
+  MessageType,
+} from "@repo/types/wsTypes";
 import { CustomJwtPayload } from "@repo/types/commonTypes";
 import { prisma } from "@repo/db/index";
 import jwt from "jsonwebtoken";
@@ -55,7 +59,7 @@ wss.on("connection", (ws: WebSocket, request) => {
       console.log(parsedData);
       if (!parsedData) return;
       if (!parsedData.roomId) return;
-      if (parsedData.type == "JOIN") {
+      if (parsedData.type == MessageType.JOIN) {
         //checking if room is already present or not
         console.log("join");
         let roomConnections = Rooms.get(parsedData.roomId);
