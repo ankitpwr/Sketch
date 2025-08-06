@@ -71,14 +71,14 @@ wss.on("connection", (ws: WebSocket, request) => {
 
         ws.send(
           JSON.stringify({
-            type: "JOIN",
+            type: MessageType.JOIN,
             message: `You Have Joined The Room`,
             userId: userId,
             name: name,
             roomId: parsedData.roomId,
           })
         );
-      } else if (parsedData.type == "LEAVE") {
+      } else if (parsedData.type == MessageType.LEAVE) {
         let roomConnections = Rooms.get(parsedData.roomId);
         if (!roomConnections) return;
         roomConnections = roomConnections.filter((socket) => socket != ws);
@@ -86,14 +86,14 @@ wss.on("connection", (ws: WebSocket, request) => {
         else Rooms.set(parsedData.roomId, roomConnections);
         ws.send(
           JSON.stringify({
-            type: "LEAVE",
+            type: MessageType.LEAVE,
             message: "You Have Left The Room",
             userId: userId,
             name: name,
             roomId: parsedData.roomId,
           })
         );
-      } else if (parsedData.type == "MESSAGE") {
+      } else if (parsedData.type == MessageType.SHAPE) {
         const roomId = parsedData.roomId;
         const message = parsedData.message;
         console.log("message is");
@@ -114,7 +114,7 @@ wss.on("connection", (ws: WebSocket, request) => {
           data: {
             userId: userId,
             roomId: roomId,
-            message: message,
+            message: JSON.stringify(message),
           },
         });
 
@@ -122,7 +122,7 @@ wss.on("connection", (ws: WebSocket, request) => {
         roomConnections?.forEach((socket) => {
           socket.send(
             JSON.stringify({
-              type: "MESSAGE",
+              type: MessageType.SHAPE,
               message: parsedData.message,
               roomId: parsedData.roomId,
               userId: userId,

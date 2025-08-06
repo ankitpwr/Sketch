@@ -20,8 +20,6 @@ export function authMiddleware(
 ) {
   let decode;
   try {
-    console.log(req.header);
-    console.log(req.headers["authorization"]);
     const token = req.headers["authorization"] ?? "";
     decode = jwt.verify(token, process.env.JWT_SECRET!) as CustomJwtPayload;
   } catch (error) {

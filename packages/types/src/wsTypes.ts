@@ -1,7 +1,10 @@
 export enum MessageType {
   JOIN = "JOIN",
   LEAVE = "LEAVE",
-  MESSAGE = "MESSAGE",
+  SHAPE = "SHAPE",
+  PREVIEW_SHAPE = "PREVIEW_SHAPE",
+  ERASER = "ERASER",
+  CURSOR = "CURSOR",
 }
 
 export interface WebsocketMessage {

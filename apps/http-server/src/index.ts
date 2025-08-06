@@ -108,6 +108,7 @@ app.get("/room-messages", authMiddleware, async (req, res) => {
   try {
     const roomId = String(req.query.roomId);
     if (!roomId) return res.status(400).json({ error: "No room ID" });
+    console.log(`room id  is ${roomId}`);
     const messages = await prisma.shape.findMany({
       where: {
         roomId: roomId,

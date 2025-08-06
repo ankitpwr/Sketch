@@ -91,8 +91,6 @@ export class CanvasEngine {
     this.scale = 1;
 
     this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
-    this.init();
-    this.mouseHandler();
     this.CurrentShapeStyles = DefaultShapeStyles;
     this.CurrentPencilStyles = DefaultPencilStyles;
     this.CurrentTextStyle = DefaultTextStyle;
@@ -107,6 +105,7 @@ export class CanvasEngine {
     });
 
     if (socket) {
+      console.log(`room id send is ${roomId}`);
       this.roomId = roomId;
       this.sockethandler = new SocketHandler(
         socket,
@@ -115,11 +114,16 @@ export class CanvasEngine {
         roomId
       );
     }
+
+    this.init();
+    this.mouseHandler();
   }
 
   async init() {
-    const loadedShaped = await getExistingShape(this.standalone);
+    const loadedShaped = await getExistingShape(this.standalone, this.roomId);
     this.existingShapes.push(...loadedShaped);
+    console.log(`existingShapes are`);
+    console.log(this.existingShapes);
     this.render();
   }
 
@@ -377,7 +381,7 @@ export class CanvasEngine {
       if (this.standalone) {
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
       } else {
-        this.sockethandler?.sendMessage(tempShape);
+        this.sockethandler?.sendShape(tempShape);
       }
       this.render();
       this.points = [];
