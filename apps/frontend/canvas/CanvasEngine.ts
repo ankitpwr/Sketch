@@ -111,7 +111,8 @@ export class CanvasEngine {
         socket,
         this.existingShapes,
         this.render,
-        roomId
+        roomId,
+        this.setPreviewShape
       );
     }
 
@@ -126,6 +127,10 @@ export class CanvasEngine {
     console.log(this.existingShapes);
     this.render();
   }
+
+  public setPreviewShape = (shape: Shape | null) => {
+    this.previewShape = shape;
+  };
 
   handleCanvasResize = () => {
     this.render();
@@ -238,7 +243,11 @@ export class CanvasEngine {
         height: this.textArea.scrollHeight,
       };
       this.existingShapes.push(textShape);
-      localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+      if (this.standalone) {
+        localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+      } else {
+        this.sockethandler?.sendShape(textShape);
+      }
     }
     this.render();
     this.action = "none";
@@ -435,6 +444,9 @@ export class CanvasEngine {
           style: { ...this.CurrentShapeStyles },
         };
         this.previewShape = tempShape;
+        if (!this.standalone) {
+          this.sockethandler?.sendPreviewShape(tempShape);
+        }
       } else {
         const tempShape = {
           type: currentShape,
@@ -445,6 +457,9 @@ export class CanvasEngine {
           style: { ...this.CurrentShapeStyles },
         };
         this.previewShape = tempShape;
+        if (!this.standalone) {
+          this.sockethandler?.sendPreviewShape(tempShape);
+        }
       }
 
       this.render();

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { json } from "stream/consumers";
 
 export async function getExistingShape(standalone: boolean, roomId: string) {
   try {
@@ -24,8 +23,7 @@ export async function getExistingShape(standalone: boolean, roomId: string) {
       const shapesData = response.data.messages.map((data: any) => {
         return JSON.parse(data.message);
       });
-      console.log("shapedata is ");
-      console.log(shapesData);
+
       return shapesData;
     }
   } catch (error) {

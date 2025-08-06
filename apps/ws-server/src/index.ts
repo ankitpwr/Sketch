@@ -93,11 +93,32 @@ wss.on("connection", (ws: WebSocket, request) => {
             roomId: parsedData.roomId,
           })
         );
+      } else if (parsedData.type == MessageType.PREVIEW_SHAPE) {
+        const roomId = parsedData.roomId;
+        const message = parsedData.message;
+        if (!message) {
+          ws.send("Empty message is not allowed");
+          return;
+        }
+        let roomConnections = Rooms.get(parsedData.roomId);
+        console.log("room connection is");
+        console.log(roomConnections);
+        if (!roomConnections) return;
+
+        roomConnections?.forEach((socket) => {
+          socket.send(
+            JSON.stringify({
+              type: MessageType.PREVIEW_SHAPE,
+              message: parsedData.message,
+              roomId: parsedData.roomId,
+              userId: userId,
+              name: name,
+            })
+          );
+        });
       } else if (parsedData.type == MessageType.SHAPE) {
         const roomId = parsedData.roomId;
         const message = parsedData.message;
-        console.log("message is");
-        console.log(message);
         if (!message) {
           ws.send("Empty message is not allowed");
           return;
