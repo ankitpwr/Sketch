@@ -1,8 +1,9 @@
 import { WebSocketServer, WebSocket } from "ws";
 import {
-  WebsocketMessage,
   CustomWebSocket,
   MessageType,
+  ParsedData,
+  WS_Message_Erase,
 } from "@repo/types/wsTypes";
 import { CustomJwtPayload } from "@repo/types/commonTypes";
 import { prisma } from "@repo/db/index";
@@ -53,9 +54,7 @@ wss.on("connection", (ws: WebSocket, request) => {
   ws.on("message", async (data) => {
     try {
       // can use .tostring();
-      const parsedData: WebsocketMessage = JSON.parse(
-        data as unknown as string
-      );
+      const parsedData: ParsedData = JSON.parse(data as unknown as string);
       console.log(parsedData);
       if (!parsedData) return;
       if (!parsedData.roomId) return;
@@ -93,16 +92,44 @@ wss.on("connection", (ws: WebSocket, request) => {
             roomId: parsedData.roomId,
           })
         );
+      } else if (parsedData.type == MessageType.ERASER) {
+        const parsedEraseData: WS_Message_Erase = JSON.parse(data.toString());
+        const message = parsedEraseData.message;
+        if (!message) {
+          ws.send("Empty message is not allowed");
+          return;
+        }
+        let roomConnections = Rooms.get(parsedEraseData.roomId);
+        if (!roomConnections) return;
+        console.log("shapes to remove from db");
+        console.log(message);
+        console.log(typeof message);
+
+        await prisma.shape.deleteMany({
+          where: {
+            id: { in: message },
+          },
+        });
+
+        roomConnections?.forEach((socket) => {
+          socket.send(
+            JSON.stringify({
+              type: MessageType.ERASER,
+              message: message,
+              roomId: parsedEraseData.roomId,
+              userId: userId,
+              name: name,
+            })
+          );
+        });
       } else if (parsedData.type == MessageType.PREVIEW_SHAPE) {
-        const roomId = parsedData.roomId;
         const message = parsedData.message;
         if (!message) {
           ws.send("Empty message is not allowed");
           return;
         }
         let roomConnections = Rooms.get(parsedData.roomId);
-        console.log("room connection is");
-        console.log(roomConnections);
+
         if (!roomConnections) return;
 
         roomConnections?.forEach((socket) => {
@@ -124,20 +151,20 @@ wss.on("connection", (ws: WebSocket, request) => {
           return;
         }
         let roomConnections = Rooms.get(parsedData.roomId);
-        console.log("room connection is");
-        console.log(roomConnections);
         if (!roomConnections) return;
 
         //db call
-        console.log("above db call");
-        console.log(message);
-        await prisma.shape.create({
+        console.log(`db call ${parsedData.id}`);
+        const shape = await prisma.shape.create({
           data: {
+            id: parsedData.id,
             userId: userId,
             roomId: roomId,
             message: JSON.stringify(message),
           },
         });
+        console.log(`shape data is`);
+        console.log(shape);
 
         //send message
         roomConnections?.forEach((socket) => {

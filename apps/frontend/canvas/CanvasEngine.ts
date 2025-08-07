@@ -16,6 +16,7 @@ import { getExistingShape } from "./utils/storage";
 import { isNeartheShape } from "./utils/geometry";
 import { ShapeManager } from "./ShapeManager";
 import { SocketHandler } from "./SocketHandler";
+import cuid from "cuid";
 
 import { drawText } from "./draw/drawText";
 import {
@@ -105,7 +106,6 @@ export class CanvasEngine {
     });
 
     if (socket) {
-      console.log(`room id send is ${roomId}`);
       this.roomId = roomId;
       this.sockethandler = new SocketHandler(
         socket,
@@ -123,8 +123,6 @@ export class CanvasEngine {
   async init() {
     const loadedShaped = await getExistingShape(this.standalone, this.roomId);
     this.existingShapes.push(...loadedShaped);
-    console.log(`existingShapes are`);
-    console.log(this.existingShapes);
     this.render();
   }
 
@@ -184,14 +182,12 @@ export class CanvasEngine {
   };
 
   clearCanvas = () => {
-    console.log("clear canvas called");
     this.existingShapes.length = 0;
     localStorage.removeItem("shape");
     this.render();
   };
 
   handleText = (x: number, y: number) => {
-    console.log(this.startX);
     this.textArea.style.left = x + "px";
     this.textArea.style.top = y + "px";
     this.textArea.style.fontSize = this.CurrentTextStyle.fontsize;
@@ -234,6 +230,7 @@ export class CanvasEngine {
     const textData = this.textArea.value.trim();
     if (textData.length != 0) {
       const textShape: TextShape = {
+        id: cuid(),
         type: "Text",
         startX: this.startX,
         startY: this.startY,
@@ -246,7 +243,9 @@ export class CanvasEngine {
       if (this.standalone) {
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
       } else {
-        this.sockethandler?.sendShape(textShape);
+        let id = textShape.id;
+        if (!id) id = "";
+        this.sockethandler?.sendShape(textShape, id);
       }
     }
     this.render();
@@ -361,6 +360,7 @@ export class CanvasEngine {
           this.points.push([this.startX, this.startY]);
         this.points.push([currentX, currentY]);
         tempShape = {
+          id: cuid(),
           type: "Pencil",
           points: this.points,
           style: { ...this.CurrentPencilStyles },
@@ -368,6 +368,7 @@ export class CanvasEngine {
         this.existingShapes.push(tempShape);
       } else if (currentShape == "Line" || currentShape == "Arrow") {
         tempShape = {
+          id: cuid(),
           type: currentShape,
           startX: this.startX,
           startY: this.startY,
@@ -378,6 +379,7 @@ export class CanvasEngine {
         this.existingShapes.push(tempShape);
       } else {
         tempShape = {
+          id: cuid(),
           type: currentShape,
           startX: Math.min(this.startX, currentX),
           startY: Math.min(this.startY, currentY),
@@ -390,7 +392,9 @@ export class CanvasEngine {
       if (this.standalone) {
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
       } else {
-        this.sockethandler?.sendShape(tempShape);
+        let id = tempShape.id;
+        if (!id) id = "";
+        this.sockethandler?.sendShape(tempShape, id);
       }
       this.render();
       this.points = [];
@@ -411,9 +415,17 @@ export class CanvasEngine {
         return !isNeartheShape(currentX, currentY, s);
       });
       if (shapeToKeep.length < this.existingShapes.length) {
+        const shapetoRemove = this.existingShapes.filter(
+          (shape) => !shapeToKeep.includes(shape)
+        );
         this.existingShapes.length = 0;
         this.existingShapes.push(...shapeToKeep);
-        localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+        console.log(shapetoRemove);
+        if (this.standalone)
+          localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+        else {
+          this.sockethandler?.eraseShape(shapetoRemove);
+        }
         this.render();
       }
     } else if (
