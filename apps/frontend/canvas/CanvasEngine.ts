@@ -64,6 +64,8 @@ export class CanvasEngine {
   private standalone: boolean;
   private sockethandler?: SocketHandler;
   private roomId: string = "";
+  private userId: string = "";
+  private shapeToRemove: Shape[] = [];
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
@@ -71,7 +73,8 @@ export class CanvasEngine {
     dpr: number,
     standalone: boolean,
     socket: WebSocket | null,
-    roomId: string
+    roomId: string,
+    userId: string
   ) {
     this.canvas = canvas;
     this.ctx = ctx;
@@ -107,12 +110,16 @@ export class CanvasEngine {
 
     if (socket) {
       this.roomId = roomId;
+      this.userId = userId;
       this.sockethandler = new SocketHandler(
         socket,
         this.existingShapes,
         this.render,
         roomId,
-        this.setPreviewShape
+        this.setPreviewShape,
+        userId,
+        this.addShape,
+        this.removeShapesByIds
       );
     }
 
@@ -120,14 +127,31 @@ export class CanvasEngine {
     this.mouseHandler();
   }
 
-  async init() {
+  init = async () => {
     const loadedShaped = await getExistingShape(this.standalone, this.roomId);
     this.existingShapes.push(...loadedShaped);
     this.render();
-  }
+  };
 
   public setPreviewShape = (shape: Shape | null) => {
     this.previewShape = shape;
+  };
+
+  public addShape = (shape: Shape) => {
+    const shapeExists = this.existingShapes.some((s) => s.id === shape.id);
+    if (!shapeExists) {
+      this.existingShapes.push(shape);
+    }
+    this.render();
+  };
+
+  public removeShapesByIds = (shapeIdsToRemove: any) => {
+    const shapesToKeep = this.existingShapes.filter(
+      (shape) => !shapeIdsToRemove.includes(shape.id)
+    );
+    this.existingShapes.length = 0;
+    this.existingShapes.push(...shapesToKeep);
+    this.render();
   };
 
   handleCanvasResize = () => {
@@ -170,6 +194,7 @@ export class CanvasEngine {
           break;
       }
     };
+
     this.existingShapes.forEach(drawShape);
     if (this.previewShape) {
       drawShape(this.previewShape);
@@ -345,6 +370,23 @@ export class CanvasEngine {
       localStorage.setItem("shape", JSON.stringify(this.existingShapes));
       this.action = "none";
       this.render();
+    } else if (this.currentTool == "Eraser" && this.shapeToRemove.length > 0) {
+      if (!this.standalone) {
+        console.log(`now erasing start`);
+        console.log(this.shapeToRemove);
+        console.log(`at start of eraser existing shape is `);
+        console.log(this.existingShapes);
+        this.sockethandler?.eraseShape(this.shapeToRemove);
+      } else {
+        const shapeToKeep = this.existingShapes.filter(
+          (s) => !this.shapeToRemove.some((rem) => rem.id === s.id)
+        );
+        this.existingShapes.length = 0;
+        this.existingShapes.push(...shapeToKeep);
+        localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+        this.render();
+      }
+      this.shapeToRemove = [];
     } else if (
       this.currentTool == "Rectangle" ||
       this.currentTool == "Ellipse" ||
@@ -365,7 +407,6 @@ export class CanvasEngine {
           points: this.points,
           style: { ...this.CurrentPencilStyles },
         };
-        this.existingShapes.push(tempShape);
       } else if (currentShape == "Line" || currentShape == "Arrow") {
         tempShape = {
           id: cuid(),
@@ -376,7 +417,6 @@ export class CanvasEngine {
           endY: currentY,
           style: { ...this.CurrentShapeStyles },
         };
-        this.existingShapes.push(tempShape);
       } else {
         tempShape = {
           id: cuid(),
@@ -387,16 +427,17 @@ export class CanvasEngine {
           endY: Math.max(this.startY, currentY),
           style: { ...this.CurrentShapeStyles },
         };
-        this.existingShapes.push(tempShape);
       }
       if (this.standalone) {
+        this.existingShapes.push(tempShape);
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+        this.render();
       } else {
         let id = tempShape.id;
         if (!id) id = "";
         this.sockethandler?.sendShape(tempShape, id);
       }
-      this.render();
+
       this.points = [];
     }
   };
@@ -411,22 +452,16 @@ export class CanvasEngine {
     } else if (this.action == "moving") {
       this.shapeMangager.handleShapeMovement(currentX, currentY);
     } else if (this.currentTool == "Eraser") {
-      const shapeToKeep = this.existingShapes.filter((s, index) => {
-        return !isNeartheShape(currentX, currentY, s);
+      console.log(`in mouse move eraser`);
+      console.log(this.existingShapes);
+      const newlyRemovedShape = this.existingShapes.filter((s, index) => {
+        return isNeartheShape(currentX, currentY, s);
       });
-      if (shapeToKeep.length < this.existingShapes.length) {
-        const shapetoRemove = this.existingShapes.filter(
-          (shape) => !shapeToKeep.includes(shape)
-        );
-        this.existingShapes.length = 0;
-        this.existingShapes.push(...shapeToKeep);
-        console.log(shapetoRemove);
-        if (this.standalone)
-          localStorage.setItem("shape", JSON.stringify(this.existingShapes));
-        else {
-          this.sockethandler?.eraseShape(shapetoRemove);
-        }
-        this.render();
+      if (newlyRemovedShape.length > 0) {
+        this.shapeToRemove.push(...newlyRemovedShape);
+        const uniqueValues = [...new Set(this.shapeToRemove)];
+        this.shapeToRemove.length = 0;
+        this.shapeToRemove.push(...uniqueValues);
       }
     } else if (
       this.currentTool == "Rectangle" ||
@@ -468,13 +503,14 @@ export class CanvasEngine {
           endY: Math.max(this.startY, currentY),
           style: { ...this.CurrentShapeStyles },
         };
-        this.previewShape = tempShape;
+
         if (!this.standalone) {
           this.sockethandler?.sendPreviewShape(tempShape);
+          this.render();
+        } else {
+          this.previewShape = tempShape;
         }
       }
-
-      this.render();
       this.previewShape = null;
     }
   };
@@ -553,12 +589,12 @@ export class CanvasEngine {
     this.lastScale = this.scale;
   };
 
-  destroy() {
+  destroy = () => {
     this.canvas.removeEventListener("mousedown", this.handleMouseDown);
     this.canvas.removeEventListener("mouseup", this.handleMouseUp);
     this.canvas.removeEventListener("mousemove", this.handleMouseMove);
-  }
-  mouseHandler() {
+  };
+  mouseHandler = () => {
     this.canvas.addEventListener("mousedown", this.handleMouseDown);
     this.canvas.addEventListener("mouseup", this.handleMouseUp);
     this.canvas.addEventListener("mousemove", this.handleMouseMove);
@@ -573,7 +609,7 @@ export class CanvasEngine {
         passive: false,
       });
     this.canvas.addEventListener("touchend", this.handleTouchEnd);
-  }
+  };
   getCoordinates = (e: MouseEvent) => {
     const X = (e.offsetX - this.panX) / this.scale;
     const Y = (e.offsetY - this.panY) / this.scale;

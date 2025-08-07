@@ -14,13 +14,16 @@ export default function Canvas({
   standalone,
   socket,
   roomId = "",
+  userId = "",
 }: {
   standalone: boolean;
   socket: WebSocket | null;
   roomId?: string;
+  userId?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [canvasEngine, setcanvasEngine] = useState<CanvasEngine>();
+  // const [canvasEngine, setcanvasEngine] = useState<CanvasEngine>();
+  const engineRef = useRef<CanvasEngine | null>(null);
   const [tool, setTool] = useState<Tool>("Pan");
   const textRef = useRef(null);
   const [dpr, setdpr] = useState(1);
@@ -48,10 +51,10 @@ export default function Canvas({
         canvas.height = newHeight * dpr;
         const ctx = canvas.getContext("2d");
         ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
-        if (canvasEngine) canvasEngine.handleCanvasResize();
+        if (engineRef.current) engineRef.current.handleCanvasResize();
       }
     }
-  }, [canvasEngine, dpr]);
+  }, [engineRef.current, dpr]);
 
   useEffect(() => {
     if (typeof window != undefined) {
@@ -62,23 +65,24 @@ export default function Canvas({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     if (!textRef.current) return;
-    const engine = new CanvasEngine(
+    engineRef.current = new CanvasEngine(
       canvas,
       ctx,
       textRef.current,
       dpr,
       standalone,
       socket,
-      roomId
+      roomId,
+      userId
     );
-    setcanvasEngine(engine);
+    // setcanvasEngine(engine);
     updateCanvasDimension();
   }, [canvasRef, textRef.current, dpr]);
 
   useEffect(() => {
-    if (!canvasEngine || !canvasEngine.currentTool) return;
-    canvasEngine.currentTool = tool;
-  }, [tool, canvasEngine]);
+    if (!engineRef.current || !engineRef.current.currentTool) return;
+    engineRef.current.currentTool = tool;
+  }, [tool, engineRef.current]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -98,11 +102,15 @@ export default function Canvas({
       <canvas ref={canvasRef} className="w-full h-full"></canvas>
       <TextArea refer={textRef} />
       <Tools setTool={setTool} currentTool={tool} />
-      {isShapeTool() && canvasEngine && (
-        <AppMenu tool={tool} canvasEngine={canvasEngine} />
+      {isShapeTool() && engineRef.current && (
+        <AppMenu tool={tool} canvasEngine={engineRef.current} />
       )}
-      {canvasEngine && <DropDown tool={tool} canvasEngine={canvasEngine} />}
-      {canvasEngine && <MobileAppBar tool={tool} canvasEngine={canvasEngine} />}
+      {engineRef.current && (
+        <DropDown tool={tool} canvasEngine={engineRef.current} />
+      )}
+      {engineRef.current && (
+        <MobileAppBar tool={tool} canvasEngine={engineRef.current} />
+      )}
 
       <Share />
     </div>
