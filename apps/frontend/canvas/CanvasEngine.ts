@@ -113,7 +113,7 @@ export class CanvasEngine {
         userId,
         this.addShape,
         this.removeShapesByIds,
-        this.moveShape
+        this.manageShape
       );
     }
     this.shapeMangager = new ShapeManager({
@@ -156,7 +156,7 @@ export class CanvasEngine {
     this.render();
   };
 
-  public moveShape = (shape: Shape) => {
+  public manageShape = (shape: Shape) => {
     const shapeIndex = this.existingShapes.findIndex((s) => s.id == shape.id);
     if (shapeIndex != -1) {
       this.existingShapes[shapeIndex] = shape;
@@ -371,10 +371,12 @@ export class CanvasEngine {
       }
       this.action = "none";
 
-      localStorage.setItem("shape", JSON.stringify(this.existingShapes));
-
+      if (this.standalone) {
+        localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+      } else {
+        this.sockethandler?.shapeResize(shape);
+      }
       this.shapeMangager.clearResizeHandler();
-
       this.render();
     } else if (this.action == "moving") {
       localStorage.setItem("shape", JSON.stringify(this.existingShapes));

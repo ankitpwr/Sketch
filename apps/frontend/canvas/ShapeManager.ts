@@ -113,6 +113,9 @@ export class ShapeManager {
         break;
     }
     this.triggerRender();
+    if (this.socketHandler) {
+      this.socketHandler.shapeResize(shape);
+    }
   };
 
   clearResizeHandler = () => {

@@ -9,7 +9,7 @@ export class SocketHandler {
   private userId: string;
   private addShape: (shape: Shape) => void;
   private removeShape: (shape: Shape) => void;
-  private moveShape: (shape: Shape) => void;
+  private manageShape: (shape: Shape) => void;
   constructor(
     socket: WebSocket,
     existingShapes: Shape[],
@@ -19,7 +19,7 @@ export class SocketHandler {
     userId: string,
     addShape: (shape: Shape) => void,
     removeShape: (shapeId: any) => void,
-    moveShape: (shape: Shape) => void
+    manageShape: (shape: Shape) => void
   ) {
     this.socket = socket;
     this.existingShapes = existingShapes;
@@ -30,14 +30,12 @@ export class SocketHandler {
     this.userId = userId;
     this.addShape = addShape;
     this.removeShape = removeShape;
-    this.moveShape = moveShape;
+    this.manageShape = manageShape;
   }
 
   onMessage = () => {
     this.socket.onmessage = (event) => {
       const messageData = JSON.parse(event.data);
-      console.log(`in on message top`);
-      console.log(this.existingShapes);
 
       if (messageData.type == MessageType.SHAPE) {
         const shapeData = messageData.message;
@@ -53,8 +51,11 @@ export class SocketHandler {
       } else if (messageData.type == MessageType.SHAPE_MOVE) {
         if (messageData.userId == this.userId) return;
         const shape = messageData.message;
-        this.moveShape(shape);
-        this.triggerRender();
+        this.manageShape(shape);
+      } else if (messageData.type == MessageType.SHAPE_RESIZE) {
+        if (messageData.userId == this.userId) return;
+        const shape = messageData.message;
+        this.manageShape(shape);
       }
     };
   };
@@ -94,6 +95,16 @@ export class SocketHandler {
     this.socket.send(
       JSON.stringify({
         type: MessageType.SHAPE_MOVE,
+        roomId: this.roomId,
+        message: shape,
+      })
+    );
+  };
+
+  shapeResize = (shape: Shape) => {
+    this.socket.send(
+      JSON.stringify({
+        type: MessageType.SHAPE_RESIZE,
         roomId: this.roomId,
         message: shape,
       })
