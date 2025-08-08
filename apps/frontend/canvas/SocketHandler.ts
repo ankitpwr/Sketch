@@ -39,6 +39,7 @@ export class SocketHandler {
 
       if (messageData.type == MessageType.SHAPE) {
         const shapeData = messageData.message;
+        this.setPreviewShape(null);
         this.addShape(shapeData);
       } else if (messageData.type == MessageType.PREVIEW_SHAPE) {
         const shapeData = messageData.message;

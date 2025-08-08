@@ -428,16 +428,15 @@ export class CanvasEngine {
           style: { ...this.CurrentShapeStyles },
         };
       }
+      this.existingShapes.push(tempShape);
       if (this.standalone) {
-        this.existingShapes.push(tempShape);
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
-        this.render();
       } else {
         let id = tempShape.id;
         if (!id) id = "";
         this.sockethandler?.sendShape(tempShape, id);
       }
-
+      this.render();
       this.points = [];
     }
   };
@@ -491,9 +490,6 @@ export class CanvasEngine {
           style: { ...this.CurrentShapeStyles },
         };
         this.previewShape = tempShape;
-        if (!this.standalone) {
-          this.sockethandler?.sendPreviewShape(tempShape);
-        }
       } else {
         const tempShape = {
           type: currentShape,
@@ -503,14 +499,12 @@ export class CanvasEngine {
           endY: Math.max(this.startY, currentY),
           style: { ...this.CurrentShapeStyles },
         };
-
-        if (!this.standalone) {
-          this.sockethandler?.sendPreviewShape(tempShape);
-          this.render();
-        } else {
-          this.previewShape = tempShape;
-        }
+        this.previewShape = tempShape;
       }
+      if (!this.standalone && this.previewShape) {
+        this.sockethandler?.sendPreviewShape(this.previewShape);
+      }
+      this.render();
       this.previewShape = null;
     }
   };
