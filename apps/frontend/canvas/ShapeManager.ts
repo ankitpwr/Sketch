@@ -112,6 +112,7 @@ export class ShapeManager {
         shape.endY = currentY;
         break;
     }
+
     this.triggerRender();
     if (this.socketHandler) {
       this.socketHandler.shapeResize(shape);

@@ -7,8 +7,8 @@ export function drawEllipse(
 ) {
   const width = Math.abs(shape.endX - shape.startX);
   const height = Math.abs(shape.endY - shape.startY);
-  const centerX = shape.startX + width / 2;
-  const centerY = shape.startY + height / 2;
+  const centerX = (shape.startX + shape.endX) / 2;
+  const centerY = (shape.startY + shape.endY) / 2;
   ctx.save();
   ctx.fillStyle = shape.style.background;
   ctx.strokeStyle = shape.style.strokeStyle;

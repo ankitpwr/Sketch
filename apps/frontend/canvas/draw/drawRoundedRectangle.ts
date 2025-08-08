@@ -17,10 +17,10 @@ export function drawRoundedRectangle(
   ctx.save();
   ctx.fillStyle = shape.style.background;
   ctx.strokeStyle = shape.style.strokeStyle;
-  if (boundingBox.isBoundingBox) console.log(boundingBox.scale);
-  ctx.lineWidth = boundingBox.isBoundingBox
-    ? 1 / boundingBox.scale
-    : shape.style.strokeWidth;
+  if (boundingBox.isBoundingBox)
+    ctx.lineWidth = boundingBox.isBoundingBox
+      ? 1 / boundingBox.scale
+      : shape.style.strokeWidth;
   ctx.setLineDash(
     getLineDashPattern(shape.style.strokeType, shape.style.strokeWidth)
   );
