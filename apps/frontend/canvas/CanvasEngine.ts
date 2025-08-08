@@ -100,13 +100,6 @@ export class CanvasEngine {
     this.CurrentTextStyle = DefaultTextStyle;
     this.CanvasColor = CanvasColor.white;
     this.pressedKey = null;
-    this.shapeMangager = new ShapeManager({
-      ctx: this.ctx,
-      existingShapes: this.existingShapes,
-      selectedShape: this.selectedShape,
-      scale: this.scale,
-      triggerRender: () => this.render(),
-    });
 
     if (socket) {
       this.roomId = roomId;
@@ -119,9 +112,18 @@ export class CanvasEngine {
         this.setPreviewShape,
         userId,
         this.addShape,
-        this.removeShapesByIds
+        this.removeShapesByIds,
+        this.moveShape
       );
     }
+    this.shapeMangager = new ShapeManager({
+      ctx: this.ctx,
+      existingShapes: this.existingShapes,
+      selectedShape: this.selectedShape,
+      scale: this.scale,
+      triggerRender: () => this.render(),
+      socketHandler: this.sockethandler,
+    });
 
     this.init();
     this.mouseHandler();
@@ -152,6 +154,14 @@ export class CanvasEngine {
     this.existingShapes.length = 0;
     this.existingShapes.push(...shapesToKeep);
     this.render();
+  };
+
+  public moveShape = (shape: Shape) => {
+    const shapeIndex = this.existingShapes.findIndex((s) => s.id == shape.id);
+    if (shapeIndex != -1) {
+      this.existingShapes[shapeIndex] = shape;
+      this.render();
+    }
   };
 
   handleCanvasResize = () => {
@@ -371,20 +381,16 @@ export class CanvasEngine {
       this.action = "none";
       this.render();
     } else if (this.currentTool == "Eraser" && this.shapeToRemove.length > 0) {
+      const shapeToKeep = this.existingShapes.filter(
+        (s) => !this.shapeToRemove.some((rem) => rem.id === s.id)
+      );
+      this.existingShapes.length = 0;
+      this.existingShapes.push(...shapeToKeep);
+      this.render();
       if (!this.standalone) {
-        console.log(`now erasing start`);
-        console.log(this.shapeToRemove);
-        console.log(`at start of eraser existing shape is `);
-        console.log(this.existingShapes);
         this.sockethandler?.eraseShape(this.shapeToRemove);
       } else {
-        const shapeToKeep = this.existingShapes.filter(
-          (s) => !this.shapeToRemove.some((rem) => rem.id === s.id)
-        );
-        this.existingShapes.length = 0;
-        this.existingShapes.push(...shapeToKeep);
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
-        this.render();
       }
       this.shapeToRemove = [];
     } else if (

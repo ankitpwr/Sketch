@@ -1,4 +1,3 @@
-import { json } from "stream/consumers";
 import { Shape } from "./types/types";
 import { MessageType } from "@repo/types/wsTypes";
 export class SocketHandler {
@@ -10,6 +9,7 @@ export class SocketHandler {
   private userId: string;
   private addShape: (shape: Shape) => void;
   private removeShape: (shape: Shape) => void;
+  private moveShape: (shape: Shape) => void;
   constructor(
     socket: WebSocket,
     existingShapes: Shape[],
@@ -18,7 +18,8 @@ export class SocketHandler {
     setPreviewShape: (shape: Shape | null) => void,
     userId: string,
     addShape: (shape: Shape) => void,
-    removeShape: (shapeId: any) => void
+    removeShape: (shapeId: any) => void,
+    moveShape: (shape: Shape) => void
   ) {
     this.socket = socket;
     this.existingShapes = existingShapes;
@@ -29,6 +30,7 @@ export class SocketHandler {
     this.userId = userId;
     this.addShape = addShape;
     this.removeShape = removeShape;
+    this.moveShape = moveShape;
   }
 
   onMessage = () => {
@@ -48,6 +50,11 @@ export class SocketHandler {
       } else if (messageData.type == MessageType.ERASER) {
         const EraseData = messageData.message;
         this.removeShape(EraseData);
+      } else if (messageData.type == MessageType.SHAPE_MOVE) {
+        if (messageData.userId == this.userId) return;
+        const shape = messageData.message;
+        this.moveShape(shape);
+        this.triggerRender();
       }
     };
   };
@@ -79,6 +86,16 @@ export class SocketHandler {
         type: MessageType.ERASER,
         roomId: this.roomId,
         message: shapeId,
+      })
+    );
+  };
+
+  shapeMove = (shape: Shape) => {
+    this.socket.send(
+      JSON.stringify({
+        type: MessageType.SHAPE_MOVE,
+        roomId: this.roomId,
+        message: shape,
       })
     );
   };

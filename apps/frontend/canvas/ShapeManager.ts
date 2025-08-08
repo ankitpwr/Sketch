@@ -1,4 +1,5 @@
 import { drawRoundedRectangle } from "./draw/drawRoundedRectangle";
+import { SocketHandler } from "./SocketHandler";
 import { ResizeHandlers, Shape, ShapeType } from "./types/types";
 import { BoundingBorderStyles, StrokeColor } from "./utils/drawingConfig";
 
@@ -13,6 +14,7 @@ interface ShapeManagerDependencies {
   };
   scale: number;
   triggerRender: () => void;
+  socketHandler?: SocketHandler;
 }
 export class ShapeManager {
   private ctx: CanvasRenderingContext2D;
@@ -32,6 +34,7 @@ export class ShapeManager {
     | "BottomRight"
     | null;
   private triggerRender: () => void;
+  private socketHandler: SocketHandler | null = null;
 
   constructor(dependencies: ShapeManagerDependencies) {
     this.ctx = dependencies.ctx;
@@ -41,6 +44,11 @@ export class ShapeManager {
     this.scale = dependencies.scale;
     this.triggerRender = dependencies.triggerRender;
     this.resizeSide = null;
+    console.log(`socket is active`);
+    console.log(dependencies.socketHandler);
+    if (dependencies.socketHandler) {
+      this.socketHandler = dependencies.socketHandler;
+    }
   }
 
   handleShapeMovement = (currentX: number, currentY: number) => {
@@ -66,7 +74,11 @@ export class ShapeManager {
           return [point[0] + deltaX, point[1] + deltaY];
         });
         this.triggerRender();
+
         break;
+    }
+    if (this.socketHandler) {
+      this.socketHandler.shapeMove(shape);
     }
 
     this.selectedShape.offsetX = currentX;

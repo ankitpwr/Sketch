@@ -122,6 +122,27 @@ wss.on("connection", (ws: WebSocket, request) => {
             })
           );
         });
+      } else if (parsedData.type == MessageType.SHAPE_MOVE) {
+        const message = parsedData.message;
+        if (!message) {
+          ws.send("Empty message is not allowed");
+          return;
+        }
+        let roomConnections = Rooms.get(parsedData.roomId);
+        console.log(`shape to move`);
+        console.log(parsedData.message);
+        if (!roomConnections) return;
+        roomConnections.forEach((socket) => {
+          socket.send(
+            JSON.stringify({
+              type: MessageType.SHAPE_MOVE,
+              message: parsedData.message,
+              roomId: parsedData.roomId,
+              userId: userId,
+              name: name,
+            })
+          );
+        });
       } else if (parsedData.type == MessageType.PREVIEW_SHAPE) {
         const message = parsedData.message;
         if (!message) {

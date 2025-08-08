@@ -5,6 +5,8 @@ export enum MessageType {
   PREVIEW_SHAPE = "PREVIEW_SHAPE",
   ERASER = "ERASER",
   CURSOR = "CURSOR",
+  SHAPE_MOVE = "SHAPE_MOVE",
+  SHAPE_RESIZE = "SHAPE_RESIZE",
 }
 
 export interface WS_Message_Shape {
