@@ -3,7 +3,7 @@ import Stroke from "./stroke";
 import { BoldLineIcon, ExtraBold, ThinLineIcon } from "./svgIcons";
 
 import { CanvasEngine } from "@/canvas/CanvasEngine";
-import { StrokeWidth } from "@/canvas/utils/drawingConfig";
+import { StrokeWidth } from "@repo/types/drawingConfig";
 
 export default function StrokeWidthSelector({
   canvasEngine,

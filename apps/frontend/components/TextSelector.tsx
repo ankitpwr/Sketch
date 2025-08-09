@@ -11,7 +11,7 @@ import {
   NormalFontFamilyIcon,
   XLIcon,
 } from "./svgIcons";
-import { FontFamily, FontSize } from "@/canvas/utils/drawingConfig";
+import { FontFamily, FontSize } from "@repo/types/drawingConfig";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 
 export default function TextSelector({

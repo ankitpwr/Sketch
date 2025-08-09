@@ -1,4 +1,4 @@
-import { Shape } from "./types/types";
+import { Shape } from "@repo/types/canvasTypes";
 import { MessageType } from "@repo/types/wsTypes";
 export class SocketHandler {
   private socket: WebSocket;
@@ -38,19 +38,21 @@ export class SocketHandler {
       const messageData = JSON.parse(event.data);
 
       if (messageData.type == MessageType.SHAPE) {
-        const shapeData = messageData.message;
+        console.log("new shape to draw $ message data is");
+        console.log(messageData);
+        const shapeData = messageData.shape;
         this.setPreviewShape(null);
         this.addShape(shapeData);
       } else if (messageData.type == MessageType.PREVIEW_SHAPE) {
-        const shapeData = messageData.message;
+        const shapeData = messageData.shape;
         this.setPreviewShape(shapeData);
         this.triggerRender();
       } else if (messageData.type == MessageType.ERASER) {
-        const EraseData = messageData.message;
+        const EraseData = messageData.shapeId;
         this.removeShape(EraseData);
       } else if (messageData.type == MessageType.SHAPE_MOVE) {
         if (messageData.userId == this.userId) return;
-        const shape = messageData.message;
+        const shape = messageData.shapeToMove;
         this.manageShape(shape);
       } else if (messageData.type == MessageType.SHAPE_RESIZE) {
         if (messageData.userId == this.userId) return;
@@ -65,7 +67,8 @@ export class SocketHandler {
         id: id,
         type: MessageType.SHAPE,
         roomId: this.roomId,
-        message: shape,
+        shape: shape,
+        message: "New shape",
       })
     );
   };
@@ -75,28 +78,34 @@ export class SocketHandler {
       JSON.stringify({
         type: MessageType.PREVIEW_SHAPE,
         roomId: this.roomId,
-        message: shape,
+        shape: shape,
+        message: "preview Shape",
       })
     );
   };
 
   eraseShape = (shapes: Shape[]) => {
     const shapeId = shapes.map((s) => s.id);
+    console.log("shape id to remove");
+    console.log(shapeId);
     this.socket.send(
       JSON.stringify({
         type: MessageType.ERASER,
         roomId: this.roomId,
-        message: shapeId,
+        shapeId: shapeId,
+        message: "Erase shape",
       })
     );
   };
 
-  shapeMove = (shape: Shape) => {
+  shapeMove = (shape: Shape, lastMove: boolean) => {
     this.socket.send(
       JSON.stringify({
         type: MessageType.SHAPE_MOVE,
         roomId: this.roomId,
-        message: shape,
+        message: "shape move",
+        shape: shape,
+        lastMove: lastMove,
       })
     );
   };

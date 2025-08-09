@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Stroke from "./stroke";
 import { Dashed, Dotted, ThinLineIcon } from "./svgIcons";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
-import { StrokeType } from "@/canvas/utils/drawingConfig";
+import { StrokeType } from "@repo/types/drawingConfig";
 
 export default function StrokeStyleSelector({
   canvasEngine,

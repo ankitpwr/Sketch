@@ -5,7 +5,7 @@ import {
   ShapeType,
   TextShape,
   Tool,
-} from "./types/types";
+} from "@repo/types/canvasTypes";
 import { drawRoundedRectangle } from "./draw/drawRoundedRectangle";
 import { drawEllipse } from "./draw/drawEllipse";
 import { drawDiamond } from "./draw/drawDiamond";
@@ -27,7 +27,7 @@ import {
   TextStyle,
   DefaultTextStyle,
   CanvasColor,
-} from "./utils/drawingConfig";
+} from "@repo/types/drawingConfig";
 
 export class CanvasEngine {
   public canvas: HTMLCanvasElement;
@@ -379,7 +379,10 @@ export class CanvasEngine {
       this.shapeMangager.clearResizeHandler();
       this.render();
     } else if (this.action == "moving") {
-      localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+      if (this.standalone) {
+        localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+      }
+
       this.action = "none";
       this.render();
     } else if (this.currentTool == "Eraser" && this.shapeToRemove.length > 0) {

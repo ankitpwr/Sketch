@@ -1,4 +1,4 @@
-import { ResizeHandlers, Shape } from "../types/types";
+import { ResizeHandlers, Shape } from "@repo/types/canvasTypes";
 
 export function isNeartheShape(currentX: number, currentY: number, s: Shape) {
   //prettier-ignore

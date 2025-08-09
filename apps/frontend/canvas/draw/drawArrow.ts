@@ -1,5 +1,5 @@
-import { ArrowShape } from "../types/types";
-import { getLineDashPattern } from "../utils/drawingConfig";
+import { ArrowShape } from "@repo/types/canvasTypes";
+import { getLineDashPattern } from "@repo/types/drawingConfig";
 
 export function drawArrow(ctx: CanvasRenderingContext2D, shape: ArrowShape) {
   const dx = shape.endX - shape.startX;

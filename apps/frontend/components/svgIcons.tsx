@@ -1,4 +1,4 @@
-import { Thinning } from "@/canvas/utils/drawingConfig";
+import { Thinning } from "@repo/types/drawingConfig";
 import React from "react";
 import clsx from "clsx";
 

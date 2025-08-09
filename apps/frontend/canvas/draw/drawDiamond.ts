@@ -1,5 +1,5 @@
-import { DiamondShape, Shape } from "../types/types";
-import { getLineDashPattern } from "../utils/drawingConfig";
+import { DiamondShape, Shape } from "@repo/types/canvasTypes";
+import { getLineDashPattern } from "@repo/types/drawingConfig";
 
 export function drawDiamond(
   ctx: CanvasRenderingContext2D,

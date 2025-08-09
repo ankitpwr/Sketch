@@ -2,7 +2,7 @@
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Button from "./button";
-import { TextShape, Tool } from "@/canvas/types/types";
+import { TextShape, Tool } from "@repo/types/canvasTypes";
 import Tools from "./tools";
 import TextArea from "./textArea";
 import AppMenu from "./appMenu";

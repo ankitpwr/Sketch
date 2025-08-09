@@ -1,5 +1,5 @@
-import { EllipseShape } from "../types/types";
-import { getLineDashPattern } from "../utils/drawingConfig";
+import { EllipseShape } from "@repo/types/canvasTypes";
+import { getLineDashPattern } from "@repo/types/drawingConfig";
 
 export function drawEllipse(
   ctx: CanvasRenderingContext2D,

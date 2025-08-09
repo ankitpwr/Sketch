@@ -3,12 +3,16 @@ import {
   CustomWebSocket,
   MessageType,
   ParsedData,
-  WS_Message_Erase,
+  WS_Erase_Shape,
+  WS_Message,
+  WS_New_Shape,
+  WS_Shape_Move,
 } from "@repo/types/wsTypes";
 import { CustomJwtPayload } from "@repo/types/commonTypes";
 import { prisma } from "@repo/db/index";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
+import { Shape } from "@repo/types/canvasTypes";
 dotenv.config();
 const UserConnection = new Map<WebSocket, { userId: string; name: string }>();
 const Rooms = new Map<string, WebSocket[]>();
@@ -37,7 +41,6 @@ wss.on("connection", (ws: WebSocket, request) => {
   }
   const queryParams = new URLSearchParams(url.split("?")[1]);
   const token = queryParams.get("token") || "";
-  console.log(`token ${token}`);
   const isVerified = veifyToken(token);
 
   if (!isVerified) {
@@ -46,7 +49,6 @@ wss.on("connection", (ws: WebSocket, request) => {
   }
   const userId = isVerified.userId;
   const name = isVerified.name;
-  console.log(`${userId} and ${name}`);
 
   //adding ws to map along with userId
   UserConnection.set(ws, { userId: userId, name: name });
@@ -54,13 +56,11 @@ wss.on("connection", (ws: WebSocket, request) => {
   ws.on("message", async (data) => {
     try {
       // can use .tostring();
-      const parsedData: ParsedData = JSON.parse(data as unknown as string);
-      console.log(parsedData);
+      const parsedData: WS_Message = JSON.parse(data as unknown as string);
       if (!parsedData) return;
       if (!parsedData.roomId) return;
       if (parsedData.type == MessageType.JOIN) {
         //checking if room is already present or not
-        console.log("join");
         let roomConnections = Rooms.get(parsedData.roomId);
         if (!roomConnections) {
           roomConnections = [];
@@ -71,10 +71,10 @@ wss.on("connection", (ws: WebSocket, request) => {
         ws.send(
           JSON.stringify({
             type: MessageType.JOIN,
-            message: `You Have Joined The Room`,
+            roomId: parsedData.roomId,
             userId: userId,
             name: name,
-            roomId: parsedData.roomId,
+            message: `You Have Joined The Room`,
           })
         );
       } else if (parsedData.type == MessageType.LEAVE) {
@@ -86,28 +86,25 @@ wss.on("connection", (ws: WebSocket, request) => {
         ws.send(
           JSON.stringify({
             type: MessageType.LEAVE,
-            message: "You Have Left The Room",
+            roomId: parsedData.roomId,
             userId: userId,
             name: name,
-            roomId: parsedData.roomId,
+            message: "You Have Left The Room",
           })
         );
       } else if (parsedData.type == MessageType.ERASER) {
-        const parsedEraseData: WS_Message_Erase = JSON.parse(data.toString());
-        const message = parsedEraseData.message;
-        if (!message) {
-          ws.send("Empty message is not allowed");
+        const EraseData: WS_Erase_Shape = JSON.parse(data.toString());
+        const shapeId = EraseData.shapeId;
+        if (!shapeId) {
+          ws.send("no Shape to delete");
           return;
         }
-        let roomConnections = Rooms.get(parsedEraseData.roomId);
+        let roomConnections = Rooms.get(EraseData.roomId);
         if (!roomConnections) return;
-        console.log("shapes to remove from db");
-        console.log(message);
-        console.log(typeof message);
 
         await prisma.shape.deleteMany({
           where: {
-            id: { in: message },
+            id: { in: shapeId },
           },
         });
 
@@ -115,29 +112,33 @@ wss.on("connection", (ws: WebSocket, request) => {
           socket.send(
             JSON.stringify({
               type: MessageType.ERASER,
-              message: message,
-              roomId: parsedEraseData.roomId,
+              roomId: EraseData.roomId,
               userId: userId,
               name: name,
+              message: EraseData.message,
+              shapeId: shapeId,
             })
           );
         });
       } else if (parsedData.type == MessageType.SHAPE_MOVE) {
-        const message = parsedData.message;
-        if (!message) {
-          ws.send("Empty message is not allowed");
+        const shapeMoveData: WS_Shape_Move = JSON.parse(data.toString());
+        const shapeToMove = shapeMoveData.shape;
+        if (!shapeToMove || !shapeToMove.id) {
+          ws.send("no shape provided");
           return;
         }
-        let roomConnections = Rooms.get(parsedData.roomId);
+        let roomConnections = Rooms.get(shapeMoveData.roomId);
         if (!roomConnections) return;
+
         roomConnections.forEach((socket) => {
           socket.send(
             JSON.stringify({
               type: MessageType.SHAPE_MOVE,
-              message: parsedData.message,
-              roomId: parsedData.roomId,
+              roomId: shapeMoveData.roomId,
               userId: userId,
               name: name,
+              message: shapeMoveData.message,
+              shapeToMove: shapeToMove,
             })
           );
         });
@@ -153,20 +154,21 @@ wss.on("connection", (ws: WebSocket, request) => {
           socket.send(
             JSON.stringify({
               type: MessageType.SHAPE_RESIZE,
-              message: parsedData.message,
               roomId: parsedData.roomId,
               userId: userId,
               name: name,
+              message: parsedData.message,
             })
           );
         });
       } else if (parsedData.type == MessageType.PREVIEW_SHAPE) {
-        const message = parsedData.message;
-        if (!message) {
-          ws.send("Empty message is not allowed");
+        const previewShapeData: WS_New_Shape = JSON.parse(data.toString());
+        const shape = previewShapeData.shape;
+        if (!shape) {
+          ws.send("no shape provided");
           return;
         }
-        let roomConnections = Rooms.get(parsedData.roomId);
+        let roomConnections = Rooms.get(previewShapeData.roomId);
 
         if (!roomConnections) return;
 
@@ -174,30 +176,30 @@ wss.on("connection", (ws: WebSocket, request) => {
           socket.send(
             JSON.stringify({
               type: MessageType.PREVIEW_SHAPE,
-              message: parsedData.message,
-              roomId: parsedData.roomId,
+              roomId: previewShapeData.roomId,
               userId: userId,
               name: name,
+              message: previewShapeData.message,
+              shape: previewShapeData.shape,
             })
           );
         });
       } else if (parsedData.type == MessageType.SHAPE) {
-        const roomId = parsedData.roomId;
-        const message = parsedData.message;
-        if (!message) {
-          ws.send("Empty message is not allowed");
+        const shapeData: WS_New_Shape = JSON.parse(data.toString());
+        const newShape: Shape = shapeData.shape;
+        if (!newShape || !newShape.id) {
+          ws.send("no shape provided");
           return;
         }
-        let roomConnections = Rooms.get(parsedData.roomId);
+        let roomConnections = Rooms.get(shapeData.roomId);
         if (!roomConnections) return;
-
         //db call
         const shape = await prisma.shape.create({
           data: {
-            id: parsedData.id,
+            id: newShape.id,
             userId: userId,
-            roomId: roomId,
-            message: JSON.stringify(message),
+            roomId: shapeData.roomId,
+            message: JSON.stringify(newShape),
           },
         });
 
@@ -206,10 +208,11 @@ wss.on("connection", (ws: WebSocket, request) => {
           socket.send(
             JSON.stringify({
               type: MessageType.SHAPE,
-              message: parsedData.message,
-              roomId: parsedData.roomId,
+              roomId: shapeData.roomId,
               userId: userId,
               name: name,
+              message: shapeData.message,
+              shape: newShape,
             })
           );
         });

@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "./button";
-import { Tool } from "@/canvas/types/types";
+import { Tool } from "@repo/types/canvasTypes";
 import {
   Square,
   Hand,

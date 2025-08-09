@@ -1,4 +1,4 @@
-import { TextShape } from "../types/types";
+import { TextShape } from "@repo/types/canvasTypes";
 
 export function drawText(ctx: CanvasRenderingContext2D, shape: TextShape) {
   const text = shape.text;

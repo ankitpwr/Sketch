@@ -10,7 +10,9 @@
   "exports": {
     "./commonTypes": "./dist/commonTypes.js",
     "./zodSchema": "./dist/zodSchema.js",
-    "./wsTypes": "./dist/wsTypes.js"
+    "./wsTypes": "./dist/wsTypes.js",
+    "./canvasTypes": "./dist/canvasTypes.js",
+    "./drawingConfig": "./dist/drawingConfig.js"
   },
   "keywords": [],
   "author": "",

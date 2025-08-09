@@ -17,7 +17,7 @@ import {
   StrokeWidth,
   Tapper,
   Thinning,
-} from "@/canvas/utils/drawingConfig";
+} from "@repo/types/drawingConfig";
 
 export default function PencilMenu({
   canvasEngine,

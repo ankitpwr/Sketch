@@ -1,5 +1,5 @@
 import getStroke from "perfect-freehand";
-import { PencilShape } from "../types/types";
+import { PencilShape } from "@repo/types/canvasTypes";
 
 export function drawPencil(ctx: CanvasRenderingContext2D, shape: PencilShape) {
   ctx.save();

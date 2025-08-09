@@ -15,8 +15,8 @@ import {
 import { XIcon } from "./svgIcons";
 import ColorSelection from "./colorSelector";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
-import { Tool } from "@/canvas/types/types";
-import { CanvasColor } from "@/canvas/utils/drawingConfig";
+import { Tool } from "@repo/types/canvasTypes";
+import { CanvasColor } from "@repo/types/drawingConfig";
 import DropDownContainer from "./dropDownContainer";
 
 export default function DropDown({

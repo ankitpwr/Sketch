@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DropDown from "./dropDown";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
-import { Tool } from "@/canvas/types/types";
+import { Tool } from "@repo/types/canvasTypes";
 import DropDownContainer from "./dropDownContainer";
 import Button from "./button";
 import { Menu, Palette } from "lucide-react";

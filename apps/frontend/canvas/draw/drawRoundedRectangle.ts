@@ -1,5 +1,5 @@
-import { RectangleShape } from "../types/types";
-import { getLineDashPattern } from "../utils/drawingConfig";
+import { RectangleShape } from "@repo/types/canvasTypes";
+import { getLineDashPattern } from "@repo/types/drawingConfig";
 
 export function drawRoundedRectangle(
   ctx: CanvasRenderingContext2D,

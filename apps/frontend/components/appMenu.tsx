@@ -5,7 +5,7 @@ import {
   BackgroundColor,
   StrokeColor,
   StrokeType,
-} from "@/canvas/utils/drawingConfig";
+} from "@repo/types/drawingConfig";
 
 import ColorSelection from "./colorSelector";
 import ColorPicker from "./colorPicker";
@@ -13,7 +13,7 @@ import PencilMenu from "./pencilSetting";
 
 import StrokeWidthSelector from "./strokewidth";
 import StrokeStyleSelector from "./strokeStyleSelector";
-import { Tool } from "@/canvas/types/types";
+import { Tool } from "@repo/types/canvasTypes";
 import TextSelector from "./TextSelector";
 import AppMenuContainer from "./appMenuContainer";
 

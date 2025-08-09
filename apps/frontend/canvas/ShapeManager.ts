@@ -1,7 +1,7 @@
 import { drawRoundedRectangle } from "./draw/drawRoundedRectangle";
 import { SocketHandler } from "./SocketHandler";
-import { ResizeHandlers, Shape, ShapeType } from "./types/types";
-import { BoundingBorderStyles, StrokeColor } from "./utils/drawingConfig";
+import { ResizeHandlers, Shape, ShapeType } from "@repo/types/canvasTypes";
+import { BoundingBorderStyles, StrokeColor } from "@repo/types/drawingConfig";
 
 interface ShapeManagerDependencies {
   ctx: CanvasRenderingContext2D;
@@ -78,7 +78,7 @@ export class ShapeManager {
         break;
     }
     if (this.socketHandler) {
-      this.socketHandler.shapeMove(shape);
+      this.socketHandler.shapeMove(shape, false);
     }
 
     this.selectedShape.offsetX = currentX;

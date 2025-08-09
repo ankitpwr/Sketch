@@ -1,6 +1,5 @@
-import { LineShape } from "../types/types";
-import { getLineDashPattern } from "../utils/drawingConfig";
-
+import { LineShape } from "@repo/types/canvasTypes";
+import { getLineDashPattern } from "@repo/types/drawingConfig";
 export function drawLine(ctx: CanvasRenderingContext2D, shape: LineShape) {
   ctx.save();
   ctx.fillStyle = shape.style.background;

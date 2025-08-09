@@ -1,3 +1,5 @@
+import { Shape } from "./canvasTypes";
+
 export enum MessageType {
   JOIN = "JOIN",
   LEAVE = "LEAVE",
@@ -8,21 +10,24 @@ export enum MessageType {
   SHAPE_MOVE = "SHAPE_MOVE",
   SHAPE_RESIZE = "SHAPE_RESIZE",
 }
-
-export interface WS_Message_Shape {
+export interface WS_Message {
   id: string;
   type: MessageType;
   roomId: string;
-  message: string | null;
+  message: string;
 }
-export interface WS_Message_Erase {
-  id: string;
-  type: MessageType;
-  roomId: string;
-  message: string[];
+export interface WS_New_Shape extends WS_Message {
+  shape: Shape;
+}
+export interface WS_Erase_Shape extends WS_Message {
+  shapeId: string[];
 }
 
-export type ParsedData = WS_Message_Erase | WS_Message_Shape;
+export interface WS_Shape_Move extends WS_Message {
+  shape: Shape;
+}
+
+export type ParsedData = WS_Message;
 
 export interface CustomWebSocket extends WebSocket {
   userId: string;

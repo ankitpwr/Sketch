@@ -13,9 +13,9 @@ import {
   Users,
 } from "lucide-react";
 import ColorSelection from "./colorSelector";
-import { Tool } from "@/canvas/types/types";
+import { Tool } from "@repo/types/canvasTypes";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
-import { CanvasColor } from "@/canvas/utils/drawingConfig";
+import { CanvasColor } from "@repo/types/drawingConfig";
 import { XIcon } from "./svgIcons";
 export default function DropDownContainer({
   canvasEngine,
