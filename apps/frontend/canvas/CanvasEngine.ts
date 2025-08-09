@@ -374,13 +374,16 @@ export class CanvasEngine {
       if (this.standalone) {
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
       } else {
-        this.sockethandler?.shapeResize(shape);
+        this.sockethandler?.shapeResize(shape, true);
       }
       this.shapeMangager.clearResizeHandler();
       this.render();
     } else if (this.action == "moving") {
       if (this.standalone) {
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
+      } else {
+        const shapeToMove = this.existingShapes[this.selectedShape.index];
+        this.sockethandler?.shapeMove(shapeToMove, true);
       }
 
       this.action = "none";

@@ -130,6 +130,17 @@ wss.on("connection", (ws: WebSocket, request) => {
         let roomConnections = Rooms.get(shapeMoveData.roomId);
         if (!roomConnections) return;
 
+        if (shapeMoveData.lastMove) {
+          await prisma.shape.update({
+            where: {
+              id: shapeToMove.id,
+            },
+            data: {
+              message: JSON.stringify(shapeToMove),
+            },
+          });
+        }
+
         roomConnections.forEach((socket) => {
           socket.send(
             JSON.stringify({
@@ -143,21 +154,36 @@ wss.on("connection", (ws: WebSocket, request) => {
           );
         });
       } else if (parsedData.type == MessageType.SHAPE_RESIZE) {
-        const message = parsedData.message;
-        if (!message) {
+        const shapeResizeData: WS_Shape_Move = JSON.parse(data.toString());
+        const shapeToResize = shapeResizeData.shape;
+        if (!shapeToResize || !shapeToResize.id) {
           ws.send("Empty message is not allowed");
           return;
         }
         let roomConnections = Rooms.get(parsedData.roomId);
         if (!roomConnections) return;
+
+        if (shapeResizeData.lastMove) {
+          console.log("storing shape move in db");
+          await prisma.shape.update({
+            where: {
+              id: shapeToResize.id,
+            },
+            data: {
+              message: JSON.stringify(shapeToResize),
+            },
+          });
+        }
+
         roomConnections.forEach((socket) => {
           socket.send(
             JSON.stringify({
               type: MessageType.SHAPE_RESIZE,
-              roomId: parsedData.roomId,
+              roomId: shapeResizeData.roomId,
               userId: userId,
               name: name,
-              message: parsedData.message,
+              message: shapeResizeData.message,
+              shapeToResize: shapeToResize,
             })
           );
         });

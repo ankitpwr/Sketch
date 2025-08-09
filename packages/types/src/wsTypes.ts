@@ -24,6 +24,7 @@ export interface WS_Erase_Shape extends WS_Message {
 }
 
 export interface WS_Shape_Move extends WS_Message {
+  lastMove: boolean;
   shape: Shape;
 }
 

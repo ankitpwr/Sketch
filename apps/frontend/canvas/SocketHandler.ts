@@ -56,7 +56,7 @@ export class SocketHandler {
         this.manageShape(shape);
       } else if (messageData.type == MessageType.SHAPE_RESIZE) {
         if (messageData.userId == this.userId) return;
-        const shape = messageData.message;
+        const shape = messageData.shapeToResize;
         this.manageShape(shape);
       }
     };
@@ -110,12 +110,14 @@ export class SocketHandler {
     );
   };
 
-  shapeResize = (shape: Shape) => {
+  shapeResize = (shape: Shape, lastMove: boolean) => {
     this.socket.send(
       JSON.stringify({
         type: MessageType.SHAPE_RESIZE,
         roomId: this.roomId,
-        message: shape,
+        message: "shape resize",
+        shape: shape,
+        lastMove: lastMove,
       })
     );
   };
