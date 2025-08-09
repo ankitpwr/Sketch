@@ -192,7 +192,6 @@ wss.on("connection", (ws: WebSocket, request) => {
         if (!roomConnections) return;
 
         //db call
-        console.log(`db call ${parsedData.id}`);
         const shape = await prisma.shape.create({
           data: {
             id: parsedData.id,
@@ -201,8 +200,6 @@ wss.on("connection", (ws: WebSocket, request) => {
             message: JSON.stringify(message),
           },
         });
-        console.log(`shape data is`);
-        console.log(shape);
 
         //send message
         roomConnections?.forEach((socket) => {

@@ -459,16 +459,16 @@ export class CanvasEngine {
     } else if (this.action == "moving") {
       this.shapeMangager.handleShapeMovement(currentX, currentY);
     } else if (this.currentTool == "Eraser") {
-      console.log(`in mouse move eraser`);
-      console.log(this.existingShapes);
-      const newlyRemovedShape = this.existingShapes.filter((s, index) => {
-        return isNeartheShape(currentX, currentY, s);
-      });
-      if (newlyRemovedShape.length > 0) {
-        this.shapeToRemove.push(...newlyRemovedShape);
-        const uniqueValues = [...new Set(this.shapeToRemove)];
-        this.shapeToRemove.length = 0;
-        this.shapeToRemove.push(...uniqueValues);
+      let topShape: Shape | null = null;
+      for (let i = this.existingShapes.length - 1; i >= 0; i--) {
+        const shape = this.existingShapes[i];
+        if (isNeartheShape(currentX, currentY, shape)) {
+          topShape = shape;
+          break;
+        }
+      }
+      if (topShape && !this.shapeToRemove.some((s) => s.id == topShape.id)) {
+        this.shapeToRemove.push(topShape);
       }
     } else if (
       this.currentTool == "Rectangle" ||
