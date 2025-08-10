@@ -1,5 +1,6 @@
 import {
   Action,
+  ActionTool,
   Points,
   Shape,
   ShapeType,
@@ -83,8 +84,8 @@ export class CanvasEngine {
     this.dpr = dpr;
     this.ctx.scale(this.dpr, this.dpr);
     this.existingShapes = [];
-    this.action = "none";
-    this.currentTool = "Pan";
+    this.action = Action.IDLE;
+    this.currentTool = ActionTool.HAND;
     this.mouseDown = false;
     this.startX = 0;
     this.startY = 0;
@@ -182,24 +183,24 @@ export class CanvasEngine {
       //prettier-ignore
 
       switch (s.type) {
-        case "Rectangle":
-        case "Ellipse":
-        case "Diamond":
-          if (s.type == "Rectangle") drawRoundedRectangle(this.ctx, s);
-          if (s.type == "Ellipse") drawEllipse(this.ctx, s);
-          if (s.type == "Diamond") drawDiamond(this.ctx, s);
+        case ShapeType.RECTANGLE:
+        case ShapeType.ELLIPSE:
+        case ShapeType.DIAMOND:
+          if (s.type == ShapeType.RECTANGLE) drawRoundedRectangle(this.ctx, s);
+          if (s.type == ShapeType.ELLIPSE) drawEllipse(this.ctx, s);
+          if (s.type == ShapeType.DIAMOND) drawDiamond(this.ctx, s);
           break;
 
-        case "Line":
+        case ShapeType.LINE:
           drawLine(this.ctx, s);
           break;
-        case "Arrow":
+        case ShapeType.ARROW:
           drawArrow(this.ctx, s);
           break;
-        case "Pencil":
+        case ShapeType.PENCIL:
           drawPencil(this.ctx, s);
           break;
-        case "Text":
+        case ShapeType.TEXT:
           drawText(this.ctx, s);
           break;
       }
@@ -266,7 +267,7 @@ export class CanvasEngine {
     if (textData.length != 0) {
       const textShape: TextShape = {
         id: cuid(),
-        type: "Text",
+        type: ShapeType.TEXT,
         startX: this.startX,
         startY: this.startY,
         text: this.textArea.value,
@@ -284,48 +285,51 @@ export class CanvasEngine {
       }
     }
     this.render();
-    this.action = "none";
+    this.action = Action.IDLE;
     this.textArea.style.display = "none";
   };
 
   handleMouseDown = (e: MouseEvent) => {
-    if (this.action == "writing") {
+    if (this.action == Action.WRITING) {
       return;
     }
     this.mouseDown = true;
     this.startX = this.getCoordinates(e)[0];
     this.startY = this.getCoordinates(e)[1];
 
-    if (this.currentTool == "Text") {
+    if (this.currentTool == ShapeType.TEXT) {
       e.preventDefault();
-      this.action = "writing";
+      this.action = Action.WRITING;
       const screenX = this.startX * this.scale + this.panX * this.scale;
       const screenY = this.startY * this.scale + this.panY * this.scale;
       this.handleText(screenX, screenY);
     }
 
-    if (this.currentTool == "Select" && this.selectedShape.index != -1) {
+    if (
+      this.currentTool == ActionTool.SELECT &&
+      this.selectedShape.index != -1
+    ) {
       const resizeHandlers = this.shapeMangager.resizeHandlers;
 
       for (let i = 0; i < resizeHandlers.length; i++) {
         const currentHandler = resizeHandlers[i];
         if (isNeartheShape(this.startX, this.startY, currentHandler)) {
           this.shapeMangager.resizeSide = currentHandler.side;
-          this.action = "resizing";
+          this.action = Action.RESIZING;
           this.render();
           return;
         }
       }
     }
     let shapeFound = false;
-    if (this.currentTool == "Select") {
+    if (this.currentTool == ActionTool.SELECT) {
       for (let i = this.existingShapes.length - 1; i >= 0; i--) {
         if (isNeartheShape(this.startX, this.startY, this.existingShapes[i])) {
           this.selectedShape.index = i;
           this.selectedShape.type = this.existingShapes[i].type;
           this.selectedShape.offsetX = this.startX;
           this.selectedShape.offsetY = this.startY;
-          this.action = "moving";
+          this.action = Action.MOVING;
           shapeFound = true;
           this.render();
           break;
@@ -350,14 +354,14 @@ export class CanvasEngine {
     const currentX = this.getCoordinates(e)[0];
     const currentY = this.getCoordinates(e)[1];
 
-    if (this.action == "resizing") {
+    if (this.action == Action.RESIZING) {
       const index = this.selectedShape.index;
       const shape = this.existingShapes[index];
       if (
         shape &&
-        (shape.type === "Rectangle" ||
-          shape.type === "Ellipse" ||
-          shape.type === "Diamond")
+        (shape.type === ShapeType.RECTANGLE ||
+          shape.type === ShapeType.ELLIPSE ||
+          shape.type === ShapeType.DIAMOND)
       ) {
         const tempStartX = shape.startX;
         const tempStartY = shape.startY;
@@ -369,7 +373,7 @@ export class CanvasEngine {
         shape.endX = Math.max(tempStartX, tempEndX);
         shape.endY = Math.max(tempStartY, tempEndY);
       }
-      this.action = "none";
+      this.action = Action.IDLE;
 
       if (this.standalone) {
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
@@ -378,7 +382,7 @@ export class CanvasEngine {
       }
       this.shapeMangager.clearResizeHandler();
       this.render();
-    } else if (this.action == "moving") {
+    } else if (this.action == Action.MOVING) {
       if (this.standalone) {
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
       } else {
@@ -386,9 +390,12 @@ export class CanvasEngine {
         this.sockethandler?.shapeMove(shapeToMove, true);
       }
 
-      this.action = "none";
+      this.action = Action.IDLE;
       this.render();
-    } else if (this.currentTool == "Eraser" && this.shapeToRemove.length > 0) {
+    } else if (
+      this.currentTool == ActionTool.ERASER &&
+      this.shapeToRemove.length > 0
+    ) {
       const shapeToKeep = this.existingShapes.filter(
         (s) => !this.shapeToRemove.some((rem) => rem.id === s.id)
       );
@@ -396,32 +403,37 @@ export class CanvasEngine {
       this.existingShapes.push(...shapeToKeep);
       this.render();
       if (!this.standalone) {
+        console.log("to erase");
+
         this.sockethandler?.eraseShape(this.shapeToRemove);
       } else {
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
       }
       this.shapeToRemove = [];
     } else if (
-      this.currentTool == "Rectangle" ||
-      this.currentTool == "Ellipse" ||
-      this.currentTool == "Diamond" ||
-      this.currentTool == "Line" ||
-      this.currentTool == "Arrow" ||
-      this.currentTool == "Pencil"
+      this.currentTool == ShapeType.RECTANGLE ||
+      this.currentTool == ShapeType.ELLIPSE ||
+      this.currentTool == ShapeType.DIAMOND ||
+      this.currentTool == ShapeType.LINE ||
+      this.currentTool == ShapeType.ARROW ||
+      this.currentTool == ShapeType.PENCIL
     ) {
       const currentShape = this.currentTool;
       let tempShape: Shape;
-      if (currentShape == "Pencil") {
+      if (currentShape == ShapeType.PENCIL) {
         if (this.points.length == 0)
           this.points.push([this.startX, this.startY]);
         this.points.push([currentX, currentY]);
         tempShape = {
           id: cuid(),
-          type: "Pencil",
+          type: ShapeType.PENCIL,
           points: this.points,
           style: { ...this.CurrentPencilStyles },
         };
-      } else if (currentShape == "Line" || currentShape == "Arrow") {
+      } else if (
+        currentShape == ShapeType.LINE ||
+        currentShape == ShapeType.ARROW
+      ) {
         tempShape = {
           id: cuid(),
           type: currentShape,
@@ -460,11 +472,11 @@ export class CanvasEngine {
     const currentY = this.getCoordinates(e)[1];
 
     if (!this.mouseDown) return;
-    else if (this.action == "resizing") {
+    else if (this.action == Action.RESIZING) {
       this.shapeMangager.handleResizeShape(currentX, currentY);
-    } else if (this.action == "moving") {
+    } else if (this.action == Action.MOVING) {
       this.shapeMangager.handleShapeMovement(currentX, currentY);
-    } else if (this.currentTool == "Eraser") {
+    } else if (this.currentTool == ActionTool.ERASER) {
       let topShape: Shape | null = null;
       for (let i = this.existingShapes.length - 1; i >= 0; i--) {
         const shape = this.existingShapes[i];
@@ -477,24 +489,27 @@ export class CanvasEngine {
         this.shapeToRemove.push(topShape);
       }
     } else if (
-      this.currentTool == "Rectangle" ||
-      this.currentTool == "Ellipse" ||
-      this.currentTool == "Diamond" ||
-      this.currentTool == "Line" ||
-      this.currentTool == "Arrow" ||
-      this.currentTool == "Pencil"
+      this.currentTool == ShapeType.RECTANGLE ||
+      this.currentTool == ShapeType.ELLIPSE ||
+      this.currentTool == ShapeType.DIAMOND ||
+      this.currentTool == ShapeType.LINE ||
+      this.currentTool == ShapeType.ARROW ||
+      this.currentTool == ShapeType.PENCIL
     ) {
       const currentShape = this.currentTool;
-      if (currentShape == "Pencil") {
+      if (currentShape == ShapeType.PENCIL) {
         if (this.points.length == 0)
           this.points.push([this.startX, this.startY]);
         this.points.push([currentX, currentY]);
         this.previewShape = {
-          type: "Pencil",
+          type: ShapeType.PENCIL,
           points: this.points,
           style: { ...this.CurrentPencilStyles },
         };
-      } else if (currentShape == "Line" || currentShape == "Arrow") {
+      } else if (
+        currentShape == ShapeType.LINE ||
+        currentShape == ShapeType.ARROW
+      ) {
         const tempShape: Shape = {
           type: currentShape,
           startX: this.startX,

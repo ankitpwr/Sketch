@@ -1,13 +1,22 @@
 import { PencilStyles, ShapeStyles, TextStyle } from "./drawingConfig";
 
-export type ShapeType =
-  | "Rectangle"
-  | "Diamond"
-  | "Ellipse"
-  | "Line"
-  | "Arrow"
-  | "Pencil"
-  | "Text";
+export enum ShapeType {
+  RECTANGLE = "RECTANGLE",
+  DIAMOND = "DIAMOND",
+  ELLIPSE = "ELLIPSE",
+  LINE = "LINE",
+  ARROW = "ARROW",
+  PENCIL = "PENCIL",
+  TEXT = "TEXT",
+}
+
+export enum ActionTool {
+  HAND = "HAND",
+  SELECT = "SELECT",
+  ERASER = "ERASER",
+}
+
+export type Tool = ShapeType | ActionTool;
 export type Shape =
   | RectangleShape
   | EllipseShape
@@ -28,19 +37,19 @@ interface BoundedShape extends BaseShape {
   endY: number;
   style: ShapeStyles;
 }
-export type RectangleShape = BoundedShape & { type: "Rectangle" };
-export type EllipseShape = BoundedShape & { type: "Ellipse" };
-export type DiamondShape = BoundedShape & { type: "Diamond" };
-export type LineShape = BoundedShape & { type: "Line" };
-export type ArrowShape = BoundedShape & { type: "Arrow" };
+export type RectangleShape = BoundedShape & { type: ShapeType.RECTANGLE };
+export type EllipseShape = BoundedShape & { type: ShapeType.ELLIPSE };
+export type DiamondShape = BoundedShape & { type: ShapeType.DIAMOND };
+export type LineShape = BoundedShape & { type: ShapeType.LINE };
+export type ArrowShape = BoundedShape & { type: ShapeType.ARROW };
 
 export interface PencilShape extends BaseShape {
-  type: "Pencil";
+  type: ShapeType.PENCIL;
   points: Points[];
   style: PencilStyles;
 }
 export interface TextShape extends BaseShape {
-  type: "Text";
+  type: ShapeType.TEXT;
   text: string;
   startX: number;
   startY: number;
@@ -49,17 +58,18 @@ export interface TextShape extends BaseShape {
   height: number;
 }
 export interface ResizeHandlers extends BoundedShape {
-  type: "Rectangle";
+  type: ShapeType.RECTANGLE;
   side: "TopLeft" | "TopRight" | "BottomLeft" | "BottomRight";
 }
 
-export type Action =
-  | "drawing"
-  | "panning"
-  | "zooming"
-  | "moving"
-  | "resizing"
-  | "writing"
-  | "none";
-export type Tool = "Pan" | "Select" | ShapeType | "Eraser";
+export enum Action {
+  DRAWING = "DRAWING",
+  PANNING = "PANNING",
+  MOVING = "MOVING",
+  RESIZING = "RESIZING",
+  WRITING = "WRITING",
+  IDLE = "IDLE",
+  ZOOMING = "ZOOMING",
+}
+
 export type Points = [number, number];

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DropDown from "./dropDown";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
-import { Tool } from "@repo/types/canvasTypes";
+import { Action, ActionTool, Tool } from "@repo/types/canvasTypes";
 import DropDownContainer from "./dropDownContainer";
 import Button from "./button";
 import { Menu, Palette } from "lucide-react";
@@ -42,24 +42,29 @@ export default function MobileAppBar({
           <DropDownContainer tool={tool} canvasEngine={canvasEngine} />
         )}
       </div>
-      {tool != "Pan" && tool != "Select" && tool != "Eraser" && (
-        <div className="flex">
-          <Button
-            onClickhandler={handleShapeSetting}
-            varient={"dropdown"}
-            size={"md"}
-            isActive={false}
-          >
-            {" "}
-            <Palette color="black" size={18} />{" "}
-          </Button>
-          {shapeSetting && (
-            <div className=" rounded-lg  fixed w-full left-1 bottom-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
-              <AppMenuContainer tool={tool} canvasEngine={canvasEngine} />{" "}
-            </div>
-          )}
-        </div>
-      )}
+      {tool != ActionTool.HAND &&
+        tool != ActionTool.SELECT &&
+        tool != ActionTool.ERASER && (
+          <div className="flex">
+            <Button
+              onClickhandler={handleShapeSetting}
+              varient={"dropdown"}
+              size={"md"}
+              isActive={false}
+            >
+              {" "}
+              <Palette color="black" size={18} />{" "}
+            </Button>
+            {shapeSetting && (
+              <div className=" rounded-lg  fixed w-full left-1 bottom-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+                <AppMenuContainer
+                  tool={tool}
+                  canvasEngine={canvasEngine}
+                />{" "}
+              </div>
+            )}
+          </div>
+        )}
     </div>
   );
 }

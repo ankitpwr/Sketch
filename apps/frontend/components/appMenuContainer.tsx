@@ -10,7 +10,7 @@ import PencilMenu from "./pencilSetting";
 
 import StrokeWidthSelector from "./strokewidth";
 import StrokeStyleSelector from "./strokeStyleSelector";
-import { Tool } from "@repo/types/canvasTypes";
+import { ShapeType, Tool } from "@repo/types/canvasTypes";
 import TextSelector from "./TextSelector";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 
@@ -180,17 +180,17 @@ export default function AppMenuContainer({
         </div>
       </div>
 
-      {tool != "Pencil" && tool != "Text" && (
+      {tool != ShapeType.PENCIL && tool != ShapeType.TEXT && (
         <StrokeWidthSelector canvasEngine={canvasEngine} />
       )}
 
-      {tool != "Pencil" && tool != "Text" && (
+      {tool != ShapeType.PENCIL && tool != ShapeType.TEXT && (
         <StrokeStyleSelector canvasEngine={canvasEngine} />
       )}
 
-      {tool == "Pencil" && <PencilMenu canvasEngine={canvasEngine} />}
+      {tool == ShapeType.PENCIL && <PencilMenu canvasEngine={canvasEngine} />}
 
-      {tool == "Text" && <TextSelector canvasEngine={canvasEngine} />}
+      {tool == ShapeType.TEXT && <TextSelector canvasEngine={canvasEngine} />}
     </div>
   );
 }

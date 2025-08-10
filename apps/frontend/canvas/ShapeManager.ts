@@ -58,18 +58,18 @@ export class ShapeManager {
     const deltaX = currentX - this.selectedShape.offsetX;
     const deltaY = currentY - this.selectedShape.offsetY;
     switch (shape.type) {
-      case "Rectangle":
-      case "Diamond":
-      case "Ellipse":
-      case "Line":
-      case "Arrow":
+      case ShapeType.RECTANGLE:
+      case ShapeType.DIAMOND:
+      case ShapeType.ELLIPSE:
+      case ShapeType.LINE:
+      case ShapeType.ARROW:
         shape.startX += deltaX;
         shape.startY += deltaY;
         shape.endX += deltaX;
         shape.endY += deltaY;
         this.triggerRender();
         break;
-      case "Pencil":
+      case ShapeType.PENCIL:
         shape.points = shape.points.map((point) => {
           return [point[0] + deltaX, point[1] + deltaY];
         });
@@ -126,15 +126,20 @@ export class ShapeManager {
     const index = this.selectedShape.index;
     const shape = this.existingShapes[index];
 
-    const extra = shape.type == "Arrow" ? 16 : shape.type == "Line" ? 10 : 5;
+    const extra =
+      shape.type == ShapeType.ARROW
+        ? 16
+        : shape.type == ShapeType.LINE
+          ? 10
+          : 5;
     const width = 5 / this.scale;
     this.resizeHandlers = [];
     switch (shape.type) {
-      case "Rectangle":
-      case "Diamond":
-      case "Ellipse":
-      case "Line":
-      case "Arrow":
+      case ShapeType.RECTANGLE:
+      case ShapeType.DIAMOND:
+      case ShapeType.ELLIPSE:
+      case ShapeType.LINE:
+      case ShapeType.ARROW:
         const minX = Math.min(shape.startX, shape.endX) - extra;
         const minY = Math.min(shape.startY, shape.endY) - extra;
         const maxX = Math.max(shape.startX, shape.endX) + extra;
@@ -146,7 +151,7 @@ export class ShapeManager {
         drawRoundedRectangle(
           this.ctx,
           {
-            type: "Rectangle",
+            type: ShapeType.RECTANGLE,
             startX: minX - width,
             startY: minY - width,
             endX: minX + width,
@@ -156,12 +161,12 @@ export class ShapeManager {
           { isBoundingBox: true, scale: this.scale }
         );
         //prettier-ignore
-        const rect1:ResizeHandlers= {type:"Rectangle",side:"TopLeft", startX:minX-width, startY:minY-width, endX:minX+width, endY:minY+width, style:BoundingBorderStyles};
+        const rect1:ResizeHandlers= {type:ShapeType.RECTANGLE,side:"TopLeft", startX:minX-width, startY:minY-width, endX:minX+width, endY:minY+width, style:BoundingBorderStyles};
         this.resizeHandlers.push(rect1);
         drawRoundedRectangle(
           this.ctx,
           {
-            type: "Rectangle",
+            type: ShapeType.RECTANGLE,
             startX: minX - width,
             startY: maxY - width,
             endX: minX + width,
@@ -171,7 +176,7 @@ export class ShapeManager {
           { isBoundingBox: true, scale: this.scale }
         );
         const rect2: ResizeHandlers = {
-          type: "Rectangle",
+          type: ShapeType.RECTANGLE,
           side: "BottomLeft",
           startX: minX - width,
           startY: maxY - width,
@@ -183,7 +188,7 @@ export class ShapeManager {
         drawRoundedRectangle(
           this.ctx,
           {
-            type: "Rectangle",
+            type: ShapeType.RECTANGLE,
             startX: maxX - width,
             startY: maxY - width,
             endX: maxX + width,
@@ -193,7 +198,7 @@ export class ShapeManager {
           { isBoundingBox: true, scale: this.scale }
         );
         const rect3: ResizeHandlers = {
-          type: "Rectangle",
+          type: ShapeType.RECTANGLE,
           side: "BottomRight",
           startX: maxX - width,
           startY: maxY - width,
@@ -205,7 +210,7 @@ export class ShapeManager {
         drawRoundedRectangle(
           this.ctx,
           {
-            type: "Rectangle",
+            type: ShapeType.RECTANGLE,
             startX: maxX - width,
             startY: minY - width,
             endX: maxX + width,
@@ -215,7 +220,7 @@ export class ShapeManager {
           { isBoundingBox: true, scale: this.scale }
         );
         const rect4: ResizeHandlers = {
-          type: "Rectangle",
+          type: ShapeType.RECTANGLE,
           side: "TopRight",
           startX: minX - width,
           startY: minY - width,

@@ -2,7 +2,12 @@
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Button from "./button";
-import { TextShape, Tool } from "@repo/types/canvasTypes";
+import {
+  ActionTool,
+  ShapeType,
+  TextShape,
+  Tool,
+} from "@repo/types/canvasTypes";
 import Tools from "./tools";
 import TextArea from "./textArea";
 import AppMenu from "./appMenu";
@@ -24,19 +29,19 @@ export default function Canvas({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // const [canvasEngine, setcanvasEngine] = useState<CanvasEngine>();
   const engineRef = useRef<CanvasEngine | null>(null);
-  const [tool, setTool] = useState<Tool>("Pan");
+  const [tool, setTool] = useState<Tool>(ActionTool.HAND);
   const textRef = useRef(null);
   const [dpr, setdpr] = useState(1);
 
   const isShapeTool = () => {
     return (
-      tool == "Rectangle" ||
-      tool == "Diamond" ||
-      tool == "Ellipse" ||
-      tool == "Line" ||
-      tool == "Arrow" ||
-      tool == "Text" ||
-      tool == "Pencil"
+      tool == ShapeType.RECTANGLE ||
+      tool == ShapeType.DIAMOND ||
+      tool == ShapeType.ELLIPSE ||
+      tool == ShapeType.LINE ||
+      tool == ShapeType.ARROW ||
+      tool == ShapeType.TEXT ||
+      tool == ShapeType.PENCIL
     );
   };
 

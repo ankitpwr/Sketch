@@ -1,15 +1,15 @@
-import { ResizeHandlers, Shape } from "@repo/types/canvasTypes";
+import { ResizeHandlers, Shape, ShapeType } from "@repo/types/canvasTypes";
 
 export function isNeartheShape(currentX: number, currentY: number, s: Shape) {
   //prettier-ignore
-  if(s.type=="Diamond"|| s.type=="Rectangle" || s.type=="Ellipse"){
+  if(s.type==ShapeType.DIAMOND|| s.type==ShapeType.RECTANGLE || s.type==ShapeType.ELLIPSE){
           const minX = Math.min(s.startX, s.endX);
           const minY = Math.min(s.startY, s.endY);
           const maxX = Math.max(s.startX, s.endX);
           const maxY = Math.max(s.startY, s.endY);
           return minX<=currentX && minY<=currentY &&  maxX>=currentX && maxY>=currentY;
       }
-    else if (s.type == "Line" || s.type == "Arrow") {
+    else if (s.type == ShapeType.LINE || s.type == ShapeType.ARROW) {
       const distanceX = Math.abs(s.startX - s.endX);
       const distanceY = Math.abs(s.startY - s.endY);
       return (
@@ -18,7 +18,7 @@ export function isNeartheShape(currentX: number, currentY: number, s: Shape) {
         distanceY == Math.abs(currentY - s.startY) + Math.abs(s.endY - currentY)
       );
     }
-    else if(s.type=="Pencil"){
+    else if(s.type==ShapeType.PENCIL){
       //use different method 
       let isEqual:boolean= false;
       const threshold=5;
@@ -38,7 +38,7 @@ export function isNeartheShape(currentX: number, currentY: number, s: Shape) {
       }
       return isEqual
     }
-    else if(s.type=="Text"){
+    else if(s.type==ShapeType.TEXT){
         const minX = s.startX;
   const minY = s.startY;
   const maxX = s.startX + s.width;
