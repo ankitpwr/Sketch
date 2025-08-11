@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Button from "./button";
 import Dialog from "./Dialog";
 
-export default function Share() {
+export default function Share({ standalone }: { standalone: boolean }) {
   const [dialogBox, setDialogBox] = useState(false);
   return (
     <div className="fixed top-5 right-5 flex gap-2">
@@ -16,7 +16,9 @@ export default function Share() {
         <p>Share</p>{" "}
       </Button>
 
-      {dialogBox && <Dialog setDialogBox={setDialogBox} />}
+      {dialogBox && (
+        <Dialog setDialogBox={setDialogBox} standalone={standalone} />
+      )}
     </div>
   );
 }

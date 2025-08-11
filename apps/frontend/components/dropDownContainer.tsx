@@ -17,26 +17,23 @@ import { Tool } from "@repo/types/canvasTypes";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import { CanvasColor } from "@repo/types/drawingConfig";
 import { XIcon } from "./svgIcons";
-export default function DropDownContainer({
-  canvasEngine,
-  tool,
-}: {
-  canvasEngine: CanvasEngine;
-  tool: Tool;
-}) {
+import useCanvasStore from "@/app/store/canvas-store";
+export default function DropDownContainer() {
+  const { currentTool, canvasEngine } = useCanvasStore();
+
   const [canvasColor, setCanvasColor] = useState<CanvasColor>(
-    canvasEngine.CanvasColor
+    canvasEngine!.CanvasColor
   );
   const handleCanvasColor = (color: CanvasColor) => {
-    canvasEngine.ChangeCanvasColor(color);
+    canvasEngine!.ChangeCanvasColor(color);
     setCanvasColor(color);
   };
   const isActiveColor = (color: CanvasColor) => {
-    return canvasEngine.CanvasColor == color;
+    return canvasEngine!.CanvasColor == color;
   };
 
   const handleClearCanvas = () => {
-    canvasEngine.clearCanvas();
+    canvasEngine!.clearCanvas();
   };
 
   return (

@@ -13,8 +13,10 @@ import { headers } from "next/headers";
 
 export default function Dialog({
   setDialogBox,
+  standalone,
 }: {
   setDialogBox: Dispatch<SetStateAction<boolean>>;
+  standalone: boolean;
 }) {
   const router = useRouter();
   const refer = useRef<HTMLDivElement | null>(null);
@@ -66,50 +68,95 @@ export default function Dialog({
       ref={refer}
       className="fixed inset-0 bg-gray-300/50  backdrop:blur-sm flex items-center justify-center "
     >
-      <div className="bg-white p-8 relative  rounded-xl  flex flex-col items-center gap-8 w-xl ">
-        <div
-          onClick={() => setDialogBox(false)}
-          className="absolute top-4 right-4"
-        >
-          <X size={18} color="gray" />
-        </div>
-        <div className="flex flex-col p-2 justify-center items-center gap-3">
-          <h2 className="text-2xl font-bold text-[#6965db]">
-            Live Collaboration
-          </h2>
-          <p className="text-md">
-            Invite people to collaborate on your drawing.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 p-4 justify-center items-center">
-          <Button
-            onClickhandler={handleNewRoomCreation}
-            varient={"primary"}
-            size={"md"}
-            isActive={false}
+      {standalone ? (
+        <div className="bg-white p-8 relative  rounded-xl  flex flex-col items-center gap-8 w-xl ">
+          <div
+            onClick={() => setDialogBox(false)}
+            className="absolute top-4 right-4"
           >
-            <p>Create New Room</p>
-          </Button>
-          <h1 className="text-center text-sm">
-            Create a new room and share the room ID with your friends for live
-            collaboration.
-          </h1>
-        </div>
+            <X size={18} color="gray" />
+          </div>
+          <div className="flex flex-col p-2 justify-center items-center gap-3">
+            <h2 className="text-2xl font-bold text-[#6965db]">
+              Live Collaboration
+            </h2>
+            <p className="text-md">
+              Invite people to collaborate on your drawing.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 p-4 justify-center items-center">
+            <Button
+              onClickhandler={handleNewRoomCreation}
+              varient={"primary"}
+              size={"md"}
+              isActive={false}
+            >
+              <p>Create New Room</p>
+            </Button>
+            <h1 className="text-center text-sm">
+              Create a new room and share the room ID with your friends for live
+              collaboration.
+            </h1>
+          </div>
 
-        <div
-          id="border-line"
-          className="w-full h-[1px] rounded-md bg-gray-200"
-        ></div>
+          <div
+            id="border-line"
+            className="w-full h-[1px] rounded-md bg-gray-200"
+          ></div>
 
-        <div className="flex flex-col gap-3 p-4 justify-center items-center">
-          <Button varient={"primary"} size={"md"} isActive={false}>
-            <p>Join Room</p>
-          </Button>
-          <h1 className="text-center text-sm">
-            Join an existing room using a shared room ID.
-          </h1>
+          <div className="flex flex-col gap-3 p-4 justify-center items-center">
+            <Button varient={"primary"} size={"md"} isActive={false}>
+              <p>Join Room</p>
+            </Button>
+            <h1 className="text-center text-sm">
+              Join an existing room using a shared room ID.
+            </h1>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="bg-white p-8 relative  rounded-xl  flex flex-col items-center gap-8 w-xl ">
+          <div
+            onClick={() => setDialogBox(false)}
+            className="absolute top-4 right-4"
+          >
+            <X size={18} color="gray" />
+          </div>
+          <div className="flex flex-col p-2 justify-center items-center gap-3">
+            <h2 className="text-2xl font-bold text-[#6965db]">
+              Live Collaboration
+            </h2>
+            <p className="text-md">Invite people to using Link</p>
+          </div>
+          <div className="flex flex-col gap-3 p-4 justify-center items-center">
+            <Button
+              onClickhandler={handleNewRoomCreation}
+              varient={"primary"}
+              size={"md"}
+              isActive={false}
+            >
+              <p>Create New Room</p>
+            </Button>
+            <h1 className="text-center text-sm">
+              Create a new room and share the room ID with your friends for live
+              collaboration.
+            </h1>
+          </div>
+
+          <div
+            id="border-line"
+            className="w-full h-[1px] rounded-md bg-gray-200"
+          ></div>
+
+          <div className="flex flex-col gap-3 p-4 justify-center items-center">
+            <Button varient={"primary"} size={"md"} isActive={false}>
+              <p>Join Room</p>
+            </Button>
+            <h1 className="text-center text-sm">
+              Join an existing room using a shared room ID.
+            </h1>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

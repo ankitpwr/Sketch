@@ -13,34 +13,32 @@ import {
 } from "./svgIcons";
 import { FontFamily, FontSize } from "@repo/types/drawingConfig";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
+import useCanvasStore from "@/app/store/canvas-store";
 
-export default function TextSelector({
-  canvasEngine,
-}: {
-  canvasEngine: CanvasEngine;
-}) {
+export default function TextSelector() {
+  const { canvasEngine } = useCanvasStore();
   const [fontFamily, setFontFamily] = useState<FontFamily>(
-    canvasEngine.CurrentTextStyle.fontfamily
+    canvasEngine!.CurrentTextStyle.fontfamily
   );
   const [fontSize, setFontSize] = useState<FontSize>(
-    canvasEngine.CurrentTextStyle.fontsize
+    canvasEngine!.CurrentTextStyle.fontsize
   );
   const handleFontFamily = (newFontFamily: FontFamily) => {
-    canvasEngine.CurrentTextStyle.fontfamily = newFontFamily;
+    canvasEngine!.CurrentTextStyle.fontfamily = newFontFamily;
     setFontFamily(newFontFamily);
   };
 
   const handleFontSize = (newFontSize: FontSize) => {
-    canvasEngine.CurrentTextStyle.fontsize = newFontSize;
+    canvasEngine!.CurrentTextStyle.fontsize = newFontSize;
     setFontSize(newFontSize);
   };
 
   const isActiveFontSize = (fontSize: FontSize) => {
-    return canvasEngine.CurrentTextStyle.fontsize == fontSize;
+    return canvasEngine!.CurrentTextStyle.fontsize == fontSize;
   };
 
   const isActiveFontFamily = (fontFamily: FontFamily) => {
-    return fontFamily == canvasEngine.CurrentTextStyle.fontfamily;
+    return fontFamily == canvasEngine!.CurrentTextStyle.fontfamily;
   };
 
   return (

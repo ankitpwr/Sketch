@@ -73,7 +73,7 @@ wss.on("connection", (ws: WebSocket, request) => {
             type: MessageType.JOIN,
             roomId: parsedData.roomId,
             userId: userId,
-            name: name,
+            username: name,
             message: `You Have Joined The Room`,
           })
         );

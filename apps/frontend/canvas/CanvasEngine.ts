@@ -64,8 +64,8 @@ export class CanvasEngine {
   private lastScale: number = 1;
   private standalone: boolean;
   private sockethandler?: SocketHandler;
-  private roomId: string = "";
-  private userId: string = "";
+  private roomId: string | null = null;
+  private userId: string | null = null;
   private shapeToRemove: Shape[] = [];
   constructor(
     canvas: HTMLCanvasElement,
@@ -74,8 +74,8 @@ export class CanvasEngine {
     dpr: number,
     standalone: boolean,
     socket: WebSocket | null,
-    roomId: string,
-    userId: string
+    roomId: string | null,
+    userId: string | null
   ) {
     this.canvas = canvas;
     this.ctx = ctx;
@@ -102,9 +102,11 @@ export class CanvasEngine {
     this.CanvasColor = CanvasColor.white;
     this.pressedKey = null;
 
-    if (socket) {
+    if (!standalone && socket && roomId && userId) {
       this.roomId = roomId;
       this.userId = userId;
+      console.log("socket in canvas engine is ");
+      console.log(socket);
       this.sockethandler = new SocketHandler(
         socket,
         this.existingShapes,

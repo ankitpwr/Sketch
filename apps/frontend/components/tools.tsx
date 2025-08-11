@@ -13,13 +13,9 @@ import {
   Eraser,
   TypeOutline,
 } from "lucide-react";
-export default function Tools({
-  setTool,
-  currentTool,
-}: {
-  setTool: React.Dispatch<React.SetStateAction<Tool>>;
-  currentTool: Tool;
-}) {
+import useCanvasStore from "@/app/store/canvas-store";
+export default function Tools() {
+  const { currentTool, setTool } = useCanvasStore();
   const handleTool = (tool: Tool) => {
     console.log(`tool is being set up ${tool}`);
     setTool(tool);

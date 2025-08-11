@@ -7,14 +7,15 @@ import Button from "./button";
 import { Menu, Palette } from "lucide-react";
 import AppMenu from "./appMenu";
 import AppMenuContainer from "./appMenuContainer";
+import { StrokeColor } from "@repo/types/drawingConfig";
+import useCanvasStore from "@/app/store/canvas-store";
 
-export default function MobileAppBar({
-  canvasEngine,
-  tool,
-}: {
-  canvasEngine: CanvasEngine;
-  tool: Tool;
-}) {
+export default function MobileAppBar() {
+  const { currentTool, canvasEngine } = useCanvasStore();
+
+  const [strokeColor, setCurrentStrokeColor] = useState<StrokeColor | string>(
+    canvasEngine!.CurrentShapeStyles.strokeStyle
+  );
   const [dropDown, setDropDown] = useState<boolean>(false);
   const [shapeSetting, setshapeSetting] = useState<boolean>(false);
 
@@ -38,13 +39,11 @@ export default function MobileAppBar({
           {" "}
           <Menu color="black" size={18} />{" "}
         </Button>
-        {dropDown && (
-          <DropDownContainer tool={tool} canvasEngine={canvasEngine} />
-        )}
+        {dropDown && <DropDownContainer />}
       </div>
-      {tool != ActionTool.HAND &&
-        tool != ActionTool.SELECT &&
-        tool != ActionTool.ERASER && (
+      {currentTool != ActionTool.HAND &&
+        currentTool != ActionTool.SELECT &&
+        currentTool != ActionTool.ERASER && (
           <div className="flex">
             <Button
               onClickhandler={handleShapeSetting}
@@ -57,10 +56,7 @@ export default function MobileAppBar({
             </Button>
             {shapeSetting && (
               <div className=" rounded-lg  fixed w-full left-1 bottom-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
-                <AppMenuContainer
-                  tool={tool}
-                  canvasEngine={canvasEngine}
-                />{" "}
+                <AppMenuContainer />{" "}
               </div>
             )}
           </div>

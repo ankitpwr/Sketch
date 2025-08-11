@@ -1,6 +1,6 @@
 "use client";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import Button from "./button";
 import {
   ActionTool,
@@ -14,34 +14,26 @@ import AppMenu from "./appMenu";
 import DropDown from "./dropDown";
 import MobileAppBar from "./mobileAppBar";
 import Share from "./Share";
+import useCanvasStore from "@/app/store/canvas-store";
+import useUserStore from "@/app/store/user-store";
 
-export default function Canvas({
-  standalone,
-  socket,
-  roomId = "",
-  userId = "",
-}: {
-  standalone: boolean;
-  socket: WebSocket | null;
-  roomId?: string;
-  userId?: string;
-}) {
+export default function Canvas() {
+  const { userId, username, socket, standalone, roomId } = useUserStore();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  // const [canvasEngine, setcanvasEngine] = useState<CanvasEngine>();
-  const engineRef = useRef<CanvasEngine | null>(null);
-  const [tool, setTool] = useState<Tool>(ActionTool.HAND);
+  const { currentTool, dpr, canvasEngine, setDpr, setTool, setCanvasEngine } =
+    useCanvasStore();
+
   const textRef = useRef(null);
-  const [dpr, setdpr] = useState(1);
 
   const isShapeTool = () => {
     return (
-      tool == ShapeType.RECTANGLE ||
-      tool == ShapeType.DIAMOND ||
-      tool == ShapeType.ELLIPSE ||
-      tool == ShapeType.LINE ||
-      tool == ShapeType.ARROW ||
-      tool == ShapeType.TEXT ||
-      tool == ShapeType.PENCIL
+      currentTool == ShapeType.RECTANGLE ||
+      currentTool == ShapeType.DIAMOND ||
+      currentTool == ShapeType.ELLIPSE ||
+      currentTool == ShapeType.LINE ||
+      currentTool == ShapeType.ARROW ||
+      currentTool == ShapeType.TEXT ||
+      currentTool == ShapeType.PENCIL
     );
   };
 
@@ -56,21 +48,24 @@ export default function Canvas({
         canvas.height = newHeight * dpr;
         const ctx = canvas.getContext("2d");
         ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
-        if (engineRef.current) engineRef.current.handleCanvasResize();
+        if (canvasEngine) canvasEngine.handleCanvasResize();
       }
     }
-  }, [engineRef.current, dpr]);
+  }, [canvasEngine, dpr]);
 
   useEffect(() => {
     if (typeof window != undefined) {
-      setdpr(window.devicePixelRatio || 1);
+      setDpr(window.devicePixelRatio || 1);
     }
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || !textRef.current) {
+      return;
+    }
+
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    if (!textRef.current) return;
-    engineRef.current = new CanvasEngine(
+
+    const newCanvasEngine = new CanvasEngine(
       canvas,
       ctx,
       textRef.current,
@@ -80,14 +75,16 @@ export default function Canvas({
       roomId,
       userId
     );
-    // setcanvasEngine(engine);
+
+    setCanvasEngine(newCanvasEngine);
+
     updateCanvasDimension();
-  }, [canvasRef, textRef.current, dpr]);
+  }, [standalone, roomId, socket, userId, setDpr, setCanvasEngine]);
 
   useEffect(() => {
-    if (!engineRef.current || !engineRef.current.currentTool) return;
-    engineRef.current.currentTool = tool;
-  }, [tool, engineRef.current]);
+    if (!canvasEngine || !canvasEngine.currentTool) return;
+    canvasEngine.currentTool = currentTool;
+  }, [currentTool, canvasEngine]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -106,18 +103,17 @@ export default function Canvas({
     <div className="w-screen h-screen relative ">
       <canvas ref={canvasRef} className="w-full h-full"></canvas>
       <TextArea refer={textRef} />
-      <Tools setTool={setTool} currentTool={tool} />
-      {isShapeTool() && engineRef.current && (
-        <AppMenu tool={tool} canvasEngine={engineRef.current} />
+      {canvasEngine ? (
+        <>
+          <Tools />
+          {isShapeTool() && <AppMenu />}
+          <DropDown />
+          <MobileAppBar />
+          <Share standalone={standalone} />
+        </>
+      ) : (
+        <div>Loading ...:</div>
       )}
-      {engineRef.current && (
-        <DropDown tool={tool} canvasEngine={engineRef.current} />
-      )}
-      {engineRef.current && (
-        <MobileAppBar tool={tool} canvasEngine={engineRef.current} />
-      )}
-
-      <Share />
     </div>
   );
 }

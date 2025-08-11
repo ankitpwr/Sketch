@@ -18,20 +18,17 @@ import { CanvasEngine } from "@/canvas/CanvasEngine";
 import { Tool } from "@repo/types/canvasTypes";
 import { CanvasColor } from "@repo/types/drawingConfig";
 import DropDownContainer from "./dropDownContainer";
+import useCanvasStore from "@/app/store/canvas-store";
 
-export default function DropDown({
-  canvasEngine,
-  tool,
-}: {
-  canvasEngine: CanvasEngine;
-  tool: Tool;
-}) {
+export default function DropDown() {
+  const { currentTool, canvasEngine } = useCanvasStore();
+
   const [dropDown, setDropDown] = useState<boolean>(false);
   const handleMouseDown = () => {
     setDropDown(false);
   };
   useEffect(() => {
-    canvasEngine.canvas.addEventListener("mousedown", handleMouseDown);
+    canvasEngine!.canvas.addEventListener("mousedown", handleMouseDown);
     return () => removeEventListener("mousedown", handleMouseDown);
   }, []);
   const handleDropDown = () => {
@@ -48,9 +45,7 @@ export default function DropDown({
         {" "}
         <Menu color="black" size={18} />{" "}
       </Button>
-      {dropDown && (
-        <DropDownContainer tool={tool} canvasEngine={canvasEngine} />
-      )}
+      {dropDown && <DropDownContainer />}
     </div>
   );
 }

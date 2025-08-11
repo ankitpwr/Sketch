@@ -1,6 +1,9 @@
 import axios from "axios";
 
-export async function getExistingShape(standalone: boolean, roomId: string) {
+export async function getExistingShape(
+  standalone: boolean,
+  roomId: string | null
+) {
   try {
     if (standalone) {
       const rawShapes = localStorage.getItem("shape");
@@ -10,8 +13,7 @@ export async function getExistingShape(standalone: boolean, roomId: string) {
       const shapes = JSON.parse(rawShapes);
       console.log(shapes);
       return shapes;
-    } else {
-      console.log(`roomid is ${roomId}`);
+    } else if (roomId) {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/room-messages/?roomId=${roomId}`,
         {

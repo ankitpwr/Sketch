@@ -16,20 +16,17 @@ import StrokeStyleSelector from "./strokeStyleSelector";
 import { Tool } from "@repo/types/canvasTypes";
 import TextSelector from "./TextSelector";
 import AppMenuContainer from "./appMenuContainer";
+import useCanvasStore from "@/app/store/canvas-store";
 
-export default function AppMenu({
-  canvasEngine,
-  tool,
-}: {
-  canvasEngine: CanvasEngine;
-  tool: Tool;
-}) {
+export default function AppMenu() {
+  const { currentTool, canvasEngine } = useCanvasStore();
+
   const [strokeColor, setCurrentStrokeColor] = useState<StrokeColor | string>(
-    canvasEngine.CurrentShapeStyles.strokeStyle
+    canvasEngine!.CurrentShapeStyles.strokeStyle
   );
   const [backgroundColor, setBackgroundColor] = useState<
     BackgroundColor | string
-  >(canvasEngine.CurrentShapeStyles.background);
+  >(canvasEngine!.CurrentShapeStyles.background);
   const [strokeColorPicker, setStrokeColorPicker] = useState<boolean>(false);
   const [backgrColorPicker, setBackgroundColorPicker] =
     useState<boolean>(false);
@@ -43,15 +40,15 @@ export default function AppMenu({
   }
   const handleStrokeColor = (color: StrokeColor | string) => {
     if (!isHexColor(color)) return;
-    canvasEngine.CurrentShapeStyles.strokeStyle = color;
-    canvasEngine.CurrentPencilStyles.StrokeStyle = color;
-    canvasEngine.CurrentTextStyle.strokeStyle = color;
+    canvasEngine!.CurrentShapeStyles.strokeStyle = color;
+    canvasEngine!.CurrentPencilStyles.StrokeStyle = color;
+    canvasEngine!.CurrentTextStyle.strokeStyle = color;
     setCurrentStrokeColor(color);
   };
 
   const handleBackgroundColor = (color: BackgroundColor | string) => {
     if (!isHexColor(color)) return;
-    canvasEngine.CurrentShapeStyles.background = color;
+    canvasEngine!.CurrentShapeStyles.background = color;
     setBackgroundColor(color);
   };
 
@@ -64,10 +61,10 @@ export default function AppMenu({
     setBackgroundColorPicker(true);
   };
   const isActiveStroke = (strokeColor: StrokeColor) => {
-    return canvasEngine.CurrentShapeStyles.strokeStyle == strokeColor;
+    return canvasEngine!.CurrentShapeStyles.strokeStyle == strokeColor;
   };
   const isActiveBackground = (backgroundColor: BackgroundColor) => {
-    return canvasEngine.CurrentShapeStyles.background == backgroundColor;
+    return canvasEngine!.CurrentShapeStyles.background == backgroundColor;
   };
 
   useEffect(() => {
@@ -85,14 +82,14 @@ export default function AppMenu({
         handleBackgroundColor(backgroundInputRef.current.value);
       }
     }
-    canvasEngine.canvas.addEventListener("mousedown", handleMouseDown);
+    canvasEngine!.canvas.addEventListener("mousedown", handleMouseDown);
 
     return () =>
-      canvasEngine.canvas.removeEventListener("mousedown", handleMouseDown);
+      canvasEngine!.canvas.removeEventListener("mousedown", handleMouseDown);
   }, []);
   return (
     <div className=" invisible md:visible rounded-lg fixed left-5 top-20 min-h-96 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
-      <AppMenuContainer tool={tool} canvasEngine={canvasEngine} />
+      <AppMenuContainer />
     </div>
   );
 }

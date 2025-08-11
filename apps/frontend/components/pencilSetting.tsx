@@ -18,44 +18,42 @@ import {
   Tapper,
   Thinning,
 } from "@repo/types/drawingConfig";
+import useCanvasStore from "@/app/store/canvas-store";
 
-export default function PencilMenu({
-  canvasEngine,
-}: {
-  canvasEngine: CanvasEngine;
-}) {
+export default function PencilMenu() {
+  const { canvasEngine } = useCanvasStore();
   const [strokeWidth, setStokeWidth] = useState<StrokeSizePencil>(
-    canvasEngine.CurrentPencilStyles.strokeWidth
+    canvasEngine!.CurrentPencilStyles.strokeWidth
   );
   const [taper, setTaper] = useState<Tapper>(
-    canvasEngine.CurrentPencilStyles.tapper
+    canvasEngine!.CurrentPencilStyles.tapper
   );
   const [thinning, setThinning] = useState<Thinning>(
-    canvasEngine.CurrentPencilStyles.thinning
+    canvasEngine!.CurrentPencilStyles.thinning
   );
 
   const handleStrokeWidth = (width: StrokeSizePencil) => {
-    canvasEngine.CurrentPencilStyles.strokeWidth = width;
+    canvasEngine!.CurrentPencilStyles.strokeWidth = width;
     setStokeWidth(width);
   };
   const isActiveWidth = (width: StrokeSizePencil) => {
-    return width == canvasEngine.CurrentPencilStyles.strokeWidth;
+    return width == canvasEngine!.CurrentPencilStyles.strokeWidth;
   };
 
   const handleTaper = (newTape: Tapper) => {
-    canvasEngine.CurrentPencilStyles.tapper = newTape;
+    canvasEngine!.CurrentPencilStyles.tapper = newTape;
     setTaper(newTape);
   };
   const isActiveTaper = (newTape: Tapper) => {
-    return canvasEngine.CurrentPencilStyles.tapper == newTape;
+    return canvasEngine!.CurrentPencilStyles.tapper == newTape;
   };
 
   const handleThinning = (newthinning: Thinning) => {
-    canvasEngine.CurrentPencilStyles.thinning = newthinning;
+    canvasEngine!.CurrentPencilStyles.thinning = newthinning;
     setThinning(newthinning);
   };
   const isActiveThinning = (newthinning: Thinning) => {
-    return newthinning == canvasEngine.CurrentPencilStyles.thinning;
+    return newthinning == canvasEngine!.CurrentPencilStyles.thinning;
   };
   return (
     <div className="flex flex-col   gap-6">
