@@ -27,9 +27,6 @@ export default function Dialog({
   setDialogBox: Dispatch<SetStateAction<boolean>>;
 }) {
   const { standalone, username, userId, roomId } = useUserStore();
-  console.log(
-    `standalone is ${standalone}, username is ${username}, userId is ${userId}`
-  );
   const router = useRouter();
   const refer = useRef<HTMLDivElement | null>(null);
   const linkRefer = useRef<HTMLInputElement | null>(null);
@@ -122,7 +119,7 @@ export default function Dialog({
             </h1>
           </div>
 
-          <div
+          {/* <div
             id="border-line"
             className="w-full h-[1px] rounded-md bg-gray-200"
           ></div>
@@ -134,7 +131,7 @@ export default function Dialog({
             <h1 className="text-center text-sm">
               Join an existing room using a shared room ID.
             </h1>
-          </div>
+          </div> */}
         </div>
       )}
 

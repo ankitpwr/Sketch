@@ -2,7 +2,8 @@
 import React, { ReactNode } from "react";
 
 const VarientStyle = {
-  primary: `flex justify-center items-center text-center px-3 py-2 gap-2  rounded-md text-white  bg-[#6965db]  hover:bg-[#5753d0]`,
+  primary: `flex justify-center items-center text-center px-3 py-2 gap-2  rounded-lg text-white  bg-[#6965db]  hover:bg-[#5753d0]`,
+  success: `flex justify-center items-center text-center px-3 py-2 gap-2  rounded-lg text-white  bg-[#0fb884] hover:bg-[#0d9b70]`,
   secondary:
     "p-2.5 rounded-md flex items-center justify-center hover:bg-[#f1f0ff] ",
   dropdown:
@@ -30,6 +31,8 @@ export default function Button({
   isActive: boolean;
   styles?: string;
 }) {
+  console.log("styles are");
+  console.log(styles);
   return (
     <button
       onClick={onClickhandler}

@@ -20,10 +20,6 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
-    if (!authToken) {
-      console.log("no auth Token");
-      router.push("/signin");
-    }
     const ws = new WebSocket(
       `${process.env.NEXT_PUBLIC_WS_BASE_URL}?token=${authToken}`
     );
@@ -36,10 +32,14 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
         })
       );
     };
+    ws.onclose = (event) => {
+      if (event.code == 4001) {
+        localStorage.removeItem("token");
+        router.push("/signin");
+      }
+    };
     ws.onmessage = (event) => {
       const messageData = JSON.parse(event.data);
-      console.log("messagedata is ");
-      console.log(messageData);
       if (messageData.type == MessageType.JOIN) {
         setUserId(messageData.userId);
         setUsername(messageData.username);

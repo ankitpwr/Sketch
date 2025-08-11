@@ -45,7 +45,7 @@ wss.on("connection", (ws: WebSocket, request) => {
 
   if (!isVerified) {
     console.log("Invalied token");
-    return ws.close(1008, "Invalid User");
+    return ws.close(4001, "Invalid User");
   }
   const userId = isVerified.userId;
   const name = isVerified.name;
