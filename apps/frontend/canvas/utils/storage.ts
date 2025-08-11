@@ -11,9 +11,11 @@ export async function getExistingShape(
       console.log("raw shapes is");
       console.log(rawShapes);
       const shapes = JSON.parse(rawShapes);
+      console.log("shapes are");
       console.log(shapes);
       return shapes;
     } else if (roomId) {
+      console.log("for room");
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/room-messages/?roomId=${roomId}`,
         {

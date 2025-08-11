@@ -6,24 +6,47 @@ import React, {
   useState,
 } from "react";
 import Button from "./button";
-import { Play, X } from "lucide-react";
+import {
+  Copy,
+  CopyIcon,
+  Cross,
+  Play,
+  StopCircle,
+  StopCircleIcon,
+  X,
+} from "lucide-react";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { headers } from "next/headers";
+import useUserStore from "@/app/store/user-store";
+import Input from "./input";
 
 export default function Dialog({
   setDialogBox,
-  standalone,
 }: {
   setDialogBox: Dispatch<SetStateAction<boolean>>;
-  standalone: boolean;
 }) {
+  const { standalone, username, userId, roomId } = useUserStore();
+  console.log(
+    `standalone is ${standalone}, username is ${username}, userId is ${userId}`
+  );
   const router = useRouter();
   const refer = useRef<HTMLDivElement | null>(null);
+  const linkRefer = useRef<HTMLInputElement | null>(null);
   const handleMouseEvent = (e: MouseEvent) => {
     if (e.target == refer.current) {
       setDialogBox(false);
     }
+  };
+
+  const handleLeaveRoom = () => {
+    router.push("/");
+  };
+
+  const handleCopy = () => {
+    if (!linkRefer.current) return;
+    const link = linkRefer.current.value;
+    navigator.clipboard.writeText(link).then(() => {});
   };
 
   const handleNewRoomCreation = async () => {
@@ -66,9 +89,9 @@ export default function Dialog({
   return (
     <div
       ref={refer}
-      className="fixed inset-0 bg-gray-300/50  backdrop:blur-sm flex items-center justify-center "
+      className="fixed inset-0 bg-gray-300/50  backdrop:blur-sm flex items-center justify-center  "
     >
-      {standalone ? (
+      {standalone && (
         <div className="bg-white p-8 relative  rounded-xl  flex flex-col items-center gap-8 w-xl ">
           <div
             onClick={() => setDialogBox(false)}
@@ -113,33 +136,53 @@ export default function Dialog({
             </h1>
           </div>
         </div>
-      ) : (
-        <div className="bg-white p-8 relative  rounded-xl  flex flex-col items-center gap-8 w-xl ">
+      )}
+
+      {!standalone && userId && username && (
+        <div className=" relative flex flex-col  justify-center items-center gap-6 p-12 w-xl rounded-xl bg-white     ">
           <div
             onClick={() => setDialogBox(false)}
             className="absolute top-4 right-4"
           >
             <X size={18} color="gray" />
           </div>
-          <div className="flex flex-col p-2 justify-center items-center gap-3">
+          <div className="flex flex-col  justify-start items-start gap-3 w-full">
             <h2 className="text-2xl font-bold text-[#6965db]">
               Live Collaboration
             </h2>
-            <p className="text-md">Invite people to using Link</p>
           </div>
-          <div className="flex flex-col gap-3 p-4 justify-center items-center">
-            <Button
-              onClickhandler={handleNewRoomCreation}
-              varient={"primary"}
-              size={"md"}
-              isActive={false}
-            >
-              <p>Create New Room</p>
-            </Button>
-            <h1 className="text-center text-sm">
-              Create a new room and share the room ID with your friends for live
-              collaboration.
-            </h1>
+          <div className="flex flex-col  gap-0.5  items-start w-full">
+            <h1 className="text-sm">Your name</h1>
+            <Input
+              placeholder={"Your name"}
+              type={"text"}
+              readonly={true}
+              defaultValue={`${username}`}
+              styles={` bg-[#ececf4] w-full `}
+            />
+          </div>
+
+          <div className="flex flex-col  gap-0.5   items-start w-full">
+            <h1 className="text-sm">Link</h1>
+            <div className="flex gap-1.5 w-full">
+              <Input
+                refer={linkRefer}
+                placeholder={"Link"}
+                type={"text"}
+                readonly={true}
+                defaultValue={`${process.env.NEXT_PUBLIC_BASE_URL}/${roomId}`}
+                styles={` bg-[#f1f0ff] w-full px-3.5 `}
+              />
+              <Button
+                varient={"primary"}
+                size={"md"}
+                isActive={false}
+                onClickhandler={handleCopy}
+              >
+                <CopyIcon size={16} />
+                <p>Copy</p>
+              </Button>
+            </div>
           </div>
 
           <div
@@ -147,13 +190,16 @@ export default function Dialog({
             className="w-full h-[1px] rounded-md bg-gray-200"
           ></div>
 
-          <div className="flex flex-col gap-3 p-4 justify-center items-center">
-            <Button varient={"primary"} size={"md"} isActive={false}>
-              <p>Join Room</p>
+          <div className="flex items-center">
+            <Button
+              onClickhandler={handleLeaveRoom}
+              varient={"primary"}
+              size={"md"}
+              isActive={false}
+              styles={`border-2 border-red-400 bg-white hover:border-1.5 hover:bg-red-200 hover:border-red-200`}
+            >
+              <p className="text-red-500">Exit Room</p>
             </Button>
-            <h1 className="text-center text-sm">
-              Join an existing room using a shared room ID.
-            </h1>
           </div>
         </div>
       )}

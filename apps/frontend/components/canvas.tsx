@@ -109,7 +109,7 @@ export default function Canvas() {
           {isShapeTool() && <AppMenu />}
           <DropDown />
           <MobileAppBar />
-          <Share standalone={standalone} />
+          <Share />
         </>
       ) : (
         <div>Loading ...:</div>

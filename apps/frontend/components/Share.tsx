@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import Button from "./button";
 import Dialog from "./Dialog";
+import useUserStore from "@/app/store/user-store";
 
-export default function Share({ standalone }: { standalone: boolean }) {
+export default function Share() {
   const [dialogBox, setDialogBox] = useState(false);
+  const { standalone } = useUserStore();
   return (
     <div className="fixed top-5 right-5 flex gap-2">
       <Button
@@ -16,9 +18,7 @@ export default function Share({ standalone }: { standalone: boolean }) {
         <p>Share</p>{" "}
       </Button>
 
-      {dialogBox && (
-        <Dialog setDialogBox={setDialogBox} standalone={standalone} />
-      )}
+      {dialogBox && <Dialog setDialogBox={setDialogBox} />}
     </div>
   );
 }
