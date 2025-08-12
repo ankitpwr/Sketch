@@ -3,7 +3,6 @@ import Button from "./button";
 import { CopyIcon, Ellipsis, X } from "lucide-react";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { headers } from "next/headers";
 import useUserStore from "@/app/store/user-store";
 import Input from "./input";
 import useRoomStore from "@/app/store/room-store";
