@@ -1,35 +1,25 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import Button from "./button";
-import {
-  Copy,
-  CopyIcon,
-  Cross,
-  Play,
-  StopCircle,
-  StopCircleIcon,
-  X,
-} from "lucide-react";
+import { CopyIcon, Ellipsis, X } from "lucide-react";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { headers } from "next/headers";
 import useUserStore from "@/app/store/user-store";
 import Input from "./input";
+import useRoomStore from "@/app/store/room-store";
 
 export default function Dialog({
   setDialogBox,
 }: {
   setDialogBox: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { standalone, username, userId, roomId } = useUserStore();
+  const { standalone, username, userId, roomId, setStandalone } =
+    useUserStore();
+  const { loading, setLoading } = useRoomStore();
   const router = useRouter();
   const refer = useRef<HTMLDivElement | null>(null);
   const linkRefer = useRef<HTMLInputElement | null>(null);
+
   const handleMouseEvent = (e: MouseEvent) => {
     if (e.target == refer.current) {
       setDialogBox(false);
@@ -49,6 +39,8 @@ export default function Dialog({
   const handleNewRoomCreation = async () => {
     console.log(localStorage.getItem("token"));
 
+    setLoading(true);
+
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/create-room`,
@@ -59,8 +51,8 @@ export default function Dialog({
           },
         }
       );
-
       router.push(`room/${response.data.roomId}`);
+      setLoading(false);
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response) {
@@ -71,6 +63,7 @@ export default function Dialog({
           console.log("API endpoint not found");
         }
       }
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -110,28 +103,20 @@ export default function Dialog({
               varient={"primary"}
               size={"md"}
               isActive={false}
+              styles={`w-42 h-10`}
             >
-              <p>Create New Room</p>
+              {loading ? (
+                <Ellipsis className="animate-pulse w-10 h-10 " />
+              ) : (
+                <p>Create New Room</p>
+              )}
             </Button>
+
             <h1 className="text-center text-sm">
-              Create a new room and share the room ID with your friends for live
+              Create a new room and share the link with your friends for live
               collaboration.
             </h1>
           </div>
-
-          {/* <div
-            id="border-line"
-            className="w-full h-[1px] rounded-md bg-gray-200"
-          ></div>
-
-          <div className="flex flex-col gap-3 p-4 justify-center items-center">
-            <Button varient={"primary"} size={"md"} isActive={false}>
-              <p>Join Room</p>
-            </Button>
-            <h1 className="text-center text-sm">
-              Join an existing room using a shared room ID.
-            </h1>
-          </div> */}
         </div>
       )}
 
@@ -167,7 +152,7 @@ export default function Dialog({
                 placeholder={"Link"}
                 type={"text"}
                 readonly={true}
-                defaultValue={`${process.env.NEXT_PUBLIC_BASE_URL}/${roomId}`}
+                defaultValue={`${process.env.NEXT_PUBLIC_FE_URL}/room/${roomId}`}
                 styles={` bg-[#f1f0ff] w-full px-3.5 `}
               />
               <Button
