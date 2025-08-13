@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 
 import { Geist, Geist_Mono, Architects_Daughter } from "next/font/google";
 
-import { Fira_Code, Nunito, Comic_Relief } from "next/font/google";
+import {
+  Fira_Code,
+  Nunito,
+  Comic_Relief,
+  Permanent_Marker,
+} from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,6 +33,11 @@ const code = Fira_Code({
 const inter = Nunito({
   variable: "--font-inter",
   subsets: ["latin"],
+});
+const marker = Permanent_Marker({
+  variable: "--font-marker",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 const comic = Comic_Relief({

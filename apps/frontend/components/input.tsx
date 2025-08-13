@@ -19,7 +19,7 @@ export default function Input({
   return (
     <input
       ref={refer}
-      className={`px-3 py-3 border-1 border-gray-400 rounded-md ${styles} `}
+      className={`px-3 py-3 border-1 text-[#1b1b1f] border-[#c5c5d0] dark:border-[#46464f]   bg-white rounded-md w-86 ${styles} `}
       placeholder={placeholder}
       type={type}
       defaultValue={defaultValue}
