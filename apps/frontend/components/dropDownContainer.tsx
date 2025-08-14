@@ -18,9 +18,10 @@ import { CanvasEngine } from "@/canvas/CanvasEngine";
 import { CanvasColor } from "@repo/types/drawingConfig";
 import { XIcon } from "./svgIcons";
 import useCanvasStore from "@/app/store/canvas-store";
+import { useTheme } from "next-themes";
 export default function DropDownContainer() {
   const { currentTool, canvasEngine } = useCanvasStore();
-
+  const { theme, setTheme } = useTheme();
   const [canvasColor, setCanvasColor] = useState<CanvasColor>(
     canvasEngine!.CanvasColor
   );
@@ -89,15 +90,30 @@ export default function DropDownContainer() {
       >
         <h1 className="text-sm text-gray-900">Theme</h1>
         <div className="flex gap-1 items-center border-1 border-[#f1f0ff] w-fit rounded-lg">
-          <Button varient={"theme"} size={"md"} isActive={false}>
+          <Button
+            varient={"theme"}
+            size={"md"}
+            isActive={false}
+            onClickhandler={() => setTheme("light")}
+          >
             {" "}
             <Sun size={16} />
           </Button>
-          <Button varient={"theme"} size={"md"} isActive={false}>
+          <Button
+            varient={"theme"}
+            size={"md"}
+            isActive={false}
+            onClickhandler={() => setTheme("dark")}
+          >
             {" "}
             <Moon size={16} />
           </Button>
-          <Button varient={"theme"} size={"md"} isActive={false}>
+          <Button
+            varient={"theme"}
+            size={"md"}
+            isActive={false}
+            onClickhandler={() => setTheme("system")}
+          >
             {" "}
             <LaptopMinimal size={16} />
           </Button>

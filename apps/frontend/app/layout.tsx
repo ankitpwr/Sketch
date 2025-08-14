@@ -10,6 +10,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "./theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,8 +32,8 @@ const code = Fira_Code({
   subsets: ["latin"],
 });
 
-const inter = Nunito({
-  variable: "--font-inter",
+const nunito = Nunito({
+  variable: "--font-nunito",
   subsets: ["latin"],
 });
 const marker = Permanent_Marker({
@@ -58,12 +59,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable}  ${architects.variable} ${code.variable} antialiased`}
+        className={` bg-white dark:bg-black/80 ${geistSans.variable} ${marker.variable} ${geistMono.variable} ${comic.variable} ${nunito.variable}  ${architects.variable} ${code.variable} antialiased`}
       >
-        {children}
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -50,7 +50,6 @@ wss.on("connection", (ws: WebSocket, request) => {
   const userId = isVerified.userId;
   const name = isVerified.name;
 
-  //adding ws to map along with userId
   UserConnection.set(ws, { userId: userId, name: name });
 
   ws.on("message", async (data) => {

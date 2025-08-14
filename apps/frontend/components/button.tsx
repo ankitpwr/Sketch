@@ -34,7 +34,7 @@ export default function Button({
   return (
     <button
       onClick={onClickhandler}
-      className={`cursor-pointer ${VarientStyle[varient]} ${Size[size]}    ${isActive && "bg-[#e0dfff]"} ${styles}  `}
+      className={`cursor-pointer dark:bg-white ${VarientStyle[varient]} ${Size[size]}    ${isActive && "bg-[#e0dfff]"} ${styles}  `}
     >
       {children}
     </button>

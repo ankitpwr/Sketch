@@ -4,6 +4,7 @@ import Input from "./input";
 import Button from "./button";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { toast } from "sonner";
 
 export default function AuthCard({ isSignin }: { isSignin: boolean }) {
   const emailRef = useRef<HTMLInputElement | null>(null);
@@ -35,7 +36,8 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
 
     if (response.status != 200) {
       console.log(`error as ${response.data.error}`);
-      return; //toast error
+      toast.error(response.data.error);
+      return;
     } else {
       console.log(`token is ${response.data.tokens}`);
       localStorage.setItem("token", response.data.token);
@@ -43,10 +45,12 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
     }
   };
   return (
-    <div className="flex flex-col items-center gap-6 bg-[#FFF5D7] p-12 rounded-xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
+    <div className="flex flex-col items-center gap-6 bg-[#FFF5D7] dark:bg-black/50 p-12 rounded-xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
       <div className="flex flex-col items-center gap-1">
         {" "}
-        <h1 className="text-xl font-semibold text-[#343A40]">Welcome</h1>
+        <h1 className="text-xl font-semibold text-[#343A40] dark:text-white">
+          Welcome
+        </h1>
         <p className="text-sm text-[#343A40]">Enter Your Email and Password</p>
       </div>
       <div className="flex flex-col items-center gap-2 ">
