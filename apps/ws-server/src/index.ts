@@ -61,6 +61,16 @@ wss.on("connection", (ws: WebSocket, request) => {
       if (!parsedData.roomId) return;
       if (parsedData.type == MessageType.JOIN) {
         //checking if room is already present or not
+        const roomData = await prisma.room.findFirst({
+          where: {
+            id: parsedData.id,
+          },
+        });
+
+        if (roomData) {
+          return ws.close(4002, "Invalid Room Id");
+        }
+
         let roomConnections = Rooms.get(parsedData.roomId);
         if (!roomConnections) {
           roomConnections = [];

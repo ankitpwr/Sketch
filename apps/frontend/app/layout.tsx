@@ -9,6 +9,7 @@ import {
   Permanent_Marker,
 } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,6 +63,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable}  ${architects.variable} ${code.variable} antialiased`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );

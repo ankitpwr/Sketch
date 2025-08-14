@@ -44,8 +44,7 @@ export class ShapeManager {
     this.scale = dependencies.scale;
     this.triggerRender = dependencies.triggerRender;
     this.resizeSide = null;
-    console.log(`socket is active`);
-    console.log(dependencies.socketHandler);
+
     if (dependencies.socketHandler) {
       this.socketHandler = dependencies.socketHandler;
     }
@@ -86,7 +85,6 @@ export class ShapeManager {
   };
 
   handleResizeShape = (currentX: number, currentY: number) => {
-    console.log("resizing");
     const index = this.selectedShape.index;
     const shape = this.existingShapes[index];
     if (!shape) {

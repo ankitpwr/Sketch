@@ -133,9 +133,9 @@ export class CanvasEngine {
   }
 
   init = async () => {
+    console.log(`standalone is ${this.standalone}`);
     const loadedShaped = await getExistingShape(this.standalone, this.roomId);
-    console.log("loadedShaped are");
-    console.log(loadedShaped);
+
     this.existingShapes.push(...loadedShaped);
     this.render();
   };

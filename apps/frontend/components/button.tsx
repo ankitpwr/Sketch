@@ -31,8 +31,6 @@ export default function Button({
   isActive: boolean;
   styles?: string;
 }) {
-  console.log("styles are");
-  console.log(styles);
   return (
     <button
       onClick={onClickhandler}

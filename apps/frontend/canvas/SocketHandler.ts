@@ -38,8 +38,6 @@ export class SocketHandler {
       const messageData = JSON.parse(event.data);
 
       if (messageData.type == MessageType.SHAPE) {
-        console.log("new shape to draw $ message data is");
-        console.log(messageData);
         const shapeData = messageData.shape;
         this.setPreviewShape(null);
         this.addShape(shapeData);
@@ -86,8 +84,7 @@ export class SocketHandler {
 
   eraseShape = (shapes: Shape[]) => {
     const shapeId = shapes.map((s) => s.id);
-    console.log("shape id to remove");
-    console.log(shapeId);
+
     this.socket.send(
       JSON.stringify({
         type: MessageType.ERASER,

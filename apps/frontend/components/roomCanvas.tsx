@@ -4,6 +4,7 @@ import Canvas from "./canvas";
 import { MessageType } from "@repo/types/wsTypes";
 import useUserStore from "@/app/store/user-store";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
   const router = useRouter();
@@ -34,8 +35,17 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
     };
     ws.onclose = (event) => {
       if (event.code == 4001) {
+        toast.error("Please sign in to join the room.");
         localStorage.removeItem("token");
         router.push("/signin");
+      } else if (event.code == 4002) {
+        toast.error(
+          "Redirecting you to the home page. Please check the Room ID and try again."
+        );
+        setSocket(null);
+        setRoomId(null);
+        setStandalone(true);
+        router.push("/");
       }
     };
     ws.onmessage = (event) => {
@@ -44,6 +54,10 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
         setUserId(messageData.userId);
         setUsername(messageData.username);
       }
+    };
+
+    return () => {
+      ws.close();
     };
   }, [setSocket, setUserId, setUsername]);
 

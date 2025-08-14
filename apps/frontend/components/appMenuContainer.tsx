@@ -66,15 +66,12 @@ export default function AppMenuContainer() {
 
   useEffect(() => {
     function handleMouseDown() {
-      console.log("handle color");
       setStrokeColorPicker(false);
       setBackgroundColorPicker(false);
-      console.log(strokeInputRef);
-      console.log(backgroundInputRef);
+
       if (strokeInputRef.current) {
         handleStrokeColor(strokeInputRef.current.value);
       }
-
       if (backgroundInputRef.current) {
         handleBackgroundColor(backgroundInputRef.current.value);
       }
