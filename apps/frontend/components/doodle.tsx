@@ -46,7 +46,7 @@ export default function Doodles() {
       </div>
 
       <div
-        className="fixed bottom-0 right-30 animate-bounce"
+        className="hidden md:fixed bottom-0 right-30 animate-bounce"
         style={{ animationDuration: "4s" }}
       >
         <TriangleSVG color={"#aba1e5"} size={68} />
@@ -111,7 +111,7 @@ export default function Doodles() {
         <SantSVG color={"#FB4141"} size={40} />
       </div>
       <div
-        className="fixed bottom-26 left-42  animate-bounce"
+        className="hidden md:fixed bottom-26 left-42  animate-bounce"
         style={{ animationDuration: "6s" }}
       >
         <PawSVG color={"#BB6653"} size={38} />

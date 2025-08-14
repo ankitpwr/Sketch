@@ -45,11 +45,15 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
     }
   };
   return (
-    <div className="flex flex-col items-center gap-6 bg-[#fff0c9] dark:bg-black/20  p-12 rounded-xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
+    <div className="flex flex-col items-center md:gap-6 gap-4 bg-[#fff0c9] dark:bg-[#232329]  p-6 md:p-12 rounded-xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
       <div className="flex flex-col items-center gap-1">
         {" "}
-        <h1 className="text-xl font-semibold text-[#343A40] ">Welcome</h1>
-        <p className="text-sm text-[#343A40]">Enter Your Email and Password</p>
+        <h1 className="text-2xl font-semibold text-[#343A40] dark:text-[#ced4da] ">
+          Welcome
+        </h1>
+        <p className="text-sm text-[#343A40] dark:text-[#ced4da] ">
+          Enter Your Email and Password
+        </p>
       </div>
       <div className="flex flex-col items-center gap-2 ">
         {!isSignin && (
@@ -72,13 +76,13 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
       <div className="flex w-full gap-1 items-center">
         <div
           id="border-line"
-          className="w-[50%] h-[0.5px] rounded-lg bg-gray-500"
+          className="w-[50%] h-[0.5px] rounded-lg bg-gray-500 dark:bg-[#b9b9c6]"
         ></div>
-        <p className="align-text-top text-[#343A40]">or</p>
+        <p className="align-text-top text-[#343A40] dark:text-[#b9b9c6]">or</p>
 
         <div
           id="border-line"
-          className="w-[50%] h-[0.5px] rounded-lg bg-gray-500"
+          className="w-[50%] h-[0.5px] rounded-lg bg-gray-500 dark:bg-[#b9b9c6]"
         ></div>
       </div>
 

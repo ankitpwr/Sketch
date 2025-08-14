@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@custom-variant dark (&:where(.dark, .dark *));
 .bg-transparent-pattern {
   background: repeating-conic-gradient(
       #d7d7d7 0% 25%,

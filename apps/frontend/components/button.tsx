@@ -8,7 +8,7 @@ const VarientStyle = {
     "p-2.5 rounded-md flex items-center justify-center hover:bg-[#f1f0ff] ",
   dropdown:
     "px-2 py-2 rounded-md flex items-center justify-center bg-[#ececf4] text-white",
-  theme: "p-2 rounded-md flex items-center justify-center ",
+  theme: `py-2 px-3 rounded-lg flex items-center justify-center `,
 };
 
 const Size = {
@@ -31,10 +31,15 @@ export default function Button({
   isActive: boolean;
   styles?: string;
 }) {
+  const inactiveThemeStyle = "text-gray-500 dark:text-[#9f9cf1]";
+  const activeThemeStyle =
+    "bg-[#6965db] text-white dark:bg-[#a8a5ff] dark:text-[#121212]";
   return (
     <button
       onClick={onClickhandler}
-      className={`cursor-pointer  ${VarientStyle[varient]} ${Size[size]}    ${isActive && "bg-[#e0dfff]"} ${styles}  `}
+      className={`cursor-pointer  ${VarientStyle[varient]} ${Size[size]} 
+          ${varient === "theme" ? (isActive ? activeThemeStyle : inactiveThemeStyle) : ""}
+          ${styles}`}
     >
       {children}
     </button>

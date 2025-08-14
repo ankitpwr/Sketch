@@ -10,7 +10,7 @@ export default function Home() {
     console.log(`in home standalone is ${standalone}`);
   }, [setStandalone]);
   return (
-    <div className="w-screen h-screen ">
+    <div className="w-screen h-screen transition-all duration-300 ">
       <Canvas />
     </div>
   );

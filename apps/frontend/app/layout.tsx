@@ -10,7 +10,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-import { ThemeProvider } from "./theme-provider";
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,14 +61,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={` dark:bg-black/30  ${geistSans.variable} ${marker.variable} ${geistMono.variable} ${comic.variable} ${nunito.variable}  ${architects.variable} ${code.variable} antialiased`}
+        className={`${geistSans.variable} ${marker.variable} ${geistMono.variable} ${comic.variable} ${nunito.variable}  ${architects.variable} ${code.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" enableSystem defaultTheme="system">
           {children}
           <Toaster />
         </ThemeProvider>
