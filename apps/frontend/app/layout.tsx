@@ -61,12 +61,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={` bg-white dark:bg-black/80 ${geistSans.variable} ${marker.variable} ${geistMono.variable} ${comic.variable} ${nunito.variable}  ${architects.variable} ${code.variable} antialiased`}
+        className={` dark:bg-black/30  ${geistSans.variable} ${marker.variable} ${geistMono.variable} ${comic.variable} ${nunito.variable}  ${architects.variable} ${code.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          enableSystem
+          enableSystem={false}
           disableTransitionOnChange
         >
           {children}
