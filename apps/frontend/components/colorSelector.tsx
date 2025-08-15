@@ -15,6 +15,8 @@ export default function ColorSelection({
   isCanvasColor?: boolean;
 }) {
   const isTransparent = color == "#00000000";
+  // console.log("in color selection");
+  // console.log(color);
   return (
     <div
       className={`flex justify-center items-center  rounded-md hover:scale-104  

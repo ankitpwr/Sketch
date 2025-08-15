@@ -21,11 +21,45 @@ export enum BackgroundColor {
 }
 
 export enum CanvasColor {
-  white = "#ffffff",
+  White = "#ffffff",
   Light_Blue = "#f5faff",
   Light_Yellow = "#fffce8",
   Light_Red = "#fdf8f6",
   Light_Green = "#f0fdf4",
+  Black = "#121212",
+  DarK_BLUE = "#13171c",
+  DarK_YELLOW = "#181605",
+  DarK_RED = "#1b1615",
+  DarK_GREY = "#161718",
+}
+export const CANVAS_COLOR_KEYS = [
+  "White",
+  "Blue",
+  "Red",
+  "Yellow",
+  "Grey",
+] as const;
+
+export type CanvasColorKey = (typeof CANVAS_COLOR_KEYS)[number]; //Union of Canvas_color_keys
+export const THEME_PALETTE = {
+  light: {
+    White: "#ffffff",
+    Blue: "#f5faff",
+    Yellow: "#fffce8",
+    Red: "#fdf8f6",
+    Grey: "#f8f9fa",
+  },
+  dark: {
+    White: "#121212",
+    Blue: "#13171c",
+    Yellow: "#181605",
+    Red: "#1b1615",
+    Grey: "#161718",
+  },
+};
+
+export function getThemeColors(theme: "light" | "dark" | string | undefined) {
+  return theme === "dark" ? THEME_PALETTE.dark : THEME_PALETTE.light;
 }
 
 export enum StrokeWidth {

@@ -16,12 +16,20 @@ import MobileAppBar from "./mobileAppBar";
 import Share from "./Share";
 import useCanvasStore from "@/app/store/canvas-store";
 import useUserStore from "@/app/store/user-store";
+import {
+  CANVAS_COLOR_KEYS,
+  CanvasColorKey,
+  getThemeColors,
+  THEME_PALETTE,
+} from "@repo/types/drawingConfig";
+import { useTheme } from "next-themes";
 
 export default function Canvas() {
   const { userId, username, socket, standalone, roomId } = useUserStore();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { currentTool, dpr, canvasEngine, setDpr, setTool, setCanvasEngine } =
     useCanvasStore();
+  const { resolvedTheme } = useTheme();
 
   const textRef = useRef(null);
 
@@ -75,9 +83,18 @@ export default function Canvas() {
       roomId,
       userId
     );
-
+    const storedCanvasKey = localStorage.getItem(
+      "canvas-color-key"
+    ) as CanvasColorKey;
+    const themeColors = getThemeColors(resolvedTheme);
+    let initialColors = themeColors.White;
+    if (storedCanvasKey && storedCanvasKey in THEME_PALETTE.light) {
+      initialColors = themeColors[storedCanvasKey];
+    } else {
+      localStorage.setItem("canvas-color-key", CANVAS_COLOR_KEYS[0]);
+    }
+    newCanvasEngine.ChangeCanvasColor(initialColors, storedCanvasKey);
     setCanvasEngine(newCanvasEngine);
-
     updateCanvasDimension();
   }, [standalone, roomId, socket, userId, setDpr, setCanvasEngine]);
 

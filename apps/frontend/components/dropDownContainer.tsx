@@ -4,7 +4,13 @@ import { Github, Linkedin, LogIn, Trash, Users } from "lucide-react";
 import ColorSelection from "./colorSelector";
 import { Tool } from "@repo/types/canvasTypes";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
-import { CanvasColor } from "@repo/types/drawingConfig";
+import {
+  CANVAS_COLOR_KEYS,
+  CanvasColor,
+  CanvasColorKey,
+  getThemeColors,
+  THEME_PALETTE,
+} from "@repo/types/drawingConfig";
 import { XIcon } from "./svgIcons";
 import useCanvasStore from "@/app/store/canvas-store";
 import { useTheme } from "next-themes";
@@ -12,21 +18,39 @@ import ThemeToggle from "./themeToggle";
 import { useRouter } from "next/navigation";
 export default function DropDownContainer() {
   const { currentTool, canvasEngine } = useCanvasStore();
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
-  const [canvasColor, setCanvasColor] = useState<CanvasColor>(
-    canvasEngine!.CanvasColor
+  const [activeColorKey, setActiveColorKey] = useState<CanvasColorKey>(
+    canvasEngine!.CanvasColorKey
   );
-  const handleCanvasColor = (color: CanvasColor) => {
-    canvasEngine!.ChangeCanvasColor(color);
-    setCanvasColor(color);
+  if (resolvedTheme != "light" && resolvedTheme != "dark") return;
+  const themeColors = getThemeColors(resolvedTheme);
+
+  const handleCanvasColor = (colorKey: CanvasColorKey) => {
+    const hexColor = themeColors[colorKey];
+    canvasEngine!.ChangeCanvasColor(hexColor, colorKey);
+    setActiveColorKey(colorKey);
+    localStorage.setItem("canvas-color-key", colorKey);
   };
-  const isActiveColor = (color: CanvasColor) => {
-    return canvasEngine!.CanvasColor == color;
+  const isActiveColor = (colorKey: CanvasColorKey) => {
+    return canvasEngine!.CanvasColorKey == colorKey;
   };
 
   const handleClearCanvas = () => {
     canvasEngine!.clearCanvas();
   };
+
+  useEffect(() => {
+    const storedColorKey = localStorage.getItem(
+      "canvas-color-key"
+    ) as CanvasColorKey;
+
+    if (storedColorKey && storedColorKey in THEME_PALETTE.light) {
+      const newThemeColors = getThemeColors(resolvedTheme);
+      const newHexColor = newThemeColors[storedColorKey];
+      canvasEngine?.ChangeCanvasColor(newHexColor, storedColorKey);
+    }
+  }, [resolvedTheme, canvasEngine]);
 
   return (
     <div
@@ -108,49 +132,15 @@ export default function DropDownContainer() {
           Canvas background
         </h1>
         <div className="flex gap-2 items-center">
-          <div className="flex gap-2 justify-center items-center">
+          {CANVAS_COLOR_KEYS.map((key) => (
             <ColorSelection
-              onClick={() => handleCanvasColor(CanvasColor.white)}
-              color={CanvasColor.white}
-              isActive={isActiveColor(CanvasColor.white)}
+              key={key}
+              onClick={() => handleCanvasColor(key)}
+              color={themeColors[key]}
+              isActive={isActiveColor(key)}
               isCanvasColor={true}
             />
-          </div>
-
-          <div className="flex gap-2 justify-center items-center">
-            <ColorSelection
-              onClick={() => handleCanvasColor(CanvasColor.Light_Blue)}
-              color={CanvasColor.Light_Blue}
-              isActive={isActiveColor(CanvasColor.Light_Blue)}
-              isCanvasColor={true}
-            />
-          </div>
-
-          <div className="flex gap-2 justify-center items-center">
-            <ColorSelection
-              onClick={() => handleCanvasColor(CanvasColor.Light_Red)}
-              color={CanvasColor.Light_Red}
-              isActive={isActiveColor(CanvasColor.Light_Red)}
-              isCanvasColor={true}
-            />
-          </div>
-
-          <div className="flex gap-2 justify-center items-center">
-            <ColorSelection
-              onClick={() => handleCanvasColor(CanvasColor.Light_Yellow)}
-              color={CanvasColor.Light_Yellow}
-              isActive={isActiveColor(CanvasColor.Light_Yellow)}
-              isCanvasColor={true}
-            />
-          </div>
-          <div className="flex gap-2 justify-center items-center">
-            <ColorSelection
-              onClick={() => handleCanvasColor(CanvasColor.Light_Green)}
-              color={CanvasColor.Light_Green}
-              isActive={isActiveColor(CanvasColor.Light_Green)}
-              isCanvasColor={true}
-            />
-          </div>
+          ))}
         </div>
       </div>
     </div>

@@ -28,6 +28,8 @@ import {
   TextStyle,
   DefaultTextStyle,
   CanvasColor,
+  CanvasColorKey,
+  THEME_PALETTE,
 } from "@repo/types/drawingConfig";
 
 export class CanvasEngine {
@@ -58,7 +60,8 @@ export class CanvasEngine {
   public CurrentShapeStyles: ShapeStyles;
   public CurrentPencilStyles: PencilStyles;
   public CurrentTextStyle: TextStyle;
-  public CanvasColor: CanvasColor;
+  public CanvasColor: string;
+  public CanvasColorKey: CanvasColorKey;
   private initialPintchDistance: number | null = null;
   private initialPintchMidPoint: { x: number; y: number } | null = null;
   private lastScale: number = 1;
@@ -99,7 +102,8 @@ export class CanvasEngine {
     this.CurrentShapeStyles = DefaultShapeStyles;
     this.CurrentPencilStyles = DefaultPencilStyles;
     this.CurrentTextStyle = DefaultTextStyle;
-    this.CanvasColor = CanvasColor.white;
+    this.CanvasColor = THEME_PALETTE.light.White;
+    this.CanvasColorKey = "White";
     this.pressedKey = null;
 
     if (!standalone && socket && roomId && userId) {
@@ -172,8 +176,9 @@ export class CanvasEngine {
   handleCanvasResize = () => {
     this.render();
   };
-  ChangeCanvasColor = (color: CanvasColor) => {
-    this.CanvasColor = color;
+  ChangeCanvasColor = (hexColor: string, colorKey: CanvasColorKey) => {
+    this.CanvasColor = hexColor;
+    this.CanvasColorKey = colorKey;
     this.render();
   };
   render = () => {
