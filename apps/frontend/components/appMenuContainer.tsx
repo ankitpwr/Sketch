@@ -82,9 +82,9 @@ export default function AppMenuContainer() {
       canvasEngine!.canvas.removeEventListener("mousedown", handleMouseDown);
   }, []);
   return (
-    <div className="flex flex-col bg-white gap-6   px-5 py-5">
+    <div className="flex flex-col bg-white dark:bg-[#232329] gap-6 px-5 py-5">
       <div id="stroke-color-section" className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900  ">Stroke</h1>
+        <h1 className="text-xs font-nunito text-gray-900  ">Stroke</h1>
         <div className="flex gap-2 md:justify-center items-center">
           <ColorSelection
             onClick={() => handleStrokeColor(StrokeColor.PrimaryBlack)}
@@ -130,7 +130,7 @@ export default function AppMenuContainer() {
       </div>
 
       <div id="background-color-selection" className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900">Background</h1>
+        <h1 className="text-xs font-nunito text-gray-900">Background</h1>
         <div className="flex gap-2 md:justify-center items-center">
           <ColorSelection
             onClick={() => handleBackgroundColor(BackgroundColor.Transparent)}

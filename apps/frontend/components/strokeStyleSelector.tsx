@@ -19,7 +19,7 @@ export default function StrokeStyleSelector() {
   };
   return (
     <div id="stroke-style-selection" className="flex flex-col gap-2">
-      <h1 className="text-sm text-gray-900">Stroke style</h1>
+      <h1 className="text-xs font-nunito text-gray-900">Stroke style</h1>
       <div className="flex gap-2">
         <Stroke
           onClick={() => handleStrokeStyle(StrokeType.Solid)}

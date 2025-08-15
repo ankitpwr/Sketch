@@ -25,10 +25,9 @@ export enum CanvasColor {
   Light_Blue = "#f5faff",
   Light_Yellow = "#fffce8",
   Light_Red = "#fdf8f6",
-  Light_Grey = "#f8f9fa",
-  Areo_Blue = "#CAF1DE",
   Light_Green = "#f0fdf4",
 }
+
 export enum StrokeWidth {
   Thin = 1,
   Bold = 2.5,

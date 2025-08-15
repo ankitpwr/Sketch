@@ -58,7 +58,7 @@ export default function PencilMenu() {
   return (
     <div className="flex flex-col   gap-6">
       <div id="pencil-width" className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900">Stroke width</h1>
+        <h1 className="text-xs font-nunito text-gray-900">Stroke width</h1>
         <div className="flex gap-2">
           <Stroke
             onClick={() => handleStrokeWidth(StrokeSizePencil.Thin)}
@@ -82,7 +82,7 @@ export default function PencilMenu() {
         <div id="tapper"></div>
       </div>
       <div id="pencil-tape" className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900">Tapper</h1>
+        <h1 className="text-xs font-nunito text-gray-900">Tapper</h1>
         <div className="flex gap-2">
           <Stroke
             onClick={() => handleTaper(Tapper.None)}
@@ -106,7 +106,7 @@ export default function PencilMenu() {
         </div>
       </div>
       <div id="pencil-thinning" className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900">Thinning</h1>
+        <h1 className="text-xs font-nunito text-gray-900">Thinning</h1>
         <div className="flex gap-2">
           <Stroke
             onClick={() => handleThinning(Thinning.None)}

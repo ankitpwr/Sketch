@@ -19,7 +19,7 @@ export default function ThemeToggle() {
     return null;
   }
   return (
-    <div className=" fixed top-4 right-80 flex p-1  gap-2 items-center border border-[#f1f0ff] dark:border-[#2a2a34] w-fit rounded-xl">
+    <div className="  flex p-1  gap-1 items-center border border-[#f1f0ff] dark:border-[#2a2a34] w-fit rounded-xl">
       <Button
         varient={"theme"}
         size={"md"}
