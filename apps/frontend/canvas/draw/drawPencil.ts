@@ -1,7 +1,12 @@
 import getStroke from "perfect-freehand";
 import { PencilShape } from "@repo/types/canvasTypes";
+import { getThemeColors } from "@repo/types/drawingConfig";
 
-export function drawPencil(ctx: CanvasRenderingContext2D, shape: PencilShape) {
+export function drawPencil(
+  ctx: CanvasRenderingContext2D,
+  shape: PencilShape,
+  themeColors: ReturnType<typeof getThemeColors>
+) {
   ctx.save();
   const points = shape.points;
   const strokeOption = {
@@ -18,7 +23,7 @@ export function drawPencil(ctx: CanvasRenderingContext2D, shape: PencilShape) {
   const stroke = getStroke(points, strokeOption); //return:- An array of `[x, y]` coordinate pairs that form the outer boundary (outline) of the stroke.
   const pathData = getSvgPathFromStroke(stroke); //return:- A string in SVG Path Data format
   const myPath = new Path2D(pathData);
-  ctx.fillStyle = shape.style.StrokeStyle;
+  ctx.fillStyle = themeColors[shape.style.backgroundColorKey];
   ctx.fill(myPath);
   ctx.restore();
 }

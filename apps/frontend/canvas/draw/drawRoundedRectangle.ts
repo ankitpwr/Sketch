@@ -1,9 +1,10 @@
 import { RectangleShape } from "@repo/types/canvasTypes";
-import { getLineDashPattern } from "@repo/types/drawingConfig";
+import { getLineDashPattern, getThemeColors } from "@repo/types/drawingConfig";
 
 export function drawRoundedRectangle(
   ctx: CanvasRenderingContext2D,
   shape: RectangleShape,
+  themeColors: ReturnType<typeof getThemeColors>,
   boundingBox: { isBoundingBox: boolean; scale: number } = {
     isBoundingBox: false,
     scale: 1,
@@ -15,8 +16,8 @@ export function drawRoundedRectangle(
     ? width / 3
     : Math.abs(Math.min(width, height) / 6);
   ctx.save();
-  ctx.fillStyle = shape.style.background;
-  ctx.strokeStyle = shape.style.strokeStyle;
+  ctx.fillStyle = themeColors[shape.style.backgroundColorKey];
+  ctx.strokeStyle = themeColors[shape.style.strokeColorKey];
 
   ctx.lineWidth = boundingBox.isBoundingBox
     ? 1 / boundingBox.scale

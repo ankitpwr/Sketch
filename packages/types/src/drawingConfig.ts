@@ -1,3 +1,14 @@
+export interface AppSetting {
+  canvasColorKey: CanvasColorKey;
+  strokeColorKey: StrokeColorKey;
+  backgroundColorKey: BackgroundColorkey;
+}
+export const setting: AppSetting = {
+  canvasColorKey: "White",
+  strokeColorKey: "Stroke_Black",
+  backgroundColorKey: "BG_Transparent",
+};
+
 export enum StrokeType {
   Solid = "solid",
   Dashed = "dashed",
@@ -151,6 +162,16 @@ export interface TextStyle {
   strokeStyle: StrokeColor | string;
   fontsize: FontSize;
   fontfamily: FontFamily;
+  strokeColorKey: StrokeColorKey;
+  backgroundColorKey: BackgroundColorkey;
+}
+export interface PencilStyles {
+  StrokeStyle: StrokeColor | string;
+  strokeWidth: StrokeSizePencil;
+  tapper: Tapper;
+  thinning: Thinning;
+  strokeColorKey: StrokeColorKey;
+  backgroundColorKey: BackgroundColorkey;
 }
 export interface ShapeStyles {
   strokeWidth: StrokeWidth;
@@ -158,23 +179,24 @@ export interface ShapeStyles {
   fill: string;
   strokeType: StrokeType;
   background: BackgroundColor | string;
+  strokeColorKey: StrokeColorKey;
+  backgroundColorKey: BackgroundColorkey;
 }
 export const DefaultTextStyle: TextStyle = {
   strokeStyle: StrokeColor.PrimaryRed,
   fontsize: FontSize.Medium,
   fontfamily: FontFamily.Normal,
+  strokeColorKey: "Stroke_Black",
+  backgroundColorKey: "BG_Transparent",
 };
-export interface PencilStyles {
-  StrokeStyle: StrokeColor | string;
-  strokeWidth: StrokeSizePencil;
-  tapper: Tapper;
-  thinning: Thinning;
-}
+
 export const DefaultPencilStyles: PencilStyles = {
   StrokeStyle: StrokeColor.PrimaryBlue,
   strokeWidth: StrokeSizePencil.ExtraBold,
   tapper: Tapper.Sharp,
   thinning: Thinning.Medium,
+  strokeColorKey: "Stroke_Black",
+  backgroundColorKey: "BG_Transparent",
 };
 
 export const DefaultShapeStyles: ShapeStyles = {
@@ -183,6 +205,8 @@ export const DefaultShapeStyles: ShapeStyles = {
   strokeStyle: StrokeColor.PrimaryBlack,
   fill: "transparent",
   background: BackgroundColor.Transparent,
+  strokeColorKey: "Stroke_Black",
+  backgroundColorKey: "BG_Transparent",
 };
 
 export const BoundingBorderStyles: ShapeStyles = {
@@ -191,6 +215,8 @@ export const BoundingBorderStyles: ShapeStyles = {
   strokeStyle: StrokeColor.PrimaryViolet,
   fill: "transparent",
   background: BackgroundColor.BG_White,
+  strokeColorKey: "Stroke_Black",
+  backgroundColorKey: "BG_Transparent",
 };
 
 export function getLineDashPattern(

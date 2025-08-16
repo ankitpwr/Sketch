@@ -30,6 +30,9 @@ import {
   CanvasColor,
   CanvasColorKey,
   THEME_PALETTE,
+  StrokeColorKey,
+  BackgroundColorkey,
+  getThemeColors,
 } from "@repo/types/drawingConfig";
 
 export class CanvasEngine {
@@ -62,6 +65,7 @@ export class CanvasEngine {
   public CurrentTextStyle: TextStyle;
   public CanvasColor: string;
   public CanvasColorKey: CanvasColorKey;
+  private theme: "light" | "dark" = "light";
   private initialPintchDistance: number | null = null;
   private initialPintchMidPoint: { x: number; y: number } | null = null;
   private lastScale: number = 1;
@@ -176,21 +180,33 @@ export class CanvasEngine {
   handleCanvasResize = () => {
     this.render();
   };
-  ChangeCanvasColor = (hexColor: string, colorKey: CanvasColorKey) => {
-    this.CanvasColor = hexColor;
+  ChangeCanvasColor = (colorKey: CanvasColorKey) => {
     this.CanvasColorKey = colorKey;
+    const themeColors = getThemeColors(this.theme);
+    this.CanvasColor = themeColors[colorKey];
     this.render();
   };
-  ChangeStrokeColor = (hexColor: string) => {
-    this.CurrentShapeStyles.strokeStyle = hexColor;
-    this.CurrentTextStyle.strokeStyle = hexColor;
-    this.CurrentPencilStyles.StrokeStyle = hexColor;
+  ChangeStrokeColor = (colorKey: StrokeColorKey) => {
+    this.CurrentShapeStyles.strokeColorKey = colorKey;
+    this.CurrentTextStyle.strokeColorKey = colorKey;
+    this.CurrentPencilStyles.strokeColorKey = colorKey;
   };
 
-  ChangeBackgroundColor = (hexColor: string) => {
-    this.CurrentShapeStyles.background = hexColor;
+  ChangeBackgroundColor = (colorKey: BackgroundColorkey) => {
+    this.CurrentShapeStyles.backgroundColorKey = colorKey;
+    this.CurrentTextStyle.backgroundColorKey = colorKey;
+    this.CurrentPencilStyles.backgroundColorKey = colorKey;
+  };
+
+  public setCanvasTheme = (theme: "light" | "dark") => {
+    if (theme == this.theme) return;
+    this.theme = theme;
+    const themeColors = getThemeColors(this.theme);
+    this.CanvasColor = themeColors[this.CanvasColorKey];
+    this.render();
   };
   render = () => {
+    const themeColors = getThemeColors(this.theme);
     this.ctx.save();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.fillStyle = this.CanvasColor;
@@ -204,22 +220,22 @@ export class CanvasEngine {
         case ShapeType.RECTANGLE:
         case ShapeType.ELLIPSE:
         case ShapeType.DIAMOND:
-          if (s.type == ShapeType.RECTANGLE) drawRoundedRectangle(this.ctx, s);
-          if (s.type == ShapeType.ELLIPSE) drawEllipse(this.ctx, s);
-          if (s.type == ShapeType.DIAMOND) drawDiamond(this.ctx, s);
+          if (s.type == ShapeType.RECTANGLE) drawRoundedRectangle(this.ctx, s, themeColors );
+          if (s.type == ShapeType.ELLIPSE) drawEllipse(this.ctx, s, themeColors);
+          if (s.type == ShapeType.DIAMOND) drawDiamond(this.ctx, s,  themeColors);
           break;
 
         case ShapeType.LINE:
-          drawLine(this.ctx, s);
+          drawLine(this.ctx, s, themeColors);
           break;
         case ShapeType.ARROW:
-          drawArrow(this.ctx, s);
+          drawArrow(this.ctx, s, themeColors);
           break;
         case ShapeType.PENCIL:
-          drawPencil(this.ctx, s);
+          drawPencil(this.ctx, s, themeColors);
           break;
         case ShapeType.TEXT:
-          drawText(this.ctx, s);
+          drawText(this.ctx, s, themeColors);
           break;
       }
     };

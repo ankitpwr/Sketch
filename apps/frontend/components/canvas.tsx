@@ -17,9 +17,11 @@ import Share from "./Share";
 import useCanvasStore from "@/app/store/canvas-store";
 import useUserStore from "@/app/store/user-store";
 import {
+  AppSetting,
   CANVAS_COLOR_KEYS,
   CanvasColorKey,
   getThemeColors,
+  setting,
   StrokeColorKey,
   THEME_PALETTE,
 } from "@repo/types/drawingConfig";
@@ -84,37 +86,18 @@ export default function Canvas() {
       roomId,
       userId
     );
-    const storedCanvasKey = localStorage.getItem(
-      "canvas-color-key"
-    ) as CanvasColorKey;
-
-    const storedStrokeColor = localStorage.getItem("stroke-color") as string;
-    const storedBackgroundColor = localStorage.getItem(
-      "background-color"
-    ) as string;
-    const themeColors = getThemeColors(resolvedTheme);
-    let initialCanvasColors = themeColors.White;
-    let initialStrokeColors = themeColors.Stroke_Black;
-    let initialBackgroundColors = themeColors.BG_Transparent;
-    if (
-      storedCanvasKey &&
-      storedStrokeColor &&
-      storedBackgroundColor &&
-      storedCanvasKey in THEME_PALETTE.light
-    ) {
-      initialCanvasColors = themeColors[storedCanvasKey];
-      initialStrokeColors = storedStrokeColor;
-      initialBackgroundColors = storedBackgroundColor;
-      console.log(`setting up stroke color ${themeColors.Stroke_Black}`);
+    const savedSetting = localStorage.getItem("sketch-setting");
+    if (!savedSetting) {
+      localStorage.setItem("sketch-setting", JSON.stringify(setting));
     } else {
-      localStorage.setItem("canvas-color-key", CANVAS_COLOR_KEYS[0]);
-      localStorage.setItem("stroke-color", initialStrokeColors);
-      localStorage.setItem("background-color", initialBackgroundColors);
-      // console.log(`setting up stroke color ${initialStrokeColors}`);
+      const parseSketchSetting = JSON.parse(savedSetting) as AppSetting;
+      newCanvasEngine.ChangeCanvasColor(parseSketchSetting.canvasColorKey);
+      newCanvasEngine.ChangeStrokeColor(parseSketchSetting.strokeColorKey);
+      newCanvasEngine.ChangeBackgroundColor(
+        parseSketchSetting.backgroundColorKey
+      );
     }
-    newCanvasEngine.ChangeCanvasColor(initialCanvasColors, storedCanvasKey);
-    newCanvasEngine.ChangeStrokeColor(initialStrokeColors);
-    newCanvasEngine.ChangeBackgroundColor(initialBackgroundColors);
+
     setCanvasEngine(newCanvasEngine);
     updateCanvasDimension();
   }, [standalone, roomId, socket, userId, setDpr, setCanvasEngine]);
@@ -136,6 +119,17 @@ export default function Canvas() {
       observer.disconnect();
     };
   }, [updateCanvasDimension]);
+
+  useEffect(() => {
+    if (resolvedTheme == "light" || resolvedTheme == "dark") {
+      const savedSetting = localStorage.getItem("sketch-setting");
+      canvasEngine?.setCanvasTheme(resolvedTheme);
+      if (savedSetting) {
+        const parseSketchSetting = JSON.parse(savedSetting) as AppSetting;
+        canvasEngine?.ChangeCanvasColor(parseSketchSetting.canvasColorKey);
+      }
+    }
+  }, [resolvedTheme, canvasEngine]);
 
   return (
     <div className="w-screen h-screen relative ">

@@ -25,12 +25,13 @@ export default function AppMenuContainer() {
   const { currentTool, canvasEngine } = useCanvasStore();
   const { resolvedTheme } = useTheme();
 
-  const [strokeColor, setCurrentStrokeColor] = useState<StrokeColor | string>(
-    canvasEngine!.CurrentShapeStyles.strokeStyle
+  const [strokeColorKey, setCurrentStrokeColorKey] = useState<StrokeColorKey>(
+    canvasEngine!.CurrentShapeStyles.strokeColorKey
   );
-  const [backgroundColor, setBackgroundColor] = useState<
-    BackgroundColor | string
-  >(canvasEngine!.CurrentShapeStyles.background);
+  const [backgroundColorKey, setBackgroundColorKey] =
+    useState<BackgroundColorkey>(
+      canvasEngine!.CurrentShapeStyles.backgroundColorKey
+    );
   const [strokeColorPicker, setStrokeColorPicker] = useState<boolean>(false);
   const [backgrColorPicker, setBackgroundColorPicker] =
     useState<boolean>(false);
@@ -48,14 +49,9 @@ export default function AppMenuContainer() {
 
   const handleStrokeColor = (colorKey: StrokeColorKey, newcolor?: string) => {
     if (newcolor) {
-      if (!isHexColor(newcolor)) return;
-      canvasEngine!.ChangeStrokeColor(newcolor);
-      setCurrentStrokeColor(newcolor);
     } else if (colorKey) {
-      const color = themeColors[colorKey] as StrokeColorKey;
-      if (!isHexColor(color)) return;
-      canvasEngine!.ChangeStrokeColor(color);
-      setCurrentStrokeColor(color);
+      canvasEngine!.ChangeStrokeColor(colorKey);
+      setCurrentStrokeColorKey(colorKey);
     }
   };
 
@@ -64,13 +60,9 @@ export default function AppMenuContainer() {
     newcolor?: string
   ) => {
     if (newcolor) {
-      if (!isHexColor(newcolor)) return;
-      canvasEngine!.ChangeStrokeColor(newcolor);
     } else if (colorKey) {
-      const color = themeColors[colorKey] as BackgroundColorkey;
-      if (!isHexColor(color)) return;
-      canvasEngine!.ChangeBackgroundColor(color);
-      setBackgroundColor(color);
+      canvasEngine!.ChangeBackgroundColor(colorKey);
+      setBackgroundColorKey(colorKey);
     }
   };
 
@@ -82,11 +74,11 @@ export default function AppMenuContainer() {
     setStrokeColorPicker(false);
     setBackgroundColorPicker(true);
   };
-  const isActiveStroke = (strokeColor: StrokeColor | string) => {
-    return canvasEngine!.CurrentShapeStyles.strokeStyle == strokeColor;
+  const isActiveStroke = (Key: StrokeColorKey) => {
+    return strokeColorKey == Key;
   };
-  const isActiveBackground = (backgroundColor: BackgroundColor | string) => {
-    return canvasEngine!.CurrentShapeStyles.background == backgroundColor;
+  const isActiveBackground = (key: BackgroundColorkey) => {
+    return backgroundColorKey == key;
   };
 
   useEffect(() => {
@@ -110,18 +102,7 @@ export default function AppMenuContainer() {
       canvasEngine!.canvas.removeEventListener("mousedown", handleMouseDown);
   }, []);
 
-  useEffect(() => {
-    const storedStrokeColor = localStorage.getItem("stroke-color") as string;
-    const storedBackgroundColor = localStorage.getItem(
-      "background-color"
-    ) as string;
-    if (storedStrokeColor && storedBackgroundColor) {
-      if (isHexColor(storedStrokeColor) && isHexColor(storedBackgroundColor)) {
-        canvasEngine!.ChangeStrokeColor(storedStrokeColor);
-        canvasEngine!.ChangeBackgroundColor(storedBackgroundColor);
-      }
-    }
-  }, [resolvedTheme]);
+  useEffect(() => {}, [resolvedTheme]);
   return (
     <div className="flex flex-col bg-white dark:bg-[#232329] gap-6 px-5 py-5 rounded-lg">
       <div id="stroke-color-section" className="flex flex-col gap-2">
@@ -133,24 +114,24 @@ export default function AppMenuContainer() {
                 key={key}
                 onClick={() => handleStrokeColor(key)}
                 color={themeColors[key]}
-                isActive={isActiveStroke(themeColors[key])}
+                isActive={isActiveStroke(key)}
               />
             ))}
           </div>
           <div className="w-[1.5px] h-6 rounded-md bg-gray-200 dark:bg-[#343a40]"></div>
           <ColorSelection
-            color={strokeColor}
+            color={themeColors[strokeColorKey]}
             isActive={false}
             isColorPicker={true}
             onClick={handleStrokeColorSelction}
           />
-          {strokeColorPicker && (
+          {/* {strokeColorPicker && (
             <ColorPicker
               isStrokeColorPicker={true}
               currentHexCode={strokeColor}
               refer={strokeInputRef}
             />
-          )}
+          )} */}
         </div>
       </div>
 
@@ -165,24 +146,24 @@ export default function AppMenuContainer() {
                 key={key}
                 onClick={() => handleBackgroundColor(key)}
                 color={themeColors[key]}
-                isActive={isActiveBackground(themeColors[key])}
+                isActive={isActiveBackground(key)}
               />
             ))}
           </div>
           <div className="w-[1.5px] h-6 rounded-md bg-gray-200 dark:bg-[#343a40]"></div>
           <ColorSelection
-            color={backgroundColor}
+            color={themeColors[backgroundColorKey]}
             isActive={false}
             isColorPicker={true}
             onClick={handleBackgroundColorSelction}
           />
-          {backgrColorPicker && (
+          {/* {backgrColorPicker && (
             <ColorPicker
               isStrokeColorPicker={false}
               currentHexCode={backgroundColor}
               refer={backgroundInputRef}
             />
-          )}
+          )} */}
         </div>
       </div>
 

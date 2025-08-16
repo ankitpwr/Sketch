@@ -5,10 +5,12 @@ import ColorSelection from "./colorSelector";
 import { Tool } from "@repo/types/canvasTypes";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import {
+  AppSetting,
   CANVAS_COLOR_KEYS,
   CanvasColor,
   CanvasColorKey,
   getThemeColors,
+  setting,
   THEME_PALETTE,
 } from "@repo/types/drawingConfig";
 import { XIcon } from "./svgIcons";
@@ -27,10 +29,10 @@ export default function DropDownContainer() {
   const themeColors = getThemeColors(resolvedTheme);
 
   const handleCanvasColor = (colorKey: CanvasColorKey) => {
-    const hexColor = themeColors[colorKey];
-    canvasEngine!.ChangeCanvasColor(hexColor, colorKey);
+    canvasEngine!.ChangeCanvasColor(colorKey);
+    setting.canvasColorKey = colorKey;
+    localStorage.setItem("sketch-setting", JSON.stringify(setting));
     setActiveColorKey(colorKey);
-    localStorage.setItem("canvas-color-key", colorKey);
   };
   const isActiveColor = (colorKey: CanvasColorKey) => {
     return canvasEngine!.CanvasColorKey == colorKey;
@@ -40,17 +42,14 @@ export default function DropDownContainer() {
     canvasEngine!.clearCanvas();
   };
 
-  useEffect(() => {
-    const storedColorKey = localStorage.getItem(
-      "canvas-color-key"
-    ) as CanvasColorKey;
-
-    if (storedColorKey && storedColorKey in THEME_PALETTE.light) {
-      const newThemeColors = getThemeColors(resolvedTheme);
-      const newHexColor = newThemeColors[storedColorKey];
-      canvasEngine?.ChangeCanvasColor(newHexColor, storedColorKey);
-    }
-  }, [resolvedTheme, canvasEngine]);
+  // useEffect(() => {
+  //   const savedSetting = localStorage.getItem("sketch-setting");
+  //   canvasEngine!.setCanvasTheme(resolvedTheme);
+  //   if (savedSetting) {
+  //     const parseSketchSetting = JSON.parse(savedSetting) as AppSetting;
+  //     canvasEngine?.ChangeCanvasColor(parseSketchSetting.canvasColorKey);
+  //   }
+  // }, [resolvedTheme, canvasEngine]);
 
   return (
     <div
