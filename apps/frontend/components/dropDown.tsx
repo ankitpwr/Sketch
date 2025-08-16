@@ -43,7 +43,7 @@ export default function DropDown() {
         isActive={false}
       >
         {" "}
-        <Menu color="black" size={18} />{" "}
+        <Menu size={18} />{" "}
       </Button>
       {dropDown && <DropDownContainer />}
     </div>

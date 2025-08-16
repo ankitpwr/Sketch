@@ -2,7 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import ColorSelection from "./colorSelector";
 import {
   BackgroundColor,
+  BackgroundColorkey,
+  BG_COLOR_KEYS,
+  getThemeColors,
+  STROKE_COLOR_KEYS,
   StrokeColor,
+  StrokeColorKey,
   StrokeType,
 } from "@repo/types/drawingConfig";
 import ColorPicker from "./colorPicker";
@@ -14,9 +19,11 @@ import { ShapeType, Tool } from "@repo/types/canvasTypes";
 import TextSelector from "./TextSelector";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import useCanvasStore from "@/app/store/canvas-store";
+import { useTheme } from "next-themes";
 
 export default function AppMenuContainer() {
   const { currentTool, canvasEngine } = useCanvasStore();
+  const { resolvedTheme } = useTheme();
 
   const [strokeColor, setCurrentStrokeColor] = useState<StrokeColor | string>(
     canvasEngine!.CurrentShapeStyles.strokeStyle
@@ -35,18 +42,36 @@ export default function AppMenuContainer() {
     var hexaPattern = /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/;
     return hexaPattern.test(hex) || hex == "#00000000";
   }
-  const handleStrokeColor = (color: StrokeColor | string) => {
-    if (!isHexColor(color)) return;
-    canvasEngine!.CurrentShapeStyles.strokeStyle = color;
-    canvasEngine!.CurrentPencilStyles.StrokeStyle = color;
-    canvasEngine!.CurrentTextStyle.strokeStyle = color;
-    setCurrentStrokeColor(color);
+
+  if (resolvedTheme != "light" && resolvedTheme != "dark") return;
+  const themeColors = getThemeColors(resolvedTheme);
+
+  const handleStrokeColor = (colorKey: StrokeColorKey, newcolor?: string) => {
+    if (newcolor) {
+      if (!isHexColor(newcolor)) return;
+      canvasEngine!.ChangeStrokeColor(newcolor);
+      setCurrentStrokeColor(newcolor);
+    } else if (colorKey) {
+      const color = themeColors[colorKey] as StrokeColorKey;
+      if (!isHexColor(color)) return;
+      canvasEngine!.ChangeStrokeColor(color);
+      setCurrentStrokeColor(color);
+    }
   };
 
-  const handleBackgroundColor = (color: BackgroundColor | string) => {
-    if (!isHexColor(color)) return;
-    canvasEngine!.CurrentShapeStyles.background = color;
-    setBackgroundColor(color);
+  const handleBackgroundColor = (
+    colorKey: BackgroundColorkey,
+    newcolor?: string
+  ) => {
+    if (newcolor) {
+      if (!isHexColor(newcolor)) return;
+      canvasEngine!.ChangeStrokeColor(newcolor);
+    } else if (colorKey) {
+      const color = themeColors[colorKey] as BackgroundColorkey;
+      if (!isHexColor(color)) return;
+      canvasEngine!.ChangeBackgroundColor(color);
+      setBackgroundColor(color);
+    }
   };
 
   const handleStrokeColorSelction = () => {
@@ -57,10 +82,10 @@ export default function AppMenuContainer() {
     setStrokeColorPicker(false);
     setBackgroundColorPicker(true);
   };
-  const isActiveStroke = (strokeColor: StrokeColor) => {
+  const isActiveStroke = (strokeColor: StrokeColor | string) => {
     return canvasEngine!.CurrentShapeStyles.strokeStyle == strokeColor;
   };
-  const isActiveBackground = (backgroundColor: BackgroundColor) => {
+  const isActiveBackground = (backgroundColor: BackgroundColor | string) => {
     return canvasEngine!.CurrentShapeStyles.background == backgroundColor;
   };
 
@@ -70,10 +95,13 @@ export default function AppMenuContainer() {
       setBackgroundColorPicker(false);
 
       if (strokeInputRef.current) {
-        handleStrokeColor(strokeInputRef.current.value);
+        handleStrokeColor(STROKE_COLOR_KEYS[0], strokeInputRef.current.value);
       }
       if (backgroundInputRef.current) {
-        handleBackgroundColor(backgroundInputRef.current.value);
+        handleBackgroundColor(
+          BG_COLOR_KEYS[0],
+          backgroundInputRef.current.value
+        );
       }
     }
     canvasEngine!.canvas.addEventListener("mousedown", handleMouseDown);
@@ -81,38 +109,35 @@ export default function AppMenuContainer() {
     return () =>
       canvasEngine!.canvas.removeEventListener("mousedown", handleMouseDown);
   }, []);
-  return (
-    <div className="flex flex-col bg-white dark:bg-[#232329] gap-6 px-5 py-5">
-      <div id="stroke-color-section" className="flex flex-col gap-2">
-        <h1 className="text-xs font-nunito text-gray-900  ">Stroke</h1>
-        <div className="flex gap-2 md:justify-center items-center">
-          <ColorSelection
-            onClick={() => handleStrokeColor(StrokeColor.PrimaryBlack)}
-            color={StrokeColor.PrimaryBlack}
-            isActive={isActiveStroke(StrokeColor.PrimaryBlack)}
-          />
-          <ColorSelection
-            onClick={() => handleStrokeColor(StrokeColor.PrimaryRed)}
-            color={StrokeColor.PrimaryRed}
-            isActive={isActiveStroke(StrokeColor.PrimaryRed)}
-          />
-          <ColorSelection
-            onClick={() => handleStrokeColor(StrokeColor.PrimaryGreen)}
-            color={StrokeColor.PrimaryGreen}
-            isActive={isActiveStroke(StrokeColor.PrimaryGreen)}
-          />
-          <ColorSelection
-            onClick={() => handleStrokeColor(StrokeColor.PrimaryBlue)}
-            color={StrokeColor.PrimaryBlue}
-            isActive={isActiveStroke(StrokeColor.PrimaryBlue)}
-          />
-          <ColorSelection
-            onClick={() => handleStrokeColor(StrokeColor.PrimaryYellow)}
-            color={StrokeColor.PrimaryYellow}
-            isActive={isActiveStroke(StrokeColor.PrimaryYellow)}
-          />
-          <div className="w-[1.5px] h-5 rounded-md bg-gray-200"></div>
 
+  useEffect(() => {
+    const storedStrokeColor = localStorage.getItem("stroke-color") as string;
+    const storedBackgroundColor = localStorage.getItem(
+      "background-color"
+    ) as string;
+    if (storedStrokeColor && storedBackgroundColor) {
+      if (isHexColor(storedStrokeColor) && isHexColor(storedBackgroundColor)) {
+        canvasEngine!.ChangeStrokeColor(storedStrokeColor);
+        canvasEngine!.ChangeBackgroundColor(storedBackgroundColor);
+      }
+    }
+  }, [resolvedTheme]);
+  return (
+    <div className="flex flex-col bg-white dark:bg-[#232329] gap-6 px-5 py-5 rounded-lg">
+      <div id="stroke-color-section" className="flex flex-col gap-2">
+        <h1 className="text-xs text-gray-900 dark:text-[#dadadf] ">Stroke</h1>
+        <div className="flex gap-2 md:justify-start items-center">
+          <div className="flex gap-1.5 md:justify-center items-center">
+            {STROKE_COLOR_KEYS.map((key) => (
+              <ColorSelection
+                key={key}
+                onClick={() => handleStrokeColor(key)}
+                color={themeColors[key]}
+                isActive={isActiveStroke(themeColors[key])}
+              />
+            ))}
+          </div>
+          <div className="w-[1.5px] h-6 rounded-md bg-gray-200 dark:bg-[#343a40]"></div>
           <ColorSelection
             color={strokeColor}
             isActive={false}
@@ -130,34 +155,21 @@ export default function AppMenuContainer() {
       </div>
 
       <div id="background-color-selection" className="flex flex-col gap-2">
-        <h1 className="text-xs font-nunito text-gray-900">Background</h1>
+        <h1 className="text-xs text-gray-900 dark:text-[#dadadf] ">
+          Background
+        </h1>
         <div className="flex gap-2 md:justify-center items-center">
-          <ColorSelection
-            onClick={() => handleBackgroundColor(BackgroundColor.Transparent)}
-            color={BackgroundColor.Transparent}
-            isActive={isActiveBackground(BackgroundColor.Transparent)}
-          />
-          <ColorSelection
-            onClick={() => handleBackgroundColor(BackgroundColor.BG_Red)}
-            color={BackgroundColor.BG_Red}
-            isActive={isActiveBackground(BackgroundColor.BG_Red)}
-          />
-          <ColorSelection
-            onClick={() => handleBackgroundColor(BackgroundColor.BG_Green)}
-            color={BackgroundColor.BG_Green}
-            isActive={isActiveBackground(BackgroundColor.BG_Green)}
-          />
-          <ColorSelection
-            onClick={() => handleBackgroundColor(BackgroundColor.BG_Blue)}
-            color={BackgroundColor.BG_Blue}
-            isActive={isActiveBackground(BackgroundColor.BG_Blue)}
-          />
-          <ColorSelection
-            onClick={() => handleBackgroundColor(BackgroundColor.BG_Yellow)}
-            color={BackgroundColor.BG_Yellow}
-            isActive={isActiveBackground(BackgroundColor.BG_Yellow)}
-          />
-          <div className="w-[1.5px] h-5 rounded-md bg-gray-200"></div>
+          <div className="flex gap-1.5 md:justify-center items-center">
+            {BG_COLOR_KEYS.map((key) => (
+              <ColorSelection
+                key={key}
+                onClick={() => handleBackgroundColor(key)}
+                color={themeColors[key]}
+                isActive={isActiveBackground(themeColors[key])}
+              />
+            ))}
+          </div>
+          <div className="w-[1.5px] h-6 rounded-md bg-gray-200 dark:bg-[#343a40]"></div>
           <ColorSelection
             color={backgroundColor}
             isActive={false}

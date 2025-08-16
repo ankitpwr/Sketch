@@ -32,6 +32,23 @@ export enum CanvasColor {
   DarK_RED = "#1b1615",
   DarK_GREY = "#161718",
 }
+
+export const STROKE_COLOR_KEYS = [
+  "Stroke_Black",
+  "Stroke_Red",
+  "Stroke_Green",
+  "Stroke_Blue",
+  "Stroke_Yellow",
+] as const;
+
+export const BG_COLOR_KEYS = [
+  "BG_Transparent",
+  "BG_Red",
+  "BG_Green",
+  "BG_Blue",
+  "BG_Yellow",
+] as const;
+
 export const CANVAS_COLOR_KEYS = [
   "White",
   "Blue",
@@ -41,13 +58,31 @@ export const CANVAS_COLOR_KEYS = [
 ] as const;
 
 export type CanvasColorKey = (typeof CANVAS_COLOR_KEYS)[number]; //Union of Canvas_color_keys
+export type StrokeColorKey = (typeof STROKE_COLOR_KEYS)[number];
+export type BackgroundColorkey = (typeof BG_COLOR_KEYS)[number];
+
 export const THEME_PALETTE = {
   light: {
+    //canvas light colors
     White: "#ffffff",
     Blue: "#f5faff",
     Yellow: "#fffce8",
     Red: "#fdf8f6",
     Grey: "#f8f9fa",
+
+    //stroke light colors
+    Stroke_Black: "#1e1e1e",
+    Stroke_Red: "#e03131",
+    Stroke_Green: "#2f9e44",
+    Stroke_Blue: "#1971c2",
+    Stroke_Yellow: "#f08c00",
+
+    //background light color for shapes
+    BG_Transparent: "#00000000",
+    BG_Red: "#ffc9c9",
+    BG_Green: "#b2f2bb",
+    BG_Blue: "#a5d8ff",
+    BG_Yellow: "#ffec99",
   },
   dark: {
     White: "#121212",
@@ -55,6 +90,20 @@ export const THEME_PALETTE = {
     Yellow: "#181605",
     Red: "#1b1615",
     Grey: "#161718",
+
+    //stroke dark colors
+    Stroke_Black: "#d3d3d3",
+    Stroke_Red: "#ff8383",
+    Stroke_Green: "#3a994c",
+    Stroke_Blue: "#56a2e8",
+    Stroke_Yellow: "#b76100",
+
+    //background dark color for shapes
+    BG_Transparent: "#00000000",
+    BG_Red: "#5b2d2d",
+    BG_Green: "#043b0c",
+    BG_Blue: "#154163",
+    BG_Yellow: "#362600",
   },
 };
 

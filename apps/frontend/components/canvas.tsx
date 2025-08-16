@@ -20,6 +20,7 @@ import {
   CANVAS_COLOR_KEYS,
   CanvasColorKey,
   getThemeColors,
+  StrokeColorKey,
   THEME_PALETTE,
 } from "@repo/types/drawingConfig";
 import { useTheme } from "next-themes";
@@ -86,14 +87,34 @@ export default function Canvas() {
     const storedCanvasKey = localStorage.getItem(
       "canvas-color-key"
     ) as CanvasColorKey;
+
+    const storedStrokeColor = localStorage.getItem("stroke-color") as string;
+    const storedBackgroundColor = localStorage.getItem(
+      "background-color"
+    ) as string;
     const themeColors = getThemeColors(resolvedTheme);
-    let initialColors = themeColors.White;
-    if (storedCanvasKey && storedCanvasKey in THEME_PALETTE.light) {
-      initialColors = themeColors[storedCanvasKey];
+    let initialCanvasColors = themeColors.White;
+    let initialStrokeColors = themeColors.Stroke_Black;
+    let initialBackgroundColors = themeColors.BG_Transparent;
+    if (
+      storedCanvasKey &&
+      storedStrokeColor &&
+      storedBackgroundColor &&
+      storedCanvasKey in THEME_PALETTE.light
+    ) {
+      initialCanvasColors = themeColors[storedCanvasKey];
+      initialStrokeColors = storedStrokeColor;
+      initialBackgroundColors = storedBackgroundColor;
+      console.log(`setting up stroke color ${themeColors.Stroke_Black}`);
     } else {
       localStorage.setItem("canvas-color-key", CANVAS_COLOR_KEYS[0]);
+      localStorage.setItem("stroke-color", initialStrokeColors);
+      localStorage.setItem("background-color", initialBackgroundColors);
+      // console.log(`setting up stroke color ${initialStrokeColors}`);
     }
-    newCanvasEngine.ChangeCanvasColor(initialColors, storedCanvasKey);
+    newCanvasEngine.ChangeCanvasColor(initialCanvasColors, storedCanvasKey);
+    newCanvasEngine.ChangeStrokeColor(initialStrokeColors);
+    newCanvasEngine.ChangeBackgroundColor(initialBackgroundColors);
     setCanvasEngine(newCanvasEngine);
     updateCanvasDimension();
   }, [standalone, roomId, socket, userId, setDpr, setCanvasEngine]);

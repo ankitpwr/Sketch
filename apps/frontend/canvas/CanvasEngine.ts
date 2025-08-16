@@ -181,6 +181,15 @@ export class CanvasEngine {
     this.CanvasColorKey = colorKey;
     this.render();
   };
+  ChangeStrokeColor = (hexColor: string) => {
+    this.CurrentShapeStyles.strokeStyle = hexColor;
+    this.CurrentTextStyle.strokeStyle = hexColor;
+    this.CurrentPencilStyles.StrokeStyle = hexColor;
+  };
+
+  ChangeBackgroundColor = (hexColor: string) => {
+    this.CurrentShapeStyles.background = hexColor;
+  };
   render = () => {
     this.ctx.save();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
