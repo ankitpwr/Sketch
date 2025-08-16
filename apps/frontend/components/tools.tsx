@@ -21,14 +21,14 @@ export default function Tools() {
     setTool(tool);
   };
   return (
-    <div className="fixed bg-white top-5 left-1/2 -translate-x-1/2 px-1 py-1 flex md:gap-2  rounded-lg shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] ">
+    <div className="fixed bg-white dark:bg-[#232329] top-5 left-1/2 -translate-x-1/2 px-1 py-1 flex md:gap-2  rounded-lg shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] ">
       <Button
         isActive={currentTool == ActionTool.HAND ? true : false}
         onClickhandler={() => handleTool(ActionTool.HAND)}
         varient={"secondary"}
         size={"md"}
       >
-        <Hand color="#1b1b1f" size={18} strokeWidth={1.5} />{" "}
+        <Hand size={18} strokeWidth={1.5} />{" "}
       </Button>
       <Button
         isActive={currentTool == ActionTool.SELECT ? true : false}
@@ -38,8 +38,7 @@ export default function Tools() {
       >
         {" "}
         <MousePointer
-          fill={currentTool == ActionTool.SELECT ? "#030063" : "transparent"}
-          color="#1b1b1f"
+          className={`${currentTool == ActionTool.SELECT && `fill-[#030063] dark:fill-white`}`}
           size={18}
           strokeWidth={currentTool == ActionTool.SELECT ? 1 : 1.5}
         />
@@ -52,10 +51,9 @@ export default function Tools() {
       >
         {" "}
         <Square
-          fill={currentTool == ShapeType.RECTANGLE ? "#030063" : "transparent"}
-          color="#1b1b1f"
+          className={`${currentTool == ShapeType.RECTANGLE && `fill-[#030063] dark:fill-white`}`}
           size={18}
-          strokeWidth={currentTool == ShapeType.RECTANGLE ? 0 : 1.5}
+          strokeWidth={currentTool == ShapeType.RECTANGLE ? 1 : 1.5}
         />{" "}
       </Button>
       <Button
@@ -65,8 +63,7 @@ export default function Tools() {
         size={"md"}
       >
         <Diamond
-          fill={currentTool == ShapeType.DIAMOND ? "#030063" : "transparent"}
-          color="#1b1b1f"
+          className={`${currentTool == ShapeType.DIAMOND && `fill-[#030063] dark:fill-white`}`}
           size={18}
           strokeWidth={currentTool == ShapeType.DIAMOND ? 0 : 1.5}
         />
@@ -78,8 +75,7 @@ export default function Tools() {
         size={"md"}
       >
         <Circle
-          fill={currentTool == ShapeType.ELLIPSE ? "#030063" : "transparent"}
-          color="#1b1b1f"
+          className={`${currentTool == ShapeType.ELLIPSE && `fill-[#030063] dark:fill-white`}`}
           size={18}
           strokeWidth={currentTool == ShapeType.ELLIPSE ? 0 : 1.5}
         />
@@ -90,7 +86,7 @@ export default function Tools() {
         varient={"secondary"}
         size={"md"}
       >
-        <MoveRight color="#1b1b1f" size={20} strokeWidth={1.5} />
+        <MoveRight size={20} strokeWidth={1.5} />
       </Button>
       <Button
         isActive={currentTool == ShapeType.LINE ? true : false}
@@ -98,7 +94,7 @@ export default function Tools() {
         varient={"secondary"}
         size={"md"}
       >
-        <Minus color="#1b1b1f" size={18} strokeWidth={1.5} />
+        <Minus size={18} strokeWidth={1.5} />
       </Button>
 
       <Button
@@ -107,7 +103,7 @@ export default function Tools() {
         varient={"secondary"}
         size={"md"}
       >
-        <Pencil color="#1b1b1f" size={18} strokeWidth={1.5} />
+        <Pencil size={18} strokeWidth={1.5} />
       </Button>
       <Button
         isActive={currentTool == ActionTool.ERASER ? true : false}
@@ -115,7 +111,7 @@ export default function Tools() {
         varient={"secondary"}
         size={"md"}
       >
-        <Eraser color="#1b1b1f" size={18} strokeWidth={1.5} />
+        <Eraser size={18} strokeWidth={1.5} />
       </Button>
       <Button
         isActive={currentTool == ShapeType.TEXT ? true : false}
@@ -123,7 +119,7 @@ export default function Tools() {
         varient={"secondary"}
         size={"md"}
       >
-        <TypeOutline color="#1b1b1f" size={18} strokeWidth={1.5} />
+        <TypeOutline size={18} strokeWidth={1.5} />
       </Button>
     </div>
   );

@@ -5,7 +5,7 @@ const VarientStyle = {
   primary: `flex justify-center items-center text-center px-3 py-2 gap-2  rounded-lg text-white  bg-[#6965db]   hover:bg-[#5753d0]`,
   success: `flex justify-center items-center text-center px-3 py-2 gap-2  rounded-lg text-white  bg-[#0fb884] hover:bg-[#0d9b70]`,
   secondary:
-    "p-2.5 rounded-md flex items-center justify-center hover:bg-[#f1f0ff] ",
+    "p-2.5 rounded-md flex items-center justify-center hover:bg-[#f1f0ff] dark:hover:bg-[#2e2d39] text-[#1b1b1f] dark:text-[#e0dfff] ",
   dropdown:
     "px-2 py-2 rounded-md flex items-center justify-center bg-[#ececf4] text-white",
   theme: `py-1 px-2 rounded-lg flex items-center justify-center `,
@@ -40,7 +40,7 @@ export default function Button({
       onClick={onClickhandler}
       className={` font-nunito  cursor-pointer  ${VarientStyle[varient]} ${Size[size]} 
           ${varient === "theme" ? (isActive ? activeThemeStyle : inactiveThemeStyle) : ""}
-          ${varient === "secondary" && isActive && "bg-[#e0dfff]"}
+          ${varient === "secondary" && isActive && "bg-[#e0dfff] dark:bg-[#403e6a]"}
 
           ${styles}`}
     >
