@@ -16,7 +16,7 @@ export function ThinLineIcon({ size, color }: { size: number; color: string }) {
         y1={size / 2}
         x2={size - 4}
         y2={size / 2}
-        stroke={color}
+        className="stroke-black dark:stroke-[#e3e3e8]"
         strokeWidth="1"
         strokeLinecap="round"
       />
@@ -37,7 +37,7 @@ export function BoldLineIcon({ size, color }: { size: number; color: string }) {
         y1={size / 2}
         x2={size - 5}
         y2={size / 2}
-        stroke={color}
+        className="stroke-black dark:stroke-[#e3e3e8]"
         strokeWidth="2"
         strokeLinecap="round"
       />
@@ -58,7 +58,7 @@ export function ExtraBold({ size, color }: { size: number; color: string }) {
         y1={size / 2}
         x2={size - 4}
         y2={size / 2}
-        stroke={color}
+        className="stroke-black dark:stroke-[#e3e3e8]"
         strokeWidth="3.5"
         strokeLinecap="round"
       />
@@ -79,10 +79,10 @@ export function Dashed({ size, color }: { size: number; color: string }) {
         y1={size / 2}
         x2={size - 4}
         y2={size / 2}
-        stroke={color}
         strokeWidth="2"
         strokeLinecap="round"
         strokeDasharray="3, 3"
+        className="stroke-black dark:stroke-[#c5c5cb]"
       />
     </svg>
   );
@@ -101,10 +101,10 @@ export function Dotted({ size, color }: { size: number; color: string }) {
         y1={size / 2}
         x2={size - 4}
         y2={size / 2}
-        stroke={color}
         strokeWidth="2"
         strokeLinecap="round"
         strokeDasharray="0, 5"
+        className="stroke-black dark:stroke-[#c5c5cb]"
       />
     </svg>
   );
@@ -115,8 +115,8 @@ export function NoTaperIcon({ size, color }: { size: number; color: string }) {
     <svg
       width={size}
       height={size}
-      viewBox={`0 0 ${size} ${size}`}
-      fill={color} // Use fill for shapes
+      viewBox={`0 0 ${size} ${size}`} // Use fill for shapes
+      className="fill-black dark:fill-[#e3e3e8]"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path d="M 3 10 H 21 V 14 H 3 Z" />
@@ -136,7 +136,7 @@ export function SubtleTaperIcon({
       width={size}
       height={size}
       viewBox={`0 0 ${size} ${size}`}
-      fill={color}
+      className="fill-black dark:fill-[#e3e3e8]"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path d="M 3 12 C 7 9, 17 9, 21 12 C 17 15, 7 15, 3 12 Z" />
@@ -156,7 +156,7 @@ export function SharpTaperIcon({
       width={size}
       height={size}
       viewBox={`0 0 ${size} ${size}`}
-      fill={color}
+      className="fill-black dark:fill-[#e3e3e8]"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path d="M 2 12 C 8 7, 16 7, 22 12 C 16 17, 8 17, 2 12 Z" />
@@ -176,10 +176,13 @@ export function NoThinningIcon({
       width={size}
       height={size}
       viewBox="0 0 32 32"
-      fill="none"
+      className="fill-black dark:fill-[#e3e3e8]"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M 4 14 Q 16 15 28 14 L 28 18 Q 16 17 4 18 Z" fill={color} />
+      <path
+        d="M 4 14 Q 16 15 28 14 L 28 18 Q 16 17 4 18 Z"
+        className="fill-black dark:fill-[#e3e3e8]"
+      />
     </svg>
   );
 }
@@ -197,7 +200,10 @@ export function MediumThinningIcon({
       viewBox="0 0 32 32"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M 4 14 Q 17 17 28 14 L 28 18 Q 16 17 4 18 Z" fill={color} />
+      <path
+        d="M 4 14 Q 17 17 28 14 L 28 18 Q 16 17 4 18 Z"
+        className="fill-black dark:fill-[#e3e3e8]"
+      />
     </svg>
   );
 }
@@ -219,7 +225,7 @@ export function HighThinningIcon({
       <path
         d="M 4 14 Q 18 18 28 14 L 28 18 Q 16 17 4 18 Z"
         stroke-line="round"
-        fill={color}
+        className="fill-black dark:fill-[#e3e3e8]"
       />
     </svg>
   );
@@ -234,7 +240,7 @@ export function CodeIcon({ size, color }: { size: number; color: string }) {
       viewBox="0 0 24 24"
     >
       <path
-        fill={color}
+        className="fill-black dark:fill-[#e3e3e8]"
         fillRule="evenodd"
         d="M14.447 3.027a.75.75 0 0 1 .527.92l-4.5 16.5a.75.75 0 0 1-1.448-.394l4.5-16.5a.75.75 0 0 1 .921-.526ZM16.72 6.22a.75.75 0 0 1 1.06 0l5.25 5.25a.75.75 0 0 1 0 1.06l-5.25 5.25a.75.75 0 1 1-1.06-1.06L21.44 12l-4.72-4.72a.75.75 0 0 1 0-1.06Zm-9.44 0a.75.75 0 0 1 0 1.06L2.56 12l4.72 4.72a.75.75 0 1 1-1.06 1.06L.97 12.53a.75.75 0 0 1 0-1.06l5.25-5.25a.75.75 0 0 1 1.06 0Z"
         clipRule="evenodd"
@@ -295,7 +301,7 @@ export function ComicFontFamilyIcon({
     >
       <path
         d="M16 3 C 3 6, 3 17, 15 17"
-        stroke={color}
+        className="stroke-black dark:stroke-[#e3e3e8]"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

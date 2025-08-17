@@ -44,13 +44,20 @@ export default function TextSelector() {
   return (
     <div className="flex flex-col gap-6">
       <div id="text-selector" className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900 font-comic ">Font Family</h1>
+        <h1 className="font-nunito text-xs text-gray-900 dark:text-[#dadadf] ">
+          Font Family
+        </h1>
         <div className="flex gap-2">
           <Stroke
             onClick={() => handleFontFamily(FontFamily.HandDrawn)}
             isActive={isActiveFontFamily(FontFamily.HandDrawn)}
           >
-            <Pencil color="#1b1b1f" size={16} strokeWidth={1.5} />
+            <Pencil
+              color="#1b1b1f"
+              className="dark:stroke-[#e3e3e8]"
+              size={16}
+              strokeWidth={1.5}
+            />
           </Stroke>
 
           <Stroke
@@ -77,7 +84,9 @@ export default function TextSelector() {
       </div>
 
       <div id="text-selector" className="flex flex-col gap-2">
-        <h1 className="text-sm text-gray-900 font-comic ">Font Family</h1>
+        <h1 className="font-nunito text-xs text-gray-900 dark:text-[#dadadf] ">
+          Font Size
+        </h1>
         <div className="flex gap-2">
           <Stroke
             onClick={() => handleFontSize(FontSize.Small)}

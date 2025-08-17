@@ -42,15 +42,6 @@ export default function DropDownContainer() {
     canvasEngine!.clearCanvas();
   };
 
-  // useEffect(() => {
-  //   const savedSetting = localStorage.getItem("sketch-setting");
-  //   canvasEngine!.setCanvasTheme(resolvedTheme);
-  //   if (savedSetting) {
-  //     const parseSketchSetting = JSON.parse(savedSetting) as AppSetting;
-  //     canvasEngine?.ChangeCanvasColor(parseSketchSetting.canvasColorKey);
-  //   }
-  // }, [resolvedTheme, canvasEngine]);
-
   return (
     <div
       id="drop-down-menu"
