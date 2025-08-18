@@ -8,7 +8,7 @@ export function drawText(
 ) {
   const text = shape.text;
   ctx.save();
-  ctx.fillStyle = themeColors[shape.style.backgroundColorKey];
+  ctx.fillStyle = themeColors[shape.style.strokeColorKey];
   ctx.textBaseline = "top";
   ctx.textAlign = "left";
   ctx.font = `${shape.style.fontsize} ${shape.style.fontfamily}`;

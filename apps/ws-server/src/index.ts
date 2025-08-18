@@ -9,7 +9,7 @@ import {
   WS_Shape_Move,
 } from "@repo/types/wsTypes";
 import { CustomJwtPayload } from "@repo/types/commonTypes";
-import { prisma } from "@repo/db/index";
+import { prisma } from "@repo/db/prisma";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { Shape } from "@repo/types/canvasTypes";
@@ -62,11 +62,11 @@ wss.on("connection", (ws: WebSocket, request) => {
         //checking if room is already present or not
         const roomData = await prisma.room.findFirst({
           where: {
-            id: parsedData.id,
+            id: parsedData.roomId,
           },
         });
 
-        if (roomData) {
+        if (!roomData) {
           return ws.close(4002, "Invalid Room Id");
         }
 

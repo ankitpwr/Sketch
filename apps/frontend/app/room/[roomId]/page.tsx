@@ -10,6 +10,7 @@ export default async function RoomPage({
   params: { roomId: string };
 }) {
   const newRoomId = (await params).roomId;
+  console.log(`in page.tsx roomid is ${newRoomId}`);
 
   return <RoomCanvas newRoomId={newRoomId} />;
 }

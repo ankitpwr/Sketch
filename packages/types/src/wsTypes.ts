@@ -11,7 +11,6 @@ export enum MessageType {
   SHAPE_RESIZE = "SHAPE_RESIZE",
 }
 export interface WS_Message {
-  id: string;
   type: MessageType;
   roomId: string;
   message: string;

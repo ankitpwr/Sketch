@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { SignUpSchema, SignInSchema } from "@repo/types/zodSchema";
-import { prisma } from "@repo/db/index";
+import { prisma } from "@repo/db/prisma";
 import { authMiddleware, CustomRequest } from "./middleware";
 const app = express();
 app.use(express.json());

@@ -24,12 +24,14 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
     const ws = new WebSocket(
       `${process.env.NEXT_PUBLIC_WS_BASE_URL}?token=${authToken}`
     );
+    console.log(`the room id in roomCanvas.tsx is ${newRoomId}`);
     ws.onopen = () => {
       setSocket(ws);
       ws.send(
         JSON.stringify({
           type: MessageType.JOIN,
           roomId: newRoomId,
+          message: "Join room",
         })
       );
     };

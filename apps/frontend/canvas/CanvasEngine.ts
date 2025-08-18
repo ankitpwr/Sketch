@@ -258,11 +258,13 @@ export class CanvasEngine {
   };
 
   handleText = (x: number, y: number) => {
+    const themeColors = getThemeColors(this.theme);
+    const textColor = themeColors[this.CurrentTextStyle.strokeColorKey];
     this.textArea.style.left = x + "px";
     this.textArea.style.top = y + "px";
     this.textArea.style.fontSize = this.CurrentTextStyle.fontsize;
     this.textArea.style.fontFamily = this.CurrentTextStyle.fontfamily;
-    this.textArea.style.color = this.CurrentTextStyle.strokeStyle;
+    this.textArea.style.color = textColor;
     this.textArea.style.padding = "0";
     this.textArea.style.margin = "0";
     this.textArea.style.height = "auto";
