@@ -464,6 +464,7 @@ export class CanvasEngine {
           points: this.points,
           style: { ...this.CurrentPencilStyles },
         };
+        if (this.points.length < 5) return;
       } else if (
         currentShape == ShapeType.LINE ||
         currentShape == ShapeType.ARROW
@@ -477,6 +478,7 @@ export class CanvasEngine {
           endY: currentY,
           style: { ...this.CurrentShapeStyles },
         };
+        if (this.startX == currentX || this.startY == currentY) return;
       } else {
         tempShape = {
           id: cuid(),
@@ -487,6 +489,7 @@ export class CanvasEngine {
           endY: Math.max(this.startY, currentY),
           style: { ...this.CurrentShapeStyles },
         };
+        if (this.startX == currentX || this.startY == currentY) return;
       }
       this.existingShapes.push(tempShape);
       if (this.standalone) {

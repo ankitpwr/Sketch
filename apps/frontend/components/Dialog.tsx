@@ -81,22 +81,22 @@ export default function Dialog({
       className="fixed inset-0 bg-gray-300/50  backdrop:blur-sm flex items-center justify-center  "
     >
       {standalone && (
-        <div className="bg-white p-8 relative  rounded-xl  flex flex-col items-center gap-8 w-xl ">
+        <div className="bg-white p-8 relative  rounded-xl  flex flex-col items-center gap-2 w-xl ">
           <div
             onClick={() => setDialogBox(false)}
             className="absolute top-4 right-4"
           >
             <X size={18} color="gray" />
           </div>
-          <div className="flex flex-col p-2 justify-center items-center gap-3">
+          <div className="flex flex-col p-2 justify-center items-center gap-2">
             <h2 className="text-2xl font-bold text-[#6965db]">
               Live Collaboration
             </h2>
-            <p className="text-md">
+            <p className="text-md dark:text-black">
               Invite people to collaborate on your drawing.
             </p>
           </div>
-          <div className="flex flex-col gap-3 p-4 justify-center items-center">
+          <div className="flex flex-col gap-2 p-4 justify-center items-center">
             <Button
               onClickhandler={handleNewRoomCreation}
               varient={"primary"}
@@ -111,7 +111,7 @@ export default function Dialog({
               )}
             </Button>
 
-            <h1 className="text-center text-sm">
+            <h1 className="text-center text-sm dark:text-black">
               Create a new room and share the link with your friends for live
               collaboration.
             </h1>
