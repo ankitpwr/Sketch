@@ -1,7 +1,10 @@
 import { drawRoundedRectangle } from "./draw/drawRoundedRectangle";
 import { SocketHandler } from "./SocketHandler";
 import { ResizeHandlers, Shape, ShapeType } from "@repo/types/canvasTypes";
-import { BoundingBorderStyles, StrokeColor } from "@repo/types/drawingConfig";
+import {
+  BoundingBorderStyles,
+  getThemeColors,
+} from "@repo/types/drawingConfig";
 
 interface ShapeManagerDependencies {
   ctx: CanvasRenderingContext2D;
@@ -15,6 +18,7 @@ interface ShapeManagerDependencies {
   scale: number;
   triggerRender: () => void;
   socketHandler?: SocketHandler;
+  theme: "light" | "dark";
 }
 export class ShapeManager {
   private ctx: CanvasRenderingContext2D;
@@ -25,6 +29,7 @@ export class ShapeManager {
     offsetX: number;
     offsetY: number;
   };
+  public theme: "light" | "dark";
   public scale: number;
   public resizeHandlers: ResizeHandlers[];
   public resizeSide:
@@ -44,6 +49,7 @@ export class ShapeManager {
     this.scale = dependencies.scale;
     this.triggerRender = dependencies.triggerRender;
     this.resizeSide = null;
+    this.theme = dependencies.theme;
 
     if (dependencies.socketHandler) {
       this.socketHandler = dependencies.socketHandler;
@@ -123,6 +129,7 @@ export class ShapeManager {
   drawBoundBox = () => {
     const index = this.selectedShape.index;
     const shape = this.existingShapes[index];
+    const themeColors = getThemeColors(this.theme);
 
     const extra =
       shape.type == ShapeType.ARROW
@@ -142,7 +149,7 @@ export class ShapeManager {
         const minY = Math.min(shape.startY, shape.endY) - extra;
         const maxX = Math.max(shape.startX, shape.endX) + extra;
         const maxY = Math.max(shape.startY, shape.endY) + extra;
-        this.ctx.strokeStyle = StrokeColor.PrimaryViolet;
+        this.ctx.strokeStyle = themeColors["Stroke_Violet"];
         this.ctx.lineWidth = 1 / this.scale;
         this.ctx.strokeRect(minX, minY, maxX - minX, maxY - minY);
 
@@ -156,6 +163,7 @@ export class ShapeManager {
             endY: minY + width,
             style: BoundingBorderStyles,
           },
+          themeColors,
           { isBoundingBox: true, scale: this.scale }
         );
         //prettier-ignore
@@ -171,6 +179,7 @@ export class ShapeManager {
             endY: maxY + width,
             style: BoundingBorderStyles,
           },
+          themeColors,
           { isBoundingBox: true, scale: this.scale }
         );
         const rect2: ResizeHandlers = {
@@ -193,6 +202,7 @@ export class ShapeManager {
             endY: maxY + width,
             style: BoundingBorderStyles,
           },
+          themeColors,
           { isBoundingBox: true, scale: this.scale }
         );
         const rect3: ResizeHandlers = {
@@ -215,6 +225,7 @@ export class ShapeManager {
             endY: minY + width,
             style: BoundingBorderStyles,
           },
+          themeColors,
           { isBoundingBox: true, scale: this.scale }
         );
         const rect4: ResizeHandlers = {

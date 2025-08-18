@@ -1,4 +1,8 @@
-import { CanvasColor } from "@repo/types/drawingConfig";
+import {
+  BackgroundColorkey,
+  STROKE_COLOR_KEYS,
+  StrokeColorKey,
+} from "@repo/types/drawingConfig";
 import React, { ReactElement } from "react";
 
 export default function ColorSelection({
@@ -7,15 +11,17 @@ export default function ColorSelection({
   isActive,
   isColorPicker,
   isCanvasColor = false,
+  colorKey,
 }: {
   color: string;
-
   onClick?: () => void;
   isActive: boolean;
   isColorPicker?: boolean;
   isCanvasColor?: boolean;
+  colorKey: StrokeColorKey | BackgroundColorkey;
 }) {
   const isTransparent = color == "#00000000";
+  if (colorKey == "Stroke_Violet" || colorKey == "BG_White") return;
 
   return (
     <div

@@ -27,7 +27,6 @@ import {
   PencilStyles,
   TextStyle,
   DefaultTextStyle,
-  CanvasColor,
   CanvasColorKey,
   THEME_PALETTE,
   StrokeColorKey,
@@ -57,7 +56,7 @@ export class CanvasEngine {
     offsetY: number;
   };
   private dpr: number;
-  // private scaleOffset: { x: number; y: number };
+
   private shapeMangager: ShapeManager;
   private textArea: HTMLTextAreaElement;
   public CurrentShapeStyles: ShapeStyles;
@@ -134,6 +133,7 @@ export class CanvasEngine {
       scale: this.scale,
       triggerRender: () => this.render(),
       socketHandler: this.sockethandler,
+      theme: this.theme,
     });
 
     this.init();
@@ -201,6 +201,7 @@ export class CanvasEngine {
   public setCanvasTheme = (theme: "light" | "dark") => {
     if (theme == this.theme) return;
     this.theme = theme;
+    this.shapeMangager.theme = theme;
     const themeColors = getThemeColors(this.theme);
     this.CanvasColor = themeColors[this.CanvasColorKey];
     this.render();

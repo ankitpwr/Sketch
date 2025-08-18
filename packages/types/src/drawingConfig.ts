@@ -14,35 +14,35 @@ export enum StrokeType {
   Dashed = "dashed",
   Dotted = "dotted",
 }
-export enum StrokeColor {
-  PrimaryBlack = "#1e1e1e",
-  PrimaryRed = "#e03131",
-  PrimaryBlue = "#1971c2",
-  PrimaryGreen = "#2f9e44",
-  PrimaryYellow = "#f08c00",
-  PrimaryViolet = "#6741d9",
-}
-export enum BackgroundColor {
-  Transparent = "#00000000",
-  BG_Red = "#ffc9c9",
-  BG_Green = "#b2f2bb",
-  BG_Blue = "#a5d8ff",
-  BG_Yellow = "#ffec99",
-  BG_White = "#ffffff",
-}
+// export enum StrokeColor {
+//   PrimaryBlack = "#1e1e1e",
+//   PrimaryRed = "#e03131",
+//   PrimaryBlue = "#1971c2",
+//   PrimaryGreen = "#2f9e44",
+//   PrimaryYellow = "#f08c00",
+//   PrimaryViolet = "#6741d9",
+// }
+// export enum BackgroundColor {
+//   Transparent = "#00000000",
+//   BG_Red = "#ffc9c9",
+//   BG_Green = "#b2f2bb",
+//   BG_Blue = "#a5d8ff",
+//   BG_Yellow = "#ffec99",
+//   BG_White = "#ffffff",
+// }
 
-export enum CanvasColor {
-  White = "#ffffff",
-  Light_Blue = "#f5faff",
-  Light_Yellow = "#fffce8",
-  Light_Red = "#fdf8f6",
-  Light_Green = "#f0fdf4",
-  Black = "#121212",
-  DarK_BLUE = "#13171c",
-  DarK_YELLOW = "#181605",
-  DarK_RED = "#1b1615",
-  DarK_GREY = "#161718",
-}
+// export enum CanvasColor {
+//   White = "#ffffff",
+//   Light_Blue = "#f5faff",
+//   Light_Yellow = "#fffce8",
+//   Light_Red = "#fdf8f6",
+//   Light_Green = "#f0fdf4",
+//   Black = "#121212",
+//   DarK_BLUE = "#13171c",
+//   DarK_YELLOW = "#181605",
+//   DarK_RED = "#1b1615",
+//   DarK_GREY = "#161718",
+// }
 
 export const STROKE_COLOR_KEYS = [
   "Stroke_Black",
@@ -50,6 +50,7 @@ export const STROKE_COLOR_KEYS = [
   "Stroke_Green",
   "Stroke_Blue",
   "Stroke_Yellow",
+  "Stroke_Violet",
 ] as const;
 
 export const BG_COLOR_KEYS = [
@@ -58,6 +59,7 @@ export const BG_COLOR_KEYS = [
   "BG_Green",
   "BG_Blue",
   "BG_Yellow",
+  "BG_White",
 ] as const;
 
 export const CANVAS_COLOR_KEYS = [
@@ -87,6 +89,7 @@ export const THEME_PALETTE = {
     Stroke_Green: "#2f9e44",
     Stroke_Blue: "#1971c2",
     Stroke_Yellow: "#f08c00",
+    Stroke_Violet: "#6741d9",
 
     //background light color for shapes
     BG_Transparent: "#00000000",
@@ -94,6 +97,7 @@ export const THEME_PALETTE = {
     BG_Green: "#b2f2bb",
     BG_Blue: "#a5d8ff",
     BG_Yellow: "#ffec99",
+    BG_White: "#ffffff",
   },
   dark: {
     White: "#121212",
@@ -108,6 +112,7 @@ export const THEME_PALETTE = {
     Stroke_Green: "#3a994c",
     Stroke_Blue: "#56a2e8",
     Stroke_Yellow: "#b76100",
+    Stroke_Violet: "#b4b0ff",
 
     //background dark color for shapes
     BG_Transparent: "#00000000",
@@ -115,6 +120,7 @@ export const THEME_PALETTE = {
     BG_Green: "#043b0c",
     BG_Blue: "#154163",
     BG_Yellow: "#362600",
+    BG_White: "#121212",
   },
 };
 
@@ -159,14 +165,14 @@ export enum Thinning {
 }
 
 export interface TextStyle {
-  strokeStyle: StrokeColor | string;
+  // strokeStyle: StrokeColor | string;
   fontsize: FontSize;
   fontfamily: FontFamily;
   strokeColorKey: StrokeColorKey;
   backgroundColorKey: BackgroundColorkey;
 }
 export interface PencilStyles {
-  StrokeStyle: StrokeColor | string;
+  // StrokeStyle: StrokeColor | string;
   strokeWidth: StrokeSizePencil;
   tapper: Tapper;
   thinning: Thinning;
@@ -175,15 +181,15 @@ export interface PencilStyles {
 }
 export interface ShapeStyles {
   strokeWidth: StrokeWidth;
-  strokeStyle: StrokeColor | string;
-  fill: string;
+  // strokeStyle: StrokeColor | string;
+  // fill: string;
   strokeType: StrokeType;
-  background: BackgroundColor | string;
+  // background: BackgroundColor | string;
   strokeColorKey: StrokeColorKey;
   backgroundColorKey: BackgroundColorkey;
 }
 export const DefaultTextStyle: TextStyle = {
-  strokeStyle: StrokeColor.PrimaryRed,
+  // strokeStyle: StrokeColor.PrimaryRed,
   fontsize: FontSize.Medium,
   fontfamily: FontFamily.Normal,
   strokeColorKey: "Stroke_Black",
@@ -191,7 +197,7 @@ export const DefaultTextStyle: TextStyle = {
 };
 
 export const DefaultPencilStyles: PencilStyles = {
-  StrokeStyle: StrokeColor.PrimaryBlue,
+  // StrokeStyle: StrokeColor.PrimaryBlue,
   strokeWidth: StrokeSizePencil.ExtraBold,
   tapper: Tapper.Sharp,
   thinning: Thinning.Medium,
@@ -202,9 +208,9 @@ export const DefaultPencilStyles: PencilStyles = {
 export const DefaultShapeStyles: ShapeStyles = {
   strokeType: StrokeType.Solid,
   strokeWidth: StrokeWidth.Thin,
-  strokeStyle: StrokeColor.PrimaryBlack,
-  fill: "transparent",
-  background: BackgroundColor.Transparent,
+  // strokeStyle: StrokeColor.PrimaryBlack,
+  // fill: "transparent",
+  // background: BackgroundColor.Transparent,
   strokeColorKey: "Stroke_Black",
   backgroundColorKey: "BG_Transparent",
 };
@@ -212,11 +218,11 @@ export const DefaultShapeStyles: ShapeStyles = {
 export const BoundingBorderStyles: ShapeStyles = {
   strokeType: StrokeType.Solid,
   strokeWidth: StrokeWidth.Thin,
-  strokeStyle: StrokeColor.PrimaryViolet,
-  fill: "transparent",
-  background: BackgroundColor.BG_White,
-  strokeColorKey: "Stroke_Black",
-  backgroundColorKey: "BG_Transparent",
+  // strokeStyle: StrokeColor.PrimaryViolet,
+  // fill: "transparent",
+  // background: BackgroundColor.BG_White,
+  strokeColorKey: "Stroke_Violet",
+  backgroundColorKey: "BG_White",
 };
 
 export function getLineDashPattern(

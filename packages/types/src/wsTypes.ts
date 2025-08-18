@@ -16,6 +16,7 @@ export interface WS_Message {
   message: string;
 }
 export interface WS_New_Shape extends WS_Message {
+  id: string;
   shape: Shape;
 }
 export interface WS_Erase_Shape extends WS_Message {

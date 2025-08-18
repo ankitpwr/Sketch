@@ -1,14 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import ColorSelection from "./colorSelector";
 import {
-  BackgroundColor,
   BackgroundColorkey,
   BG_COLOR_KEYS,
   getThemeColors,
   STROKE_COLOR_KEYS,
-  StrokeColor,
   StrokeColorKey,
-  StrokeType,
 } from "@repo/types/drawingConfig";
 import ColorPicker from "./colorPicker";
 import PencilMenu from "./pencilSetting";
@@ -117,6 +114,7 @@ export default function AppMenuContainer() {
                 onClick={() => handleStrokeColor(key)}
                 color={themeColors[key]}
                 isActive={isActiveStroke(key)}
+                colorKey={key}
               />
             ))}
           </div>
@@ -126,6 +124,7 @@ export default function AppMenuContainer() {
             isActive={false}
             isColorPicker={true}
             onClick={handleStrokeColorSelction}
+            colorKey={strokeColorKey}
           />
           {/* {strokeColorPicker && (
             <ColorPicker
@@ -149,6 +148,7 @@ export default function AppMenuContainer() {
                 onClick={() => handleBackgroundColor(key)}
                 color={themeColors[key]}
                 isActive={isActiveBackground(key)}
+                colorKey={key}
               />
             ))}
           </div>
@@ -158,6 +158,7 @@ export default function AppMenuContainer() {
             isActive={false}
             isColorPicker={true}
             onClick={handleBackgroundColorSelction}
+            colorKey={backgroundColorKey}
           />
           {/* {backgrColorPicker && (
             <ColorPicker
