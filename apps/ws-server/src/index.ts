@@ -92,7 +92,8 @@ wss.on("connection", (ws: WebSocket, request) => {
         roomConnections = roomConnections.filter((socket) => socket != ws);
         if (roomConnections.length == 0) Rooms.delete(parsedData.roomId);
         else Rooms.set(parsedData.roomId, roomConnections);
-        ws.send(
+        ws.close(
+          1000,
           JSON.stringify({
             type: MessageType.LEAVE,
             roomId: parsedData.roomId,

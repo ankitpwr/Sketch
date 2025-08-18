@@ -6,14 +6,23 @@ import { useRouter } from "next/navigation";
 import useUserStore from "@/app/store/user-store";
 import Input from "./input";
 import useRoomStore from "@/app/store/room-store";
+import { MessageType } from "@repo/types/wsTypes";
 
 export default function Dialog({
   setDialogBox,
 }: {
   setDialogBox: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { standalone, username, userId, roomId, setStandalone } =
-    useUserStore();
+  const {
+    standalone,
+    username,
+    userId,
+    roomId,
+    socket,
+    setSocket,
+    setStandalone,
+    setRoomId,
+  } = useUserStore();
   const { loading, setLoading } = useRoomStore();
   const router = useRouter();
   const refer = useRef<HTMLDivElement | null>(null);
@@ -26,6 +35,17 @@ export default function Dialog({
   };
 
   const handleLeaveRoom = () => {
+    if (!socket) return;
+    socket.send(
+      JSON.stringify({
+        type: MessageType.LEAVE,
+        roomId: roomId,
+        message: "Join room",
+      })
+    );
+    setSocket(null);
+    setRoomId(null);
+    setStandalone(true);
     router.push("/");
   };
 
