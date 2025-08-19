@@ -9,6 +9,7 @@ export enum MessageType {
   CURSOR = "CURSOR",
   SHAPE_MOVE = "SHAPE_MOVE",
   SHAPE_RESIZE = "SHAPE_RESIZE",
+  ERROR = "ERROR",
 }
 export interface WS_Message {
   type: MessageType;
