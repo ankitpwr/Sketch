@@ -1,13 +1,8 @@
 "use client";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import React, { useCallback, useEffect, useRef } from "react";
-import Button from "./button";
-import {
-  ActionTool,
-  ShapeType,
-  TextShape,
-  Tool,
-} from "@repo/types/canvasTypes";
+
+import { ShapeType } from "@repo/types/canvasTypes";
 import Tools from "./tools";
 import TextArea from "./textArea";
 import AppMenu from "./appMenu";
@@ -16,15 +11,7 @@ import MobileAppBar from "./mobileAppBar";
 import Share from "./Share";
 import useCanvasStore from "@/app/store/canvas-store";
 import useUserStore from "@/app/store/user-store";
-import {
-  AppSetting,
-  CANVAS_COLOR_KEYS,
-  CanvasColorKey,
-  getThemeColors,
-  setting,
-  StrokeColorKey,
-  THEME_PALETTE,
-} from "@repo/types/drawingConfig";
+import { AppSetting, setting } from "@repo/types/drawingConfig";
 import { useTheme } from "next-themes";
 
 export default function Canvas() {

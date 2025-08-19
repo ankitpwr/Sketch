@@ -58,204 +58,222 @@ wss.on("connection", (ws: WebSocket, request) => {
       const parsedData: WS_Message = JSON.parse(data as unknown as string);
       if (!parsedData) return;
       if (!parsedData.roomId) return;
-      if (parsedData.type == MessageType.JOIN) {
-        //checking if room is already present or not
-        const roomData = await prisma.room.findFirst({
-          where: {
-            id: parsedData.roomId,
-          },
-        });
-
-        if (!roomData) {
-          return ws.close(4002, "Invalid Room Id");
-        }
-
-        let roomConnections = Rooms.get(parsedData.roomId);
-        if (!roomConnections) {
-          roomConnections = [];
-          Rooms.set(parsedData.roomId, roomConnections);
-        }
-        roomConnections.push(ws);
-
-        ws.send(
-          JSON.stringify({
-            type: MessageType.JOIN,
-            roomId: parsedData.roomId,
-            userId: userId,
-            username: name,
-            message: `You Have Joined The Room`,
-          })
-        );
-      } else if (parsedData.type == MessageType.LEAVE) {
-        let roomConnections = Rooms.get(parsedData.roomId);
-        if (!roomConnections) return;
-        roomConnections = roomConnections.filter((socket) => socket != ws);
-        if (roomConnections.length == 0) Rooms.delete(parsedData.roomId);
-        else Rooms.set(parsedData.roomId, roomConnections);
-        ws.close(
-          1000,
-          JSON.stringify({
-            type: MessageType.LEAVE,
-            roomId: parsedData.roomId,
-            userId: userId,
-            name: name,
-            message: "You Have Left The Room",
-          })
-        );
-      } else if (parsedData.type == MessageType.ERASER) {
-        const EraseData: WS_Erase_Shape = JSON.parse(data.toString());
-        const shapeId = EraseData.shapeId;
-        if (!shapeId) {
-          ws.send("no Shape to delete");
-          return;
-        }
-        let roomConnections = Rooms.get(EraseData.roomId);
-        if (!roomConnections) return;
-
-        await prisma.shape.deleteMany({
-          where: {
-            id: { in: shapeId },
-          },
-        });
-
-        roomConnections?.forEach((socket) => {
-          socket.send(
-            JSON.stringify({
-              type: MessageType.ERASER,
-              roomId: EraseData.roomId,
-              userId: userId,
-              name: name,
-              message: EraseData.message,
-              shapeId: shapeId,
-            })
-          );
-        });
-      } else if (parsedData.type == MessageType.SHAPE_MOVE) {
-        const shapeMoveData: WS_Shape_Move = JSON.parse(data.toString());
-        const shapeToMove = shapeMoveData.shape;
-        if (!shapeToMove || !shapeToMove.id) {
-          ws.send("no shape provided");
-          return;
-        }
-        let roomConnections = Rooms.get(shapeMoveData.roomId);
-        if (!roomConnections) return;
-
-        if (shapeMoveData.lastMove) {
-          await prisma.shape.update({
+      let roomConnections: WebSocket[] | undefined;
+      switch (parsedData.type) {
+        case MessageType.JOIN:
+          const roomData = await prisma.room.findFirst({
             where: {
-              id: shapeToMove.id,
-            },
-            data: {
-              message: JSON.stringify(shapeToMove),
+              id: parsedData.roomId,
             },
           });
-        }
 
-        roomConnections.forEach((socket) => {
-          socket.send(
+          if (!roomData) {
+            return ws.close(4002, "Invalid Room Id");
+          }
+
+          roomConnections = Rooms.get(parsedData.roomId);
+          if (!roomConnections) {
+            roomConnections = [];
+            Rooms.set(parsedData.roomId, roomConnections);
+          }
+          roomConnections.push(ws);
+
+          ws.send(
             JSON.stringify({
-              type: MessageType.SHAPE_MOVE,
-              roomId: shapeMoveData.roomId,
+              type: MessageType.JOIN,
+              roomId: parsedData.roomId,
               userId: userId,
-              name: name,
-              message: shapeMoveData.message,
-              shapeToMove: shapeToMove,
+              username: name,
+              message: `You Have Joined The Room`,
             })
           );
-        });
-      } else if (parsedData.type == MessageType.SHAPE_RESIZE) {
-        const shapeResizeData: WS_Shape_Move = JSON.parse(data.toString());
-        const shapeToResize = shapeResizeData.shape;
-        if (!shapeToResize || !shapeToResize.id) {
-          ws.send("Empty message is not allowed");
-          return;
-        }
-        let roomConnections = Rooms.get(parsedData.roomId);
-        if (!roomConnections) return;
+          break;
+        case MessageType.LEAVE:
+          roomConnections = Rooms.get(parsedData.roomId);
+          if (!roomConnections) return;
+          roomConnections = roomConnections.filter((socket) => socket != ws);
+          if (roomConnections.length == 0) Rooms.delete(parsedData.roomId);
+          else Rooms.set(parsedData.roomId, roomConnections);
+          ws.close(
+            1000,
+            JSON.stringify({
+              type: MessageType.LEAVE,
+              roomId: parsedData.roomId,
+              userId: userId,
+              name: name,
+              message: "You Have Left The Room",
+            })
+          );
+          break;
+        case MessageType.ERASER:
+          const EraseData = parsedData as WS_Erase_Shape;
+          const shapeId = EraseData.shapeId;
 
-        if (shapeResizeData.lastMove) {
-          console.log("storing shape move in db");
-          await prisma.shape.update({
+          roomConnections = Rooms.get(EraseData.roomId);
+          if (!roomConnections) return;
+
+          await prisma.shape.deleteMany({
             where: {
-              id: shapeToResize.id,
-            },
-            data: {
-              message: JSON.stringify(shapeToResize),
+              id: { in: shapeId },
             },
           });
-        }
 
-        roomConnections.forEach((socket) => {
-          socket.send(
-            JSON.stringify({
-              type: MessageType.SHAPE_RESIZE,
-              roomId: shapeResizeData.roomId,
+          roomConnections?.forEach((socket) => {
+            if (ws != socket) {
+              socket.send(
+                JSON.stringify({
+                  type: MessageType.ERASER,
+                  roomId: EraseData.roomId,
+                  userId: userId,
+                  name: name,
+                  message: EraseData.message,
+                  shapeId: shapeId,
+                })
+              );
+            }
+          });
+          break;
+        case MessageType.SHAPE_MOVE:
+          const shapeMoveData = parsedData as WS_Shape_Move;
+          const shapeToMove = shapeMoveData.shape;
+          if (!shapeToMove || !shapeToMove.id) {
+            ws.send("no shape provided");
+            return;
+          }
+          roomConnections = Rooms.get(shapeMoveData.roomId);
+          if (!roomConnections) return;
+
+          if (shapeMoveData.lastMove) {
+            await prisma.shape.update({
+              where: {
+                id: shapeToMove.id,
+              },
+              data: {
+                message: JSON.stringify(shapeToMove),
+              },
+            });
+          }
+
+          roomConnections.forEach((socket) => {
+            if (ws != socket) {
+              socket.send(
+                JSON.stringify({
+                  type: MessageType.SHAPE_MOVE,
+                  roomId: shapeMoveData.roomId,
+                  userId: userId,
+                  name: name,
+                  message: shapeMoveData.message,
+                  shapeToMove: shapeToMove,
+                })
+              );
+            }
+          });
+          break;
+        case MessageType.SHAPE_RESIZE:
+          const shapeResizeData = parsedData as WS_Shape_Move;
+          const shapeToResize = shapeResizeData.shape;
+          if (!shapeToResize || !shapeToResize.id) {
+            ws.send("Empty message is not allowed");
+            return;
+          }
+          roomConnections = Rooms.get(parsedData.roomId);
+          if (!roomConnections) return;
+
+          if (shapeResizeData.lastMove) {
+            await prisma.shape.update({
+              where: {
+                id: shapeToResize.id,
+              },
+              data: {
+                message: JSON.stringify(shapeToResize),
+              },
+            });
+          }
+
+          roomConnections.forEach((socket) => {
+            if (ws != socket) {
+              socket.send(
+                JSON.stringify({
+                  type: MessageType.SHAPE_RESIZE,
+                  roomId: shapeResizeData.roomId,
+                  userId: userId,
+                  name: name,
+                  message: shapeResizeData.message,
+                  shapeToResize: shapeToResize,
+                })
+              );
+            }
+          });
+          break;
+        case MessageType.PREVIEW_SHAPE:
+          const previewShapeData = parsedData as WS_New_Shape;
+          let shape = previewShapeData.shape;
+          if (!shape) {
+            ws.send("no shape provided");
+            return;
+          }
+          roomConnections = Rooms.get(previewShapeData.roomId);
+          if (!roomConnections) return;
+          roomConnections?.forEach((socket) => {
+            if (ws != socket) {
+              socket.send(
+                JSON.stringify({
+                  type: MessageType.PREVIEW_SHAPE,
+                  roomId: previewShapeData.roomId,
+                  userId: userId,
+                  name: name,
+                  message: previewShapeData.message,
+                  shape: previewShapeData.shape,
+                })
+              );
+            }
+          });
+          break;
+        case MessageType.SHAPE:
+          const shapeData = parsedData as WS_New_Shape;
+          const newShape: Shape = shapeData.shape;
+          if (!newShape || !newShape.id) {
+            ws.send("no shape provided");
+            return;
+          }
+          roomConnections = Rooms.get(shapeData.roomId);
+          if (!roomConnections) return;
+          //db call
+          await prisma.shape.create({
+            data: {
+              id: newShape.id,
               userId: userId,
-              name: name,
-              message: shapeResizeData.message,
-              shapeToResize: shapeToResize,
-            })
-          );
-        });
-      } else if (parsedData.type == MessageType.PREVIEW_SHAPE) {
-        const previewShapeData: WS_New_Shape = JSON.parse(data.toString());
-        const shape = previewShapeData.shape;
-        if (!shape) {
-          ws.send("no shape provided");
-          return;
-        }
-        let roomConnections = Rooms.get(previewShapeData.roomId);
-
-        if (!roomConnections) return;
-
-        roomConnections?.forEach((socket) => {
-          socket.send(
-            JSON.stringify({
-              type: MessageType.PREVIEW_SHAPE,
-              roomId: previewShapeData.roomId,
-              userId: userId,
-              name: name,
-              message: previewShapeData.message,
-              shape: previewShapeData.shape,
-            })
-          );
-        });
-      } else if (parsedData.type == MessageType.SHAPE) {
-        const shapeData: WS_New_Shape = JSON.parse(data.toString());
-        const newShape: Shape = shapeData.shape;
-        if (!newShape || !newShape.id) {
-          ws.send("no shape provided");
-          return;
-        }
-        let roomConnections = Rooms.get(shapeData.roomId);
-        if (!roomConnections) return;
-        //db call
-        const shape = await prisma.shape.create({
-          data: {
-            id: newShape.id,
-            userId: userId,
-            roomId: shapeData.roomId,
-            message: JSON.stringify(newShape),
-          },
-        });
-
-        //send message
-        roomConnections?.forEach((socket) => {
-          socket.send(
-            JSON.stringify({
-              type: MessageType.SHAPE,
               roomId: shapeData.roomId,
-              userId: userId,
-              name: name,
-              message: shapeData.message,
-              shape: newShape,
-            })
-          );
-        });
+              message: JSON.stringify(newShape),
+            },
+          });
+
+          //send message
+          roomConnections?.forEach((socket) => {
+            if (ws != socket) {
+              socket.send(
+                JSON.stringify({
+                  type: MessageType.SHAPE,
+                  roomId: shapeData.roomId,
+                  userId: userId,
+                  name: name,
+                  message: shapeData.message,
+                  shape: newShape,
+                })
+              );
+            }
+          });
+          break;
       }
     } catch (error) {
+      console.log("Error occrred in ws-server");
       console.log(error);
-      console.log(`something Wrong`);
+      ws.send(
+        JSON.stringify({
+          type: MessageType.ERROR,
+          message: "Internal error occured, try ",
+        })
+      );
     }
   });
 

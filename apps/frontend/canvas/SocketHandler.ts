@@ -56,6 +56,8 @@ export class SocketHandler {
         if (messageData.userId == this.userId) return;
         const shape = messageData.shapeToResize;
         this.manageShape(shape);
+      } else if (messageData.type == MessageType.ERROR) {
+        //toast error
       }
     };
   };

@@ -266,12 +266,10 @@ export class CanvasEngine {
     this.textArea.style.fontSize = this.CurrentTextStyle.fontsize;
     this.textArea.style.fontFamily = this.CurrentTextStyle.fontfamily;
     this.textArea.style.color = textColor;
-    this.textArea.style.padding = "0";
-    this.textArea.style.margin = "0";
     this.textArea.style.height = "auto";
     this.textArea.style.resize = "none";
-    this.textArea.style.border = "none";
     this.textArea.style.outline = "none";
+    this.textArea.style.border = "none";
     this.textArea.value = "";
     this.textArea.oninput = this.autoResizeTextArea;
     this.textArea.style.width = "2px";
@@ -368,6 +366,8 @@ export class CanvasEngine {
           this.selectedShape.offsetY = this.startY;
           this.action = Action.MOVING;
           shapeFound = true;
+          console.log("new shape is selected");
+          console.log(this.selectedShape);
           this.render();
           break;
         }

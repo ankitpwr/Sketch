@@ -79,8 +79,11 @@ export class ShapeManager {
           return [point[0] + deltaX, point[1] + deltaY];
         });
         this.triggerRender();
-
         break;
+      case ShapeType.TEXT:
+        shape.startX += deltaX;
+        shape.startY += deltaY;
+        this.triggerRender();
     }
     if (this.socketHandler) {
       this.socketHandler.shapeMove(shape, false);
@@ -145,10 +148,26 @@ export class ShapeManager {
       case ShapeType.ELLIPSE:
       case ShapeType.LINE:
       case ShapeType.ARROW:
-        const minX = Math.min(shape.startX, shape.endX) - extra;
-        const minY = Math.min(shape.startY, shape.endY) - extra;
-        const maxX = Math.max(shape.startX, shape.endX) + extra;
-        const maxY = Math.max(shape.startY, shape.endY) + extra;
+      case ShapeType.TEXT:
+        let minX, minY, maxX, maxY;
+
+        minX =
+          shape.type != ShapeType.TEXT
+            ? Math.min(shape.startX, shape.endX) - extra
+            : shape.startX;
+        minY =
+          shape.type != ShapeType.TEXT
+            ? Math.min(shape.startY, shape.endY) - extra
+            : shape.startY;
+        maxX =
+          shape.type != ShapeType.TEXT
+            ? Math.max(shape.startX, shape.endX) + extra
+            : shape.startX + shape.width;
+        maxY =
+          shape.type != ShapeType.TEXT
+            ? Math.max(shape.startY, shape.endY) + extra
+            : shape.startY + shape.height;
+
         this.ctx.strokeStyle = themeColors["Stroke_Violet"];
         this.ctx.lineWidth = 1 / this.scale;
         this.ctx.strokeRect(minX, minY, maxX - minX, maxY - minY);
@@ -166,8 +185,16 @@ export class ShapeManager {
           themeColors,
           { isBoundingBox: true, scale: this.scale }
         );
-        //prettier-ignore
-        const rect1:ResizeHandlers= {type:ShapeType.RECTANGLE,side:"TopLeft", startX:minX-width, startY:minY-width, endX:minX+width, endY:minY+width, style:BoundingBorderStyles};
+
+        const rect1: ResizeHandlers = {
+          type: ShapeType.RECTANGLE,
+          side: "TopLeft",
+          startX: minX - width,
+          startY: minY - width,
+          endX: minX + width,
+          endY: minY + width,
+          style: BoundingBorderStyles,
+        };
         this.resizeHandlers.push(rect1);
         drawRoundedRectangle(
           this.ctx,
@@ -231,7 +258,7 @@ export class ShapeManager {
         const rect4: ResizeHandlers = {
           type: ShapeType.RECTANGLE,
           side: "TopRight",
-          startX: minX - width,
+          startX: maxX - width,
           startY: minY - width,
           endX: maxX + width,
           endY: minY + width,
