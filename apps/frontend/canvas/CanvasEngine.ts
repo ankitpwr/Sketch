@@ -637,8 +637,9 @@ export class CanvasEngine {
   };
   handleTouchEnd = (e: TouchEvent) => {
     e.preventDefault();
-    const touch = e.touches[0];
-    const mouseEvent = this.createMouseEvent(e, touch);
+    const touchEvent = e.changedTouches[0]; //e.touches[0] is empty for Touch End as no finger is currenlty involved
+    const mouseEvent = this.createMouseEvent(e, touchEvent);
+
     this.handleMouseUp(mouseEvent);
   };
 
