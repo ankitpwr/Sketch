@@ -101,7 +101,7 @@ export default function AppMenuContainer() {
 
   useEffect(() => {}, [resolvedTheme]);
   return (
-    <div className="flex flex-col bg-white dark:bg-[#232329] gap-6 px-5 py-5 rounded-lg">
+    <div className="flex flex-col bg-white dark:bg-[#232329] gap-6 px-5 py-5 rounded-lg w-[65%] md:w-fit">
       <div id="stroke-color-section" className="flex flex-col gap-2">
         <h1 className="text-xs font-nunito text-gray-900 dark:text-[#dadadf] ">
           Stroke
@@ -140,7 +140,7 @@ export default function AppMenuContainer() {
         <h1 className="font-nunito text-xs text-gray-900 dark:text-[#dadadf] ">
           Background
         </h1>
-        <div className="flex gap-2 md:justify-center items-center">
+        <div className="flex gap-2 md:justify-start items-center">
           <div className="flex gap-1.5 md:justify-center items-center">
             {BG_COLOR_KEYS.map((key) => (
               <ColorSelection
