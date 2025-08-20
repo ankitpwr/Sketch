@@ -1,5 +1,6 @@
 import {
   BackgroundColorkey,
+  CanvasColorKey,
   STROKE_COLOR_KEYS,
   StrokeColorKey,
 } from "@repo/types/drawingConfig";
@@ -18,7 +19,7 @@ export default function ColorSelection({
   isActive: boolean;
   isColorPicker?: boolean;
   isCanvasColor?: boolean;
-  colorKey: StrokeColorKey | BackgroundColorkey;
+  colorKey: StrokeColorKey | BackgroundColorkey | CanvasColorKey;
 }) {
   const isTransparent = color == "#00000000";
   if (colorKey == "Stroke_Violet" || colorKey == "BG_White") return;

@@ -9,7 +9,7 @@ export default function Share() {
   const varient = standalone ? "primary" : "success";
 
   return (
-    <div className="fixed top-5 right-5 flex gap-2">
+    <div className="hidden md:flex fixed top-5 right-5  gap-2">
       <Button
         onClickhandler={() => setDialogBox((pre) => !pre)}
         varient={varient}

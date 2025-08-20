@@ -17,13 +17,26 @@ export function isNeartheShape(currentX: number, currentY: number, s: Shape) {
       maxY >= currentY
     );
   } else if (s.type == ShapeType.LINE || s.type == ShapeType.ARROW) {
-    const distanceX = Math.abs(s.startX - s.endX);
-    const distanceY = Math.abs(s.startY - s.endY);
-    return (
-      distanceX ==
-        Math.abs(currentX - s.startX) + Math.abs(s.endX - currentX) &&
-      distanceY == Math.abs(currentY - s.startY) + Math.abs(s.endY - currentY)
-    );
+    const threshold = 5;
+    const { startX, startY, endX, endY } = s;
+    const lenSq = (endX - startX) ** 2 + (endY - startY) ** 2;
+    const t =
+      ((currentX - startX) * (endX - startX) +
+        (currentY - startY) * (endY - startY)) /
+      lenSq;
+    let distanceSq: number;
+
+    if (t < 0) {
+      distanceSq = (currentX - startX) ** 2 + (currentY - startY) ** 2;
+    } else if (t > 1) {
+      distanceSq = (currentX - endX) ** 2 + (currentY - endY) ** 2;
+    } else {
+      const closestX = startX + t * (endX - startX);
+      const closestY = startY + t * (endY - startY);
+      distanceSq = (currentX - closestX) ** 2 + (currentY - closestY) ** 2;
+    }
+
+    return distanceSq < threshold ** 2;
   } else if (s.type == ShapeType.PENCIL) {
     let isEqual: boolean = false;
     const threshold = 5;

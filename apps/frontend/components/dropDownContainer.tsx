@@ -7,7 +7,6 @@ import { CanvasEngine } from "@/canvas/CanvasEngine";
 import {
   AppSetting,
   CANVAS_COLOR_KEYS,
-  CanvasColor,
   CanvasColorKey,
   getThemeColors,
   setting,
@@ -129,6 +128,7 @@ export default function DropDownContainer() {
               color={themeColors[key]}
               isActive={isActiveColor(key)}
               isCanvasColor={true}
+              colorKey={key}
             />
           ))}
         </div>

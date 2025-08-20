@@ -26,13 +26,13 @@ export function drawArrow(
   ctx.lineTo(shape.endX, shape.endY);
   ctx.moveTo(shape.endX, shape.endY);
   ctx.lineTo(
-    shape.endX - headlen * Math.cos(angle - Math.PI / 6),
-    shape.endY - headlen * Math.sin(angle - Math.PI / 6)
+    shape.endX - headlen * Math.cos(angle - Math.PI / 9),
+    shape.endY - headlen * Math.sin(angle - Math.PI / 9)
   );
   ctx.moveTo(shape.endX, shape.endY);
   ctx.lineTo(
-    shape.endX - headlen * Math.cos(angle + Math.PI / 6),
-    shape.endY - headlen * Math.sin(angle + Math.PI / 6)
+    shape.endX - headlen * Math.cos(angle + Math.PI / 9),
+    shape.endY - headlen * Math.sin(angle + Math.PI / 9)
   );
   ctx.fill();
   ctx.stroke();

@@ -16,7 +16,7 @@ import { XIcon } from "./svgIcons";
 import ColorSelection from "./colorSelector";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import { Tool } from "@repo/types/canvasTypes";
-import { CanvasColor } from "@repo/types/drawingConfig";
+
 import DropDownContainer from "./dropDownContainer";
 import useCanvasStore from "@/app/store/canvas-store";
 

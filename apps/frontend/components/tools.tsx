@@ -38,7 +38,7 @@ export default function Tools() {
       >
         {" "}
         <MousePointer
-          className={`${currentTool == ActionTool.SELECT && `fill-[#030063] dark:fill-white`}`}
+          className={` ${currentTool == ActionTool.SELECT && `fill-[#030063] dark:fill-white`}`}
           size={18}
           strokeWidth={currentTool == ActionTool.SELECT ? 1 : 1.5}
         />

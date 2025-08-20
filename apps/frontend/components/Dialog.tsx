@@ -98,10 +98,10 @@ export default function Dialog({
   return (
     <div
       ref={refer}
-      className="fixed inset-0 bg-gray-300/50  backdrop:blur-sm flex items-center justify-center  "
+      className="fixed inset-0 bg-[#cacbcc]/20  backdrop-blur-sm flex items-center justify-center z-50  "
     >
       {standalone && (
-        <div className="bg-white p-8 relative  rounded-xl  flex flex-col items-center gap-2 w-xl ">
+        <div className="bg-white dark:bg-[#232329] p-8 relative dark:border-2 dark:border-[#3d3d3d]  rounded-xl  flex flex-col items-center gap-2 w-xl ">
           <div
             onClick={() => setDialogBox(false)}
             className="absolute top-4 right-4"
@@ -109,10 +109,10 @@ export default function Dialog({
             <X size={18} color="gray" />
           </div>
           <div className="flex flex-col p-2 justify-center items-center gap-2">
-            <h2 className="text-2xl font-bold text-[#6965db]">
+            <h2 className="text-2xl font-bold text-[#6965db]   font-nunito dark:text-[#dadadf]">
               Live Collaboration
             </h2>
-            <p className="text-md dark:text-black">
+            <p className="text-md text-black font-nunito dark:text-[#dadadf]">
               Invite people to collaborate on your drawing.
             </p>
           </div>
@@ -131,7 +131,7 @@ export default function Dialog({
               )}
             </Button>
 
-            <h1 className="text-center text-sm dark:text-black">
+            <h1 className="text-center text-sm text-black  font-nunito dark:text-[#dadadf]">
               Create a new room and share the link with your friends for live
               collaboration.
             </h1>
@@ -140,7 +140,7 @@ export default function Dialog({
       )}
 
       {!standalone && userId && username && (
-        <div className=" relative flex flex-col  justify-center items-center gap-6 p-12 w-xl rounded-xl bg-white     ">
+        <div className=" relative flex flex-col  justify-center items-center gap-6 p-12 w-xl rounded-xl bg-white dark:bg-[#232329]    ">
           <div
             onClick={() => setDialogBox(false)}
             className="absolute top-4 right-4"
@@ -153,13 +153,15 @@ export default function Dialog({
             </h2>
           </div>
           <div className="flex flex-col  gap-0.5  items-start w-full">
-            <h1 className="text-sm">Your name</h1>
+            <h1 className="text-sm text-black font-nunito dark:text-[#dadadf]">
+              Your name
+            </h1>
             <Input
               placeholder={"Your name"}
               type={"text"}
               readonly={true}
               defaultValue={`${username}`}
-              styles={` bg-[#ececf4] w-full `}
+              styles={` bg-[#ececf4] dark:bg-[#232329] dark:text-white w-full `}
             />
           </div>
 
@@ -172,7 +174,7 @@ export default function Dialog({
                 type={"text"}
                 readonly={true}
                 defaultValue={`${process.env.NEXT_PUBLIC_FE_URL}/room/${roomId}`}
-                styles={` bg-[#f1f0ff] w-full px-3.5 `}
+                styles={` bg-[#f1f0ff] dark:bg-[#2e2d39] dark:text-white w-full  `}
               />
               <Button
                 varient={"primary"}
@@ -197,9 +199,9 @@ export default function Dialog({
               varient={"primary"}
               size={"md"}
               isActive={false}
-              styles={`border-2 border-red-400 bg-white hover:border-1.5 hover:bg-red-200 hover:border-red-200`}
+              styles={`border-2 border-red-300  dark:bg-[#232329] hover:border-1.5 bg-transparent hover:bg-transparent hover:border-red-500`}
             >
-              <p className="text-red-500">Exit Room</p>
+              <p className="text-red-400 dark:text-red-300">Exit Room</p>
             </Button>
           </div>
         </div>
