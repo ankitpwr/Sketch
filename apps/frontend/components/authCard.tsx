@@ -45,13 +45,13 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
     }
   };
   return (
-    <div className="flex flex-col items-center md:gap-6 gap-4 bg-[#fff0c9] dark:bg-[#232329]  p-6 md:p-12 rounded-xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
+    <div className="flex flex-col items-center md:gap-6 gap-4 bg-[#fef3d3] dark:bg-[#232329]  p-6 md:p-12 rounded-4xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
       <div className="flex flex-col items-center gap-1">
         {" "}
-        <h1 className="text-2xl font-semibold text-[#343A40] dark:text-[#ced4da] ">
-          Welcome
+        <h1 className="text-2xl font-nunito font-extrabold text-[#343a40] dark:text-[#ced4da] ">
+          Hi there!
         </h1>
-        <p className="text-sm text-[#343A40] dark:text-[#ced4da] ">
+        <p className="text-sm font-nunito text-[#343A40] dark:text-[#ced4da] ">
           Enter Your Email and Password
         </p>
       </div>

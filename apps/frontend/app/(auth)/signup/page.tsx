@@ -16,7 +16,6 @@ export default function Signup() {
       <TopRightBlob />
       <BottomRightBlob />
       <BottomLeftBlob />
-      <ThemeToggle />
 
       <Doodles />
       <div className="absolute top-20 left-1/2 -translate-x-1/2 flex gap-3">

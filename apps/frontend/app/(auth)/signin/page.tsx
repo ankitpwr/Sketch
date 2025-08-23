@@ -26,7 +26,6 @@ export default function Signin() {
       <TopRightBlob />
       <BottomRightBlob />
       <BottomLeftBlob />
-      <ThemeToggle />
 
       <Doodles />
       <div className="relative z-10 flex flex-col items-center   ">

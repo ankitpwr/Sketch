@@ -21,6 +21,7 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
+    console.log(`token is ${authToken}`);
     const ws = new WebSocket(
       `${process.env.NEXT_PUBLIC_WS_BASE_URL}?token=${authToken}`
     );
@@ -37,6 +38,7 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
     };
     ws.onclose = (event) => {
       if (event.code == 4001) {
+        console.log("token is not provided");
         toast.error("Please sign in to join the room.");
         localStorage.removeItem("token");
         router.push("/signin");

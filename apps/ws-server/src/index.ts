@@ -41,6 +41,7 @@ wss.on("connection", (ws: WebSocket, request) => {
   }
   const queryParams = new URLSearchParams(url.split("?")[1]);
   const token = queryParams.get("token") || "";
+  console.log(`token is ${token}`);
   const isVerified = veifyToken(token);
 
   if (!isVerified) {
