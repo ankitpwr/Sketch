@@ -11,6 +11,6 @@ export default async function RoomPage({
 }) {
   const newRoomId = (await params).roomId;
   console.log(`in page.tsx roomid is ${newRoomId}`);
-
+  // mobile  zooming  not working
   return <RoomCanvas newRoomId={newRoomId} />;
 }

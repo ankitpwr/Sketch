@@ -240,7 +240,7 @@ export class CanvasEngine {
       this.ctx.lineTo(right, y);
     }
     this.ctx.lineWidth = 1 / this.scale;
-    this.ctx.strokeStyle = "#dfdfdf";
+    this.ctx.strokeStyle = this.theme == "light" ? "#dfdfdf" : "#232323";
     this.ctx.stroke();
     this.ctx.restore();
 
@@ -265,7 +265,7 @@ export class CanvasEngine {
       this.ctx.lineTo(right, y);
     }
     this.ctx.lineWidth = 0.8 / this.scale;
-    this.ctx.strokeStyle = "#dfdfdf";
+    this.ctx.strokeStyle = this.theme == "light" ? "#dfdfdf" : "#232323";
     this.ctx.setLineDash([4 / this.scale, 4 / this.scale]);
     this.ctx.stroke();
     this.ctx.restore();
