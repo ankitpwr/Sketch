@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Button from "./button";
-import { Github, Linkedin, LogIn, Trash, Users } from "lucide-react";
+import { Github, Grid, Linkedin, LogIn, Trash, Users } from "lucide-react";
 import ColorSelection from "./colorSelector";
 import { Tool } from "@repo/types/canvasTypes";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
@@ -24,6 +24,8 @@ export default function DropDownContainer() {
   const [activeColorKey, setActiveColorKey] = useState<CanvasColorKey>(
     canvasEngine!.CanvasColorKey
   );
+
+  const [grid, setGrid] = useState<boolean>(true);
   if (resolvedTheme != "light" && resolvedTheme != "dark") return;
   const themeColors = getThemeColors(resolvedTheme);
 
@@ -39,6 +41,11 @@ export default function DropDownContainer() {
 
   const handleClearCanvas = () => {
     canvasEngine!.clearCanvas();
+  };
+
+  const handleGrid = () => {
+    canvasEngine?.ChangeGrid(!grid);
+    setGrid(!grid);
   };
 
   return (
@@ -131,6 +138,16 @@ export default function DropDownContainer() {
               colorKey={key}
             />
           ))}
+        </div>
+      </div>
+
+      <div
+        id="background-color-selection  "
+        className="flex flex-col gap-2 pl-3"
+      >
+        <h1 className="text-xs text-gray-900 dark:text-[#dadadf] ">Grid</h1>
+        <div className="flex gap-2 items-center" onClick={handleGrid}>
+          <Grid />
         </div>
       </div>
     </div>

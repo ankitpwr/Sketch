@@ -11,7 +11,7 @@ import {
 import ThemeToggle from "@/components/themeToggle";
 export default function Signup() {
   return (
-    <div className="relative w-screen h-screen flex flex-col justify-center items-center  bg-white dark:bg-black/30 ">
+    <div className="relative w-screen h-screen flex flex-col justify-center items-center  bg-white dark:bg-black/30 overflow-hidden  ">
       <TopLeftBlob />
       <TopRightBlob />
       <BottomRightBlob />

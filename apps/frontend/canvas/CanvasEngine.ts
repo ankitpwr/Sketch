@@ -56,7 +56,7 @@ export class CanvasEngine {
     offsetY: number;
   };
   private dpr: number;
-
+  public grid: boolean = false;
   private shapeMangager: ShapeManager;
   private textArea: HTMLTextAreaElement;
   public CurrentShapeStyles: ShapeStyles;
@@ -198,6 +198,11 @@ export class CanvasEngine {
     this.CurrentPencilStyles.backgroundColorKey = colorKey;
   };
 
+  ChangeGrid = (grid: boolean) => {
+    this.grid = grid;
+    this.render();
+  };
+
   public setCanvasTheme = (theme: "light" | "dark") => {
     if (theme == this.theme) return;
     this.theme = theme;
@@ -205,6 +210,65 @@ export class CanvasEngine {
     const themeColors = getThemeColors(this.theme);
     this.CanvasColor = themeColors[this.CanvasColorKey];
     this.render();
+  };
+
+  CreateGridPattern = () => {
+    const left = -this.panX / this.scale;
+    const top = -this.panY / this.scale;
+    const right = (this.canvas.width - this.panX) / this.scale;
+    const bottom = (this.canvas.height - this.panY) / this.scale;
+    const solidGridSize = 110;
+    const dashedGridSize = 22;
+    this.ctx.save();
+    this.ctx.beginPath();
+    for (
+      let x = Math.floor(left / solidGridSize) * solidGridSize;
+      x < right;
+      x += solidGridSize
+    ) {
+      console.log(`pan is ${this.panX} && left is ${left} && x is ${x}`);
+      this.ctx.moveTo(x, top);
+      this.ctx.lineTo(x, bottom);
+    }
+
+    for (
+      let y = Math.floor(top / solidGridSize) * solidGridSize;
+      y < bottom;
+      y += solidGridSize
+    ) {
+      this.ctx.moveTo(left, y);
+      this.ctx.lineTo(right, y);
+    }
+    this.ctx.lineWidth = 1 / this.scale;
+    this.ctx.strokeStyle = "#dfdfdf";
+    this.ctx.stroke();
+    this.ctx.restore();
+
+    if (this.scale < 0.38) return;
+    this.ctx.save();
+    this.ctx.beginPath();
+    for (
+      let x = Math.floor(left / dashedGridSize) * dashedGridSize;
+      x < right;
+      x += dashedGridSize
+    ) {
+      this.ctx.moveTo(x, top);
+      this.ctx.lineTo(x, bottom);
+    }
+
+    for (
+      let y = Math.floor(top / dashedGridSize) * dashedGridSize;
+      y < bottom;
+      y += dashedGridSize
+    ) {
+      this.ctx.moveTo(left, y);
+      this.ctx.lineTo(right, y);
+    }
+    this.ctx.lineWidth = 0.8 / this.scale;
+    this.ctx.strokeStyle = "#dfdfdf";
+    this.ctx.setLineDash([4 / this.scale, 4 / this.scale]);
+    this.ctx.stroke();
+    this.ctx.restore();
   };
   render = () => {
     const themeColors = getThemeColors(this.theme);
@@ -214,6 +278,10 @@ export class CanvasEngine {
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.panX, this.panY);
     this.ctx.scale(this.scale, this.scale);
+    if (this.grid) {
+      this.CreateGridPattern();
+    }
+
     const drawShape = (s: Shape) => {
       //prettier-ignore
 
@@ -581,7 +649,7 @@ export class CanvasEngine {
   handleWheelEvent = (e: WheelEvent) => {
     e.preventDefault();
     if (e.ctrlKey) {
-      this.handleZoom(e.deltaY * -0.01, e.offsetX, e.offsetY);
+      this.handleZoom(e.deltaY * -0.03, e.offsetX, e.offsetY);
     } else {
       this.panX -= e.deltaX / this.scale;
       this.panY -= e.deltaY / this.scale;

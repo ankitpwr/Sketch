@@ -21,7 +21,7 @@ import React, { useRef } from "react";
 
 export default function Signin() {
   return (
-    <div className="relative w-screen h-screen flex flex-col justify-center items-center bg-white dark:bg-black/30  ">
+    <div className="relative w-screen h-screen flex flex-col justify-center items-center bg-white dark:bg-black/30 overflow-hidden  ">
       <TopLeftBlob />
       <TopRightBlob />
       <BottomRightBlob />
@@ -31,7 +31,7 @@ export default function Signin() {
       <div className="relative z-10 flex flex-col items-center   ">
         <div className="hidden md:flex gap-3 mb-8">
           <SketchLogo size={48} color={"#6965db"} />
-          <h1 className="font-architect text-5xl text-[#030064] dark:text-[#e7e5fb]  font-extrabold">
+          <h1 className="font-architect text-5xl text-[#343a40] dark:text-[#e7e5fb]  font-extrabold">
             Sketch
           </h1>
         </div>

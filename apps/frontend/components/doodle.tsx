@@ -25,15 +25,12 @@ export default function Doodles() {
     <div>
       <div
         className="fixed top-6 left-3 animate-bounce "
-        style={{ animationDuration: "5s" }}
-      >
-        <DrawSVG size={40} color={"#DA498D"} />
-      </div>
-      <div
-        className="fixed top-24 left-10 animate-spin"
         style={{ animationDuration: "8s" }}
       >
-        <FunnyFaceSVG size={46} color={"#aba1e5"} />
+        <DrawSVG size={60} color={"#FF8282"} />
+      </div>
+      <div className="fixed top-32 left-2 " style={{ animationDuration: "8s" }}>
+        <FunnyFaceSVG size={70} color={"#716ddd"} />
       </div>
 
       <div className="fixed top-8 left-34">
@@ -68,10 +65,10 @@ export default function Doodles() {
       </div>
 
       <div
-        className="fixed top-8 right-40  animate-spin"
+        className="fixed top-8 right-40 animate-bounce "
         style={{ animationDuration: "6s" }}
       >
-        <CircleSVG color={"#78C841"} size={28} />
+        <CircleSVG color={"#78C841"} size={50} />
       </div>
 
       <div
@@ -82,16 +79,16 @@ export default function Doodles() {
       </div>
 
       <div
-        className="fixed bottom-26 md:bottom-18 right-22 animate-spin"
-        style={{ animationDuration: "4s" }}
+        className="fixed bottom-26 md:bottom-18 right-22 "
+        style={{ animationDuration: "6s" }}
       >
-        <WrongSVG color={"#E14434"} size={24} />
+        <WrongSVG color={"#FFCCE1"} size={24} />
       </div>
       <div
         className="fixed bottom-6 left-24 animate-pulse"
         style={{ animationDuration: "2s" }}
       >
-        <BulbSVG color={"#F26B0F"} size={32} />
+        <BulbSVG color={"#F08B51"} size={40} />
       </div>
 
       <div className="invisible md:visible fixed bottom-6 right-56">
@@ -99,7 +96,7 @@ export default function Doodles() {
       </div>
 
       <div
-        className="fixed bottom-8 left-68 animate-bounce"
+        className="fixed bottom-14 left-54 animate-bounce"
         style={{ animationDuration: "6s" }}
       >
         <GiftSVG color={"#687FE5"} size={36} />
@@ -109,7 +106,7 @@ export default function Doodles() {
         className="fixed bottom-22 left-4 animate-bounce"
         style={{ animationDuration: "6s" }}
       >
-        <SantSVG color={"#FB4141"} size={38} />
+        <SantSVG color={"#FFA09B"} size={38} />
       </div>
     </div>
   );
