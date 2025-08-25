@@ -33,7 +33,7 @@ export default function DropDownContainer() {
     canvasEngine!.CanvasColorKey
   );
 
-  const [grid, setGrid] = useState<boolean>(false);
+  const [grid, setGrid] = useState<boolean>(setting.grid);
   if (resolvedTheme != "light" && resolvedTheme != "dark") return;
   const themeColors = getThemeColors(resolvedTheme);
 
@@ -53,6 +53,8 @@ export default function DropDownContainer() {
 
   const handleGrid = () => {
     canvasEngine?.ChangeGrid(!grid);
+    setting.grid = !grid;
+    localStorage.setItem("sketch-setting", JSON.stringify(setting));
     setGrid(!grid);
   };
 

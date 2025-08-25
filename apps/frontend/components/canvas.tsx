@@ -83,6 +83,8 @@ export default function Canvas() {
       newCanvasEngine.ChangeBackgroundColor(
         parseSketchSetting.backgroundColorKey
       );
+      setting.grid = parseSketchSetting.grid;
+      newCanvasEngine.grid = setting.grid;
     }
 
     setCanvasEngine(newCanvasEngine);

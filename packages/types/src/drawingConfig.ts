@@ -2,11 +2,13 @@ export interface AppSetting {
   canvasColorKey: CanvasColorKey;
   strokeColorKey: StrokeColorKey;
   backgroundColorKey: BackgroundColorkey;
+  grid: boolean;
 }
 export const setting: AppSetting = {
   canvasColorKey: "White",
   strokeColorKey: "Stroke_Black",
   backgroundColorKey: "BG_Transparent",
+  grid: false,
 };
 
 export enum StrokeType {
@@ -14,35 +16,6 @@ export enum StrokeType {
   Dashed = "dashed",
   Dotted = "dotted",
 }
-// export enum StrokeColor {
-//   PrimaryBlack = "#1e1e1e",
-//   PrimaryRed = "#e03131",
-//   PrimaryBlue = "#1971c2",
-//   PrimaryGreen = "#2f9e44",
-//   PrimaryYellow = "#f08c00",
-//   PrimaryViolet = "#6741d9",
-// }
-// export enum BackgroundColor {
-//   Transparent = "#00000000",
-//   BG_Red = "#ffc9c9",
-//   BG_Green = "#b2f2bb",
-//   BG_Blue = "#a5d8ff",
-//   BG_Yellow = "#ffec99",
-//   BG_White = "#ffffff",
-// }
-
-// export enum CanvasColor {
-//   White = "#ffffff",
-//   Light_Blue = "#f5faff",
-//   Light_Yellow = "#fffce8",
-//   Light_Red = "#fdf8f6",
-//   Light_Green = "#f0fdf4",
-//   Black = "#121212",
-//   DarK_BLUE = "#13171c",
-//   DarK_YELLOW = "#181605",
-//   DarK_RED = "#1b1615",
-//   DarK_GREY = "#161718",
-// }
 
 export const STROKE_COLOR_KEYS = [
   "Stroke_Black",

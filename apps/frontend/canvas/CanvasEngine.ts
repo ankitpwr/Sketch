@@ -649,7 +649,7 @@ export class CanvasEngine {
   handleWheelEvent = (e: WheelEvent) => {
     e.preventDefault();
     if (e.ctrlKey) {
-      this.handleZoom(e.deltaY * -0.03, e.offsetX, e.offsetY);
+      this.handleZoom(e.deltaY * -0.01, e.offsetX, e.offsetY);
     } else {
       this.panX -= e.deltaX / this.scale;
       this.panY -= e.deltaY / this.scale;
