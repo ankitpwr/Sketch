@@ -181,9 +181,7 @@ export const DefaultPencilStyles: PencilStyles = {
 export const DefaultShapeStyles: ShapeStyles = {
   strokeType: StrokeType.Solid,
   strokeWidth: StrokeWidth.Thin,
-  // strokeStyle: StrokeColor.PrimaryBlack,
-  // fill: "transparent",
-  // background: BackgroundColor.Transparent,
+
   strokeColorKey: "Stroke_Black",
   backgroundColorKey: "BG_Transparent",
 };
@@ -191,9 +189,6 @@ export const DefaultShapeStyles: ShapeStyles = {
 export const BoundingBorderStyles: ShapeStyles = {
   strokeType: StrokeType.Solid,
   strokeWidth: StrokeWidth.Thin,
-  // strokeStyle: StrokeColor.PrimaryViolet,
-  // fill: "transparent",
-  // background: BackgroundColor.BG_White,
   strokeColorKey: "Stroke_Violet",
   backgroundColorKey: "BG_White",
 };

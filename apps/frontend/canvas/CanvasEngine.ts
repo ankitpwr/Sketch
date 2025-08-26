@@ -110,8 +110,7 @@ export class CanvasEngine {
     if (!standalone && socket && roomId && userId) {
       this.roomId = roomId;
       this.userId = userId;
-      console.log("socket in canvas engine is ");
-      console.log(socket);
+
       this.sockethandler = new SocketHandler(
         socket,
         this.existingShapes,
@@ -139,7 +138,6 @@ export class CanvasEngine {
   }
 
   init = async () => {
-    console.log(`standalone is ${this.standalone}`);
     const loadedShaped = await getExistingShape(this.standalone, this.roomId);
 
     this.existingShapes.push(...loadedShaped);
@@ -224,7 +222,6 @@ export class CanvasEngine {
       x < right;
       x += solidGridSize
     ) {
-      console.log(`pan is ${this.panX} && left is ${left} && x is ${x}`);
       this.ctx.moveTo(x, top);
       this.ctx.lineTo(x, bottom);
     }
@@ -344,7 +341,6 @@ export class CanvasEngine {
     this.textArea.focus();
 
     this.textArea.onblur = () => this.finalizeText();
-    console.log("handle text");
   };
   autoResizeTextArea = () => {
     const text = this.textArea.value || this.textArea.placeholder || "";
@@ -366,7 +362,7 @@ export class CanvasEngine {
   };
   finalizeText = () => {
     const textData = this.textArea.value.trim();
-    console.log("finalizeText called");
+
     if (textData.length != 0) {
       const textShape: TextShape = {
         id: cuid(),
@@ -393,11 +389,7 @@ export class CanvasEngine {
   };
 
   handleMouseDown = (e: MouseEvent) => {
-    console.log(`action at top of mouse down`);
-    console.log(this.action);
     if (this.action == Action.WRITING) {
-      console.log(`target is `);
-      console.log(e.target);
       if (e.target !== this.textArea) {
         this.finalizeText();
       } else return;
@@ -408,10 +400,9 @@ export class CanvasEngine {
 
     if (this.currentTool == ShapeType.TEXT) {
       e.preventDefault();
-      console.log("in mouse down shape.text");
       this.action = Action.WRITING;
-      const screenX = this.startX * this.scale + this.panX * this.scale;
-      const screenY = this.startY * this.scale + this.panY * this.scale;
+      const screenX = this.startX * this.scale + this.panX;
+      const screenY = this.startY * this.scale + this.panY;
       this.handleText(screenX, screenY);
       return;
     }
@@ -513,8 +504,6 @@ export class CanvasEngine {
       this.existingShapes.push(...shapeToKeep);
       this.render();
       if (!this.standalone) {
-        console.log("to erase");
-
         this.sockethandler?.eraseShape(this.shapeToRemove);
       } else {
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
