@@ -65,9 +65,7 @@ export class CanvasEngine {
   public CanvasColor: string;
   public CanvasColorKey: CanvasColorKey;
   private theme: "light" | "dark" = "light";
-  private initialPintchDistance: number | null = null;
-  private initialPintchMidPoint: { x: number; y: number } | null = null;
-  private lastScale: number = 1;
+  private lastPanPoint: { x: number; y: number } | null = null;
   private standalone: boolean;
   private sockethandler?: SocketHandler;
   private roomId: string | null = null;
@@ -346,6 +344,7 @@ export class CanvasEngine {
     this.textArea.focus();
 
     this.textArea.onblur = () => this.finalizeText();
+    console.log("handle text");
   };
   autoResizeTextArea = () => {
     const text = this.textArea.value || this.textArea.placeholder || "";
@@ -367,6 +366,7 @@ export class CanvasEngine {
   };
   finalizeText = () => {
     const textData = this.textArea.value.trim();
+    console.log("finalizeText called");
     if (textData.length != 0) {
       const textShape: TextShape = {
         id: cuid(),
@@ -393,8 +393,14 @@ export class CanvasEngine {
   };
 
   handleMouseDown = (e: MouseEvent) => {
+    console.log(`action at top of mouse down`);
+    console.log(this.action);
     if (this.action == Action.WRITING) {
-      return;
+      console.log(`target is `);
+      console.log(e.target);
+      if (e.target !== this.textArea) {
+        this.finalizeText();
+      } else return;
     }
     this.mouseDown = true;
     this.startX = this.getCoordinates(e)[0];
@@ -402,10 +408,12 @@ export class CanvasEngine {
 
     if (this.currentTool == ShapeType.TEXT) {
       e.preventDefault();
+      console.log("in mouse down shape.text");
       this.action = Action.WRITING;
       const screenX = this.startX * this.scale + this.panX * this.scale;
       const screenY = this.startY * this.scale + this.panY * this.scale;
       this.handleText(screenX, screenY);
+      return;
     }
 
     if (
@@ -434,8 +442,6 @@ export class CanvasEngine {
           this.selectedShape.offsetY = this.startY;
           this.action = Action.MOVING;
           shapeFound = true;
-          console.log("new shape is selected");
-          console.log(this.selectedShape);
           this.render();
           break;
         }
@@ -478,7 +484,6 @@ export class CanvasEngine {
         shape.endX = Math.max(tempStartX, tempEndX);
         shape.endY = Math.max(tempStartY, tempEndY);
       }
-      this.action = Action.IDLE;
 
       if (this.standalone) {
         localStorage.setItem("shape", JSON.stringify(this.existingShapes));
@@ -495,7 +500,7 @@ export class CanvasEngine {
         this.sockethandler?.shapeMove(shapeToMove, true);
       }
 
-      this.action = Action.IDLE;
+      // this.action = Action.IDLE;
       this.render();
     } else if (
       this.currentTool == ActionTool.ERASER &&
@@ -573,6 +578,7 @@ export class CanvasEngine {
       this.render();
       this.points = [];
     }
+    if (this.action != Action.WRITING) this.action = Action.IDLE;
   };
 
   handleMouseMove = (e: MouseEvent) => {
@@ -585,6 +591,7 @@ export class CanvasEngine {
     } else if (this.action == Action.MOVING) {
       this.shapeMangager.handleShapeMovement(currentX, currentY);
     } else if (this.currentTool == ActionTool.ERASER) {
+      this.action = Action.DRAWING;
       let topShape: Shape | null = null;
       for (let i = this.existingShapes.length - 1; i >= 0; i--) {
         const shape = this.existingShapes[i];
@@ -605,6 +612,7 @@ export class CanvasEngine {
       this.currentTool == ShapeType.PENCIL
     ) {
       const currentShape = this.currentTool;
+      this.action = Action.DRAWING;
       if (currentShape == ShapeType.PENCIL) {
         if (this.points.length == 0)
           this.points.push([this.startX, this.startY]);
@@ -689,26 +697,59 @@ export class CanvasEngine {
 
   handleTouchStart = (e: TouchEvent) => {
     e.preventDefault();
-    if (e.touches.length > 0) {
+    if (e.touches.length == 2) {
+      this.mouseDown = false;
+      this.action = Action.PANNING;
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      this.lastPanPoint = {
+        x: (touch1.clientX + touch2.clientX) / 2,
+        y: (touch1.clientY + touch2.clientY) / 2,
+      };
+    } else if (e.touches.length == 1) {
       const touch = e.touches[0];
       const mouseEvent = this.createMouseEvent(e, touch);
+
       this.handleMouseDown(mouseEvent);
     }
   };
   handleTouchMove = (e: TouchEvent) => {
     e.preventDefault();
-    if (e.touches.length > 0) {
+    if (
+      e.touches.length == 2 &&
+      this.lastPanPoint &&
+      this.action == Action.PANNING
+    ) {
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const currentMidpoint = {
+        x: (touch1.clientX + touch2.clientX) / 2,
+        y: (touch1.clientY + touch2.clientY) / 2,
+      };
+      const deltaX = currentMidpoint.x - this.lastPanPoint.x;
+      const deltaY = currentMidpoint.y - this.lastPanPoint.y;
+      this.panX += deltaX;
+      this.panY += deltaY;
+      this.lastPanPoint = currentMidpoint;
+
+      this.render();
+    } else if (e.touches.length == 1) {
       const touch = e.touches[0];
+
       const mouseEvent = this.createMouseEvent(e, touch);
       this.handleMouseMove(mouseEvent);
     }
   };
   handleTouchEnd = (e: TouchEvent) => {
     e.preventDefault();
-    const touchEvent = e.changedTouches[0]; //e.touches[0] is empty for Touch End as no finger is currenlty involved
-    const mouseEvent = this.createMouseEvent(e, touchEvent);
-
-    this.handleMouseUp(mouseEvent);
+    if (this.action == Action.PANNING) {
+      this.action = Action.IDLE;
+      this.lastPanPoint = null;
+    } else if (this.action != Action.IDLE) {
+      const touchEvent = e.changedTouches[0]; //e.touches[0] is empty for Touch End as no finger is currenlty involved
+      const mouseEvent = this.createMouseEvent(e, touchEvent);
+      this.handleMouseUp(mouseEvent);
+    }
   };
 
   destroy = () => {
