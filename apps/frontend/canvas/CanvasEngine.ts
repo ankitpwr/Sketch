@@ -1,7 +1,10 @@
 import {
   Action,
   ActionTool,
+  DiamondShape,
+  EllipseShape,
   Points,
+  RectangleShape,
   Shape,
   ShapeType,
   TextShape,
@@ -173,6 +176,11 @@ export class CanvasEngine {
     }
   };
 
+  changeTool = (tool: Tool) => {
+    this.currentTool = tool;
+    this.shapeMangager.clearSelectedShape();
+    this.render();
+  };
   handleCanvasResize = () => {
     this.render();
   };
@@ -279,7 +287,6 @@ export class CanvasEngine {
 
     const drawShape = (s: Shape) => {
       //prettier-ignore
-
       switch (s.type) {
         case ShapeType.RECTANGLE:
         case ShapeType.ELLIPSE:
@@ -398,54 +405,61 @@ export class CanvasEngine {
     this.startX = this.getCoordinates(e)[0];
     this.startY = this.getCoordinates(e)[1];
 
-    if (this.currentTool == ShapeType.TEXT) {
-      e.preventDefault();
-      this.action = Action.WRITING;
-      const screenX = this.startX * this.scale + this.panX;
-      const screenY = this.startY * this.scale + this.panY;
-      this.handleText(screenX, screenY);
-      return;
-    }
-
-    if (
-      this.currentTool == ActionTool.SELECT &&
-      this.selectedShape.index != -1
-    ) {
-      const resizeHandlers = this.shapeMangager.resizeHandlers;
-
-      for (let i = 0; i < resizeHandlers.length; i++) {
-        const currentHandler = resizeHandlers[i];
-        if (isNeartheShape(this.startX, this.startY, currentHandler)) {
-          this.shapeMangager.resizeSide = currentHandler.side;
-          this.action = Action.RESIZING;
-          this.render();
-          return;
+    switch (this.currentTool) {
+      case ShapeType.TEXT:
+        e.preventDefault();
+        this.action = Action.WRITING;
+        const screenX = this.startX * this.scale + this.panX;
+        const screenY = this.startY * this.scale + this.panY;
+        this.handleText(screenX, screenY);
+        return;
+      case ActionTool.SELECT:
+        if (this.selectedShape.index != -1) {
+          const resizeHandlers = this.shapeMangager.resizeHandlers;
+          for (let i = 0; i < resizeHandlers.length; i++) {
+            const currentHandler = resizeHandlers[i];
+            if (isNeartheShape(this.startX, this.startY, currentHandler)) {
+              this.shapeMangager.resizeSide = currentHandler.side;
+              this.render();
+              this.action = Action.RESIZING;
+              return;
+            }
+          }
         }
-      }
-    }
-    let shapeFound = false;
-    if (this.currentTool == ActionTool.SELECT) {
-      for (let i = this.existingShapes.length - 1; i >= 0; i--) {
-        if (isNeartheShape(this.startX, this.startY, this.existingShapes[i])) {
-          this.selectedShape.index = i;
-          this.selectedShape.type = this.existingShapes[i].type;
-          this.selectedShape.offsetX = this.startX;
-          this.selectedShape.offsetY = this.startY;
-          this.action = Action.MOVING;
-          shapeFound = true;
+        let shapeFound = false;
+        for (let i = this.existingShapes.length - 1; i >= 0; i--) {
+          if (
+            isNeartheShape(this.startX, this.startY, this.existingShapes[i])
+          ) {
+            this.selectedShape.index = i;
+            this.selectedShape.type = this.existingShapes[i].type;
+            this.selectedShape.offsetX = this.startX;
+            this.selectedShape.offsetY = this.startY;
+            shapeFound = true;
+            this.render();
+            this.action = Action.MOVING;
+            return;
+          }
+        }
+        if (!shapeFound) {
+          this.shapeMangager.clearSelectedShape();
           this.render();
+          this.action = Action.IDLE;
           break;
         }
-      }
-    }
 
-    if (!shapeFound) {
-      this.selectedShape.type = null;
-      this.selectedShape.index = -1;
-      this.selectedShape.offsetX = 0;
-      this.selectedShape.offsetY = 0;
-      this.shapeMangager.clearResizeHandler();
-      this.render();
+      case ShapeType.ARROW:
+      case ShapeType.DIAMOND:
+      case ShapeType.ELLIPSE:
+      case ShapeType.LINE:
+      case ShapeType.PENCIL:
+      case ShapeType.RECTANGLE:
+        this.action = Action.DRAWING;
+        break;
+      case ActionTool.ERASER:
+        this.shapeMangager.clearSelectedShape();
+        this.action = Action.ERASEING;
+        this.render();
     }
   };
 
@@ -573,73 +587,70 @@ export class CanvasEngine {
   handleMouseMove = (e: MouseEvent) => {
     const currentX = this.getCoordinates(e)[0];
     const currentY = this.getCoordinates(e)[1];
-
     if (!this.mouseDown) return;
-    else if (this.action == Action.RESIZING) {
-      this.shapeMangager.handleResizeShape(currentX, currentY);
-    } else if (this.action == Action.MOVING) {
-      this.shapeMangager.handleShapeMovement(currentX, currentY);
-    } else if (this.currentTool == ActionTool.ERASER) {
-      this.action = Action.DRAWING;
-      let topShape: Shape | null = null;
-      for (let i = this.existingShapes.length - 1; i >= 0; i--) {
-        const shape = this.existingShapes[i];
-        if (isNeartheShape(currentX, currentY, shape)) {
-          topShape = shape;
-          break;
+    switch (this.action) {
+      case Action.RESIZING:
+        this.shapeMangager.handleResizeShape(currentX, currentY);
+        break;
+      case Action.MOVING:
+        this.shapeMangager.handleShapeMovement(currentX, currentY);
+        break;
+      case Action.ERASEING:
+        let topShape: Shape | null = null;
+        for (let i = this.existingShapes.length - 1; i >= 0; i--) {
+          const shape = this.existingShapes[i];
+          if (isNeartheShape(currentX, currentY, shape)) {
+            topShape = shape;
+            break;
+          }
         }
-      }
-      if (topShape && !this.shapeToRemove.some((s) => s.id == topShape.id)) {
-        this.shapeToRemove.push(topShape);
-      }
-    } else if (
-      this.currentTool == ShapeType.RECTANGLE ||
-      this.currentTool == ShapeType.ELLIPSE ||
-      this.currentTool == ShapeType.DIAMOND ||
-      this.currentTool == ShapeType.LINE ||
-      this.currentTool == ShapeType.ARROW ||
-      this.currentTool == ShapeType.PENCIL
-    ) {
-      const currentShape = this.currentTool;
-      this.action = Action.DRAWING;
-      if (currentShape == ShapeType.PENCIL) {
-        if (this.points.length == 0)
-          this.points.push([this.startX, this.startY]);
-        this.points.push([currentX, currentY]);
-        this.previewShape = {
-          type: ShapeType.PENCIL,
-          points: this.points,
-          style: { ...this.CurrentPencilStyles },
-        };
-      } else if (
-        currentShape == ShapeType.LINE ||
-        currentShape == ShapeType.ARROW
-      ) {
-        const tempShape: Shape = {
-          type: currentShape,
-          startX: this.startX,
-          startY: this.startY,
-          endX: currentX,
-          endY: currentY,
-          style: { ...this.CurrentShapeStyles },
-        };
-        this.previewShape = tempShape;
-      } else {
-        const tempShape = {
-          type: currentShape,
-          startX: Math.min(this.startX, currentX),
-          startY: Math.min(this.startY, currentY),
-          endX: Math.max(this.startX, currentX),
-          endY: Math.max(this.startY, currentY),
-          style: { ...this.CurrentShapeStyles },
-        };
-        this.previewShape = tempShape;
-      }
-      if (!this.standalone && this.previewShape) {
-        this.sockethandler?.sendPreviewShape(this.previewShape);
-      }
-      this.render();
-      this.previewShape = null;
+        if (topShape && !this.shapeToRemove.some((s) => s.id == topShape.id)) {
+          this.shapeToRemove.push(topShape);
+        }
+        break;
+      case Action.DRAWING:
+        const currentShape = this.currentTool;
+        if (!(currentShape in ShapeType)) break;
+        if (currentShape == ShapeType.PENCIL) {
+          if (this.points.length == 0)
+            this.points.push([this.startX, this.startY]);
+          this.points.push([currentX, currentY]);
+          this.previewShape = {
+            type: ShapeType.PENCIL,
+            points: this.points,
+            style: { ...this.CurrentPencilStyles },
+          };
+        } else if (
+          currentShape == ShapeType.LINE ||
+          currentShape == ShapeType.ARROW
+        ) {
+          const tempShape: Shape = {
+            type: currentShape,
+            startX: this.startX,
+            startY: this.startY,
+            endX: currentX,
+            endY: currentY,
+            style: { ...this.CurrentShapeStyles },
+          };
+          this.previewShape = tempShape;
+        } else {
+          const tempShape = {
+            type: currentShape,
+            startX: Math.min(this.startX, currentX),
+            startY: Math.min(this.startY, currentY),
+            endX: Math.max(this.startX, currentX),
+            endY: Math.max(this.startY, currentY),
+            style: { ...this.CurrentShapeStyles },
+          };
+          //@ts-ignore
+          this.previewShape = tempShape;
+        }
+        if (!this.standalone && this.previewShape) {
+          this.sockethandler?.sendPreviewShape(this.previewShape);
+        }
+        this.render();
+        this.previewShape = null;
+        break;
     }
   };
 

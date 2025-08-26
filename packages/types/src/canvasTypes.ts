@@ -64,6 +64,7 @@ export interface ResizeHandlers extends BoundedShape {
 
 export enum Action {
   DRAWING = "DRAWING",
+  ERASEING = "ERASEING",
   PANNING = "PANNING",
   MOVING = "MOVING",
   RESIZING = "RESIZING",

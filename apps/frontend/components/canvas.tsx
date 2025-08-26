@@ -92,11 +92,6 @@ export default function Canvas() {
   }, [standalone, roomId, socket, userId, setDpr, setCanvasEngine]);
 
   useEffect(() => {
-    if (!canvasEngine || !canvasEngine.currentTool) return;
-    canvasEngine.currentTool = currentTool;
-  }, [currentTool, canvasEngine]);
-
-  useEffect(() => {
     if (!canvasRef.current) return;
     const observer = new ResizeObserver((entries) => {
       updateCanvasDimension();

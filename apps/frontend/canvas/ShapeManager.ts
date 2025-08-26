@@ -129,6 +129,13 @@ export class ShapeManager {
   clearResizeHandler = () => {
     this.resizeHandlers = [];
   };
+  clearSelectedShape = () => {
+    this.selectedShape.type = null;
+    this.selectedShape.index = -1;
+    this.selectedShape.offsetX = 0;
+    this.selectedShape.offsetY = 0;
+    this.clearResizeHandler();
+  };
   drawBoundBox = () => {
     const index = this.selectedShape.index;
     const shape = this.existingShapes[index];

@@ -16,9 +16,10 @@ import {
 import useCanvasStore from "@/app/store/canvas-store";
 export default function Tools() {
   const { currentTool, setTool } = useCanvasStore();
+  const { canvasEngine } = useCanvasStore();
   const handleTool = (tool: Tool) => {
-    console.log(`tool is being set up ${tool}`);
     setTool(tool);
+    canvasEngine!.changeTool(tool);
   };
   return (
     <div className="fixed bg-white dark:bg-[#232329] top-5 left-1/2 -translate-x-1/2 px-1 py-1 flex md:gap-2  rounded-lg shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] ">
