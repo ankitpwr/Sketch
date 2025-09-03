@@ -154,10 +154,9 @@ export interface PencilStyles {
 }
 export interface ShapeStyles {
   strokeWidth: StrokeWidth;
-  // strokeStyle: StrokeColor | string;
-  // fill: string;
+
   strokeType: StrokeType;
-  // background: BackgroundColor | string;
+
   strokeColorKey: StrokeColorKey;
   backgroundColorKey: BackgroundColorkey;
 }

@@ -35,6 +35,7 @@ import {
   StrokeColorKey,
   BackgroundColorkey,
   getThemeColors,
+  setting,
 } from "@repo/types/drawingConfig";
 
 export class CanvasEngine {
@@ -59,14 +60,14 @@ export class CanvasEngine {
     offsetY: number;
   };
   private dpr: number;
-  public grid: boolean = false;
+  public grid: boolean = setting.grid;
   private shapeMangager: ShapeManager;
   private textArea: HTMLTextAreaElement;
   public CurrentShapeStyles: ShapeStyles;
   public CurrentPencilStyles: PencilStyles;
   public CurrentTextStyle: TextStyle;
-  public CanvasColor: string;
-  public CanvasColorKey: CanvasColorKey;
+  public CanvasColor: string = THEME_PALETTE.light.White;
+  public CanvasColorKey: CanvasColorKey = setting.canvasColorKey;
   private theme: "light" | "dark" = "light";
   private lastPanPoint: { x: number; y: number } | null = null;
   private standalone: boolean;
@@ -106,8 +107,7 @@ export class CanvasEngine {
     this.CurrentShapeStyles = DefaultShapeStyles;
     this.CurrentPencilStyles = DefaultPencilStyles;
     this.CurrentTextStyle = DefaultTextStyle;
-    this.CanvasColor = THEME_PALETTE.light.White;
-    this.CanvasColorKey = "White";
+
     this.pressedKey = null;
 
     if (!standalone && socket && roomId && userId) {
@@ -142,8 +142,11 @@ export class CanvasEngine {
 
   init = async () => {
     const loadedShaped = await getExistingShape(this.standalone, this.roomId);
-
     this.existingShapes.push(...loadedShaped);
+    this.ChangeStrokeColor(setting.strokeColorKey);
+    this.ChangeBackgroundColor(setting.backgroundColorKey);
+    this.ChangeCanvasColor(setting.canvasColorKey);
+
     this.render();
   };
 

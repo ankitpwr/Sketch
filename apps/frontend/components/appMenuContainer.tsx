@@ -17,18 +17,19 @@ import TextSelector from "./TextSelector";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import useCanvasStore from "@/app/store/canvas-store";
 import { useTheme } from "next-themes";
+import useDrawStore from "@/app/store/draw-store";
 
 export default function AppMenuContainer() {
   const { currentTool, canvasEngine } = useCanvasStore();
   const { resolvedTheme } = useTheme();
 
-  const [strokeColorKey, setCurrentStrokeColorKey] = useState<StrokeColorKey>(
-    canvasEngine!.CurrentShapeStyles.strokeColorKey
-  );
-  const [backgroundColorKey, setBackgroundColorKey] =
-    useState<BackgroundColorkey>(
-      canvasEngine!.CurrentShapeStyles.backgroundColorKey
-    );
+  const {
+    strokeColorKey,
+    backgroundColorKey,
+    setStrokeColorKey,
+    setBackgroundColorKey,
+  } = useDrawStore();
+
   const [strokeColorPicker, setStrokeColorPicker] = useState<boolean>(false);
   const [backgrColorPicker, setBackgroundColorPicker] =
     useState<boolean>(false);
@@ -46,9 +47,10 @@ export default function AppMenuContainer() {
 
   const handleStrokeColor = (colorKey: StrokeColorKey, newcolor?: string) => {
     if (newcolor) {
+      //color picker logic
     } else if (colorKey) {
       canvasEngine!.ChangeStrokeColor(colorKey);
-      setCurrentStrokeColorKey(colorKey);
+      setStrokeColorKey(colorKey);
     }
   };
 
@@ -57,6 +59,7 @@ export default function AppMenuContainer() {
     newcolor?: string
   ) => {
     if (newcolor) {
+      //color picker logic
     } else if (colorKey) {
       canvasEngine!.ChangeBackgroundColor(colorKey);
       setBackgroundColorKey(colorKey);

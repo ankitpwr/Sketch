@@ -13,12 +13,19 @@ import useCanvasStore from "@/app/store/canvas-store";
 import useUserStore from "@/app/store/user-store";
 import { AppSetting, setting } from "@repo/types/drawingConfig";
 import { useTheme } from "next-themes";
+import useDrawStore from "@/app/store/draw-store";
 
 export default function Canvas() {
   const { userId, username, socket, standalone, roomId } = useUserStore();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { currentTool, dpr, canvasEngine, setDpr, setTool, setCanvasEngine } =
+  const { currentTool, dpr, canvasEngine, setDpr, setCanvasEngine, setGrid } =
     useCanvasStore();
+  const {
+    canvasColorKey,
+    setCanvasColorKey,
+    setBackgroundColorKey,
+    setStrokeColorKey,
+  } = useDrawStore();
   const { resolvedTheme } = useTheme();
 
   const textRef = useRef(null);
@@ -62,6 +69,16 @@ export default function Canvas() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    const savedSetting = localStorage.getItem("sketch-setting");
+    if (!savedSetting) {
+      localStorage.setItem("sketch-setting", JSON.stringify(setting));
+    } else {
+      const parseSketchSetting = JSON.parse(savedSetting) as AppSetting;
+      setGrid(parseSketchSetting.grid);
+      setCanvasColorKey(parseSketchSetting.canvasColorKey);
+      setBackgroundColorKey(parseSketchSetting.backgroundColorKey);
+      setStrokeColorKey(parseSketchSetting.strokeColorKey);
+    }
 
     const newCanvasEngine = new CanvasEngine(
       canvas,
@@ -73,19 +90,6 @@ export default function Canvas() {
       roomId,
       userId
     );
-    const savedSetting = localStorage.getItem("sketch-setting");
-    if (!savedSetting) {
-      localStorage.setItem("sketch-setting", JSON.stringify(setting));
-    } else {
-      const parseSketchSetting = JSON.parse(savedSetting) as AppSetting;
-      newCanvasEngine.ChangeCanvasColor(parseSketchSetting.canvasColorKey);
-      newCanvasEngine.ChangeStrokeColor(parseSketchSetting.strokeColorKey);
-      newCanvasEngine.ChangeBackgroundColor(
-        parseSketchSetting.backgroundColorKey
-      );
-      setting.grid = parseSketchSetting.grid;
-      newCanvasEngine.grid = setting.grid;
-    }
 
     setCanvasEngine(newCanvasEngine);
     updateCanvasDimension();

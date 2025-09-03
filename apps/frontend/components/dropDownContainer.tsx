@@ -26,24 +26,20 @@ import { useTheme } from "next-themes";
 import ThemeToggle from "./themeToggle";
 import { useRouter } from "next/navigation";
 import useMenuStore from "@/app/store/menu-store";
+import useDrawStore from "@/app/store/draw-store";
 export default function DropDownContainer() {
-  const { currentTool, canvasEngine } = useCanvasStore();
+  const { canvasEngine, grid, setGrid } = useCanvasStore();
   const { dialogBox, setDialogBox } = useMenuStore();
   const { resolvedTheme } = useTheme();
   const router = useRouter();
-  const [activeColorKey, setActiveColorKey] = useState<CanvasColorKey>(
-    canvasEngine!.CanvasColorKey
-  );
+  const { setCanvasColorKey } = useDrawStore();
 
-  const [grid, setGrid] = useState<boolean>(setting.grid);
   if (resolvedTheme != "light" && resolvedTheme != "dark") return;
   const themeColors = getThemeColors(resolvedTheme);
 
   const handleCanvasColor = (colorKey: CanvasColorKey) => {
     canvasEngine!.ChangeCanvasColor(colorKey);
-    setting.canvasColorKey = colorKey;
-    localStorage.setItem("sketch-setting", JSON.stringify(setting));
-    setActiveColorKey(colorKey);
+    setCanvasColorKey(colorKey);
   };
   const isActiveColor = (colorKey: CanvasColorKey) => {
     return canvasEngine!.CanvasColorKey == colorKey;
@@ -55,11 +51,11 @@ export default function DropDownContainer() {
 
   const handleGrid = () => {
     canvasEngine?.ChangeGrid(!grid);
-    setting.grid = !grid;
-    localStorage.setItem("sketch-setting", JSON.stringify(setting));
     setGrid(!grid);
   };
 
+  console.log("grid is drop down is ");
+  console.log(grid);
   return (
     <div
       id="drop-down-menu"
