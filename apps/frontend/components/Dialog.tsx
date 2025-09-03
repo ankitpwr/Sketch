@@ -7,12 +7,9 @@ import useUserStore from "@/app/store/user-store";
 import Input from "./input";
 import useRoomStore from "@/app/store/room-store";
 import { MessageType } from "@repo/types/wsTypes";
+import useMenuStore from "@/app/store/menu-store";
 
-export default function Dialog({
-  setDialogBox,
-}: {
-  setDialogBox: Dispatch<SetStateAction<boolean>>;
-}) {
+export default function Dialog() {
   const {
     standalone,
     username,
@@ -23,6 +20,7 @@ export default function Dialog({
     setStandalone,
     setRoomId,
   } = useUserStore();
+  const { dialogBox, setDialogBox } = useMenuStore();
   const { loading, setLoading } = useRoomStore();
   const router = useRouter();
   const refer = useRef<HTMLDivElement | null>(null);

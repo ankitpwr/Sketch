@@ -2,16 +2,17 @@ import React, { useState } from "react";
 import Button from "./button";
 import Dialog from "./Dialog";
 import useUserStore from "@/app/store/user-store";
+import useMenuStore from "@/app/store/menu-store";
 
 export default function Share() {
-  const [dialogBox, setDialogBox] = useState(false);
+  const { dialogBox, setDialogBox } = useMenuStore();
   const { standalone } = useUserStore();
   const varient = standalone ? "primary" : "success";
 
   return (
     <div className="hidden md:flex fixed top-5 right-5  gap-2">
       <Button
-        onClickhandler={() => setDialogBox((pre) => !pre)}
+        onClickhandler={() => setDialogBox(!dialogBox)}
         varient={varient}
         size="md"
         isActive={false}
@@ -20,7 +21,7 @@ export default function Share() {
         <p>Share</p>{" "}
       </Button>
 
-      {dialogBox && <Dialog setDialogBox={setDialogBox} />}
+      {dialogBox && <Dialog />}
     </div>
   );
 }

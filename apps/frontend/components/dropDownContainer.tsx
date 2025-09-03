@@ -25,8 +25,10 @@ import useCanvasStore from "@/app/store/canvas-store";
 import { useTheme } from "next-themes";
 import ThemeToggle from "./themeToggle";
 import { useRouter } from "next/navigation";
+import useMenuStore from "@/app/store/menu-store";
 export default function DropDownContainer() {
   const { currentTool, canvasEngine } = useCanvasStore();
+  const { dialogBox, setDialogBox } = useMenuStore();
   const { resolvedTheme } = useTheme();
   const router = useRouter();
   const [activeColorKey, setActiveColorKey] = useState<CanvasColorKey>(
@@ -63,7 +65,12 @@ export default function DropDownContainer() {
       id="drop-down-menu"
       className="flex flex-col bg-white gap-2.5 dark:bg-[#232329] rounded-lg fixed px-3 py-5 bottom-20 w-[80%] h-fit md:w-68 md:left-5 md:top-20 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
     >
-      <Button varient={"sidebar"} size={"md"} isActive={false}>
+      <Button
+        onClickhandler={() => setDialogBox(!dialogBox)}
+        varient={"sidebar"}
+        size={"md"}
+        isActive={false}
+      >
         <Users size={16} />
         <h1 className="text-sm text-gray-900 dark:text-[#dadadf]  ">
           Live collaboration
@@ -95,18 +102,39 @@ export default function DropDownContainer() {
         id="border-line"
         className="w-full h-[1px] rounded-md bg-gray-200 dark:bg-[#2e2d39]"
       ></div>
-      <Button varient={"sidebar"} size={"md"} isActive={false}>
+      <Button
+        onClickhandler={() =>
+          window.location.assign("https://github.com/ankitpwr/Sketch.git")
+        }
+        varient={"sidebar"}
+        size={"md"}
+        isActive={false}
+      >
         <Github size={16} />
         <h1 className="text-sm text-gray-900 dark:text-[#dadadf]  ">GitHub</h1>
       </Button>
-      <Button varient={"sidebar"} size={"md"} isActive={false}>
+      <Button
+        onClickhandler={() => window.location.assign("https://x.com/ankit_pam")}
+        varient={"sidebar"}
+        size={"md"}
+        isActive={false}
+      >
         <XIcon size={16} color={"#1b1b1f"} />
         <h1 className="text-sm text-gray-900 dark:text-[#dadadf]  ">
           Twitter/X
         </h1>
       </Button>
 
-      <Button varient={"sidebar"} size={"md"} isActive={false}>
+      <Button
+        onClickhandler={() =>
+          window.location.assign(
+            "https://www.linkedin.com/in/ankit-panwar-30a997342/"
+          )
+        }
+        varient={"sidebar"}
+        size={"md"}
+        isActive={false}
+      >
         <Linkedin size={16} strokeWidth={1.5} />
         <h1 className="text-sm text-gray-900 dark:text-[#dadadf]  ">
           Linkedin
