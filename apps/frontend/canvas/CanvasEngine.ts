@@ -291,7 +291,7 @@ export class CanvasEngine {
         case ShapeType.RECTANGLE:
         case ShapeType.ELLIPSE:
         case ShapeType.DIAMOND:
-          if (s.type == ShapeType.RECTANGLE) drawRoundedRectangle(this.ctx, s, themeColors );
+          if (s.type == ShapeType.RECTANGLE) drawRoundedRectangle(this.ctx, s, themeColors, this.scale );
           if (s.type == ShapeType.ELLIPSE) drawEllipse(this.ctx, s, themeColors);
           if (s.type == ShapeType.DIAMOND) drawDiamond(this.ctx, s,  themeColors);
           break;

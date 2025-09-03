@@ -5,6 +5,7 @@ export function drawRoundedRectangle(
   ctx: CanvasRenderingContext2D,
   shape: RectangleShape,
   themeColors: ReturnType<typeof getThemeColors>,
+  scale: number,
   boundingBox: { isBoundingBox: boolean; scale: number } = {
     isBoundingBox: false,
     scale: 1,

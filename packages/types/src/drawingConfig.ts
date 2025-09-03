@@ -102,7 +102,7 @@ export function getThemeColors(theme: "light" | "dark" | string | undefined) {
 }
 
 export enum StrokeWidth {
-  Thin = 1,
+  Thin = 1.5,
   Bold = 2.5,
   ExtraBold = 4,
 }
@@ -201,9 +201,9 @@ export function getLineDashPattern(
     case StrokeType.Solid:
       return [];
     case StrokeType.Dashed:
-      return [8, 8];
+      return [strokeWidth * 3, strokeWidth * 3];
     case StrokeType.Dotted:
-      return [4, 4];
+      return [1 * strokeWidth, strokeWidth * 2.5];
     default:
       return [];
   }
