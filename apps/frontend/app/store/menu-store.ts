@@ -4,16 +4,25 @@ import { create, StateCreator } from "zustand";
 
 interface AppMenuState {
   dialogBox: boolean;
+  dropDown: boolean;
+  shapeSetting: boolean;
 }
 interface AppMenuAction {
-  setDialogBox: (dropDown: boolean) => void;
+  setDialogBox: (dialogBox: boolean) => void;
+  setDropDown: (dropDown: boolean) => void;
+  setShapeSetting: (shapeSetting: boolean) => void;
 }
 
 type AppMenuStoreType = AppMenuState & AppMenuAction;
 
 const AppMenuStore: StateCreator<AppMenuStoreType> = (set) => ({
   dialogBox: false,
-  setDialogBox: (dropDown: boolean) => set({ dialogBox: dropDown }),
+  dropDown: false,
+  shapeSetting: false,
+  setDialogBox: (dialogBox: boolean) => set({ dialogBox: dialogBox }),
+  setDropDown: (dropDown: boolean) => set({ dropDown: dropDown }),
+  setShapeSetting: (shapeSetting: boolean) =>
+    set({ shapeSetting: shapeSetting }),
 });
 
 const useMenuStore = create<AppMenuStoreType>(AppMenuStore);

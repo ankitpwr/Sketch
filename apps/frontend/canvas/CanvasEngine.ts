@@ -36,6 +36,8 @@ import {
   BackgroundColorkey,
   getThemeColors,
   setting,
+  StrokeWidth,
+  StrokeType,
 } from "@repo/types/drawingConfig";
 
 export class CanvasEngine {
@@ -146,6 +148,8 @@ export class CanvasEngine {
     this.ChangeStrokeColor(setting.strokeColorKey);
     this.ChangeBackgroundColor(setting.backgroundColorKey);
     this.ChangeCanvasColor(setting.canvasColorKey);
+    this.ChangeStrokeWidth(setting.strokeWidth);
+    this.ChangeStrokeStyle(setting.strokeStyle);
 
     this.render();
   };
@@ -203,6 +207,12 @@ export class CanvasEngine {
     this.CurrentShapeStyles.backgroundColorKey = colorKey;
     this.CurrentTextStyle.backgroundColorKey = colorKey;
     this.CurrentPencilStyles.backgroundColorKey = colorKey;
+  };
+  ChangeStrokeWidth = (strokeWidth: StrokeWidth) => {
+    this.CurrentShapeStyles.strokeWidth = strokeWidth;
+  };
+  ChangeStrokeStyle = (strokeType: StrokeType) => {
+    this.CurrentShapeStyles.strokeType = strokeType;
   };
 
   ChangeGrid = (grid: boolean) => {

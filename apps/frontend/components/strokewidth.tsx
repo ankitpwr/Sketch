@@ -5,18 +5,17 @@ import { BoldLineIcon, ExtraBold, ThinLineIcon } from "./svgIcons";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import { StrokeWidth } from "@repo/types/drawingConfig";
 import useCanvasStore from "@/app/store/canvas-store";
+import useDrawStore from "@/app/store/draw-store";
 
 export default function StrokeWidthSelector() {
   const { canvasEngine } = useCanvasStore();
-  const [strokeWidth, setStokeWidth] = useState<StrokeWidth>(
-    canvasEngine!.CurrentShapeStyles.strokeWidth
-  );
+  const { strokeWidth, setStrokeWidth } = useDrawStore();
   const handleStrokeWidth = (width: StrokeWidth) => {
-    canvasEngine!.CurrentShapeStyles.strokeWidth = width;
-    setStokeWidth(width);
+    canvasEngine!.ChangeStrokeWidth(width);
+    setStrokeWidth(width);
   };
   const isActiveWidth = (width: StrokeWidth) => {
-    return width == canvasEngine!.CurrentShapeStyles.strokeWidth;
+    return width == strokeWidth;
   };
   return (
     <div id="stroke-width-selection" className="flex flex-col gap-2">

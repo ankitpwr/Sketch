@@ -19,21 +19,25 @@ import { Tool } from "@repo/types/canvasTypes";
 
 import DropDownContainer from "./dropDownContainer";
 import useCanvasStore from "@/app/store/canvas-store";
+import useMenuStore from "@/app/store/menu-store";
 
 export default function DropDown() {
-  const { currentTool, canvasEngine } = useCanvasStore();
+  const { canvasEngine } = useCanvasStore();
+  const { dropDown, setDropDown } = useMenuStore();
 
-  const [dropDown, setDropDown] = useState<boolean>(false);
   const handleMouseDown = () => {
     setDropDown(false);
   };
+
+  const handleDropDown = () => {
+    setDropDown(!dropDown);
+  };
+
   useEffect(() => {
     canvasEngine!.canvas.addEventListener("mousedown", handleMouseDown);
     return () => removeEventListener("mousedown", handleMouseDown);
   }, []);
-  const handleDropDown = () => {
-    setDropDown((pre) => !pre);
-  };
+
   return (
     <div className="fixed left-5 top-5 invisible md:visible  ">
       <Button

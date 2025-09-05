@@ -21,10 +21,11 @@ export default function Canvas() {
   const { currentTool, dpr, canvasEngine, setDpr, setCanvasEngine, setGrid } =
     useCanvasStore();
   const {
-    canvasColorKey,
     setCanvasColorKey,
     setBackgroundColorKey,
     setStrokeColorKey,
+    setStrokeWidth,
+    setStrokeStyle,
   } = useDrawStore();
   const { resolvedTheme } = useTheme();
 
@@ -78,6 +79,8 @@ export default function Canvas() {
       setCanvasColorKey(parseSketchSetting.canvasColorKey);
       setBackgroundColorKey(parseSketchSetting.backgroundColorKey);
       setStrokeColorKey(parseSketchSetting.strokeColorKey);
+      setStrokeWidth(parseSketchSetting.strokeWidth);
+      setStrokeStyle(parseSketchSetting.strokeStyle);
     }
 
     const newCanvasEngine = new CanvasEngine(

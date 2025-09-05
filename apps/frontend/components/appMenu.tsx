@@ -1,22 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 
-import { CanvasEngine } from "@/canvas/CanvasEngine";
-import {
-  BackgroundColorkey,
-  StrokeColorKey,
-  StrokeType,
-} from "@repo/types/drawingConfig";
-
-import ColorSelection from "./colorSelector";
-import ColorPicker from "./colorPicker";
-import PencilMenu from "./pencilSetting";
-
-import StrokeWidthSelector from "./strokewidth";
-import StrokeStyleSelector from "./strokeStyleSelector";
-import { Tool } from "@repo/types/canvasTypes";
 import TextSelector from "./TextSelector";
 import AppMenuContainer from "./appMenuContainer";
-import useCanvasStore from "@/app/store/canvas-store";
 
 export default function AppMenu() {
   function isHexColor(hex: string) {

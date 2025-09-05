@@ -4,18 +4,17 @@ import { Dashed, Dotted, ThinLineIcon } from "./svgIcons";
 import { CanvasEngine } from "@/canvas/CanvasEngine";
 import { StrokeType } from "@repo/types/drawingConfig";
 import useCanvasStore from "@/app/store/canvas-store";
+import useDrawStore from "@/app/store/draw-store";
 
 export default function StrokeStyleSelector() {
   const { canvasEngine } = useCanvasStore();
-  const [strokeStyle, setStokeStyle] = useState<StrokeType>(
-    canvasEngine!.CurrentShapeStyles.strokeType
-  );
+  const { strokeStyle, setStrokeStyle } = useDrawStore();
   const handleStrokeStyle = (style: StrokeType) => {
-    canvasEngine!.CurrentShapeStyles.strokeType = style;
-    setStokeStyle(style);
+    canvasEngine!.ChangeStrokeStyle(style);
+    setStrokeStyle(style);
   };
   const isActiveWidthStyle = (style: StrokeType) => {
-    return style == canvasEngine!.CurrentShapeStyles.strokeType;
+    return style == strokeStyle;
   };
   return (
     <div id="stroke-style-selection" className="flex flex-col gap-2">

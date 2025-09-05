@@ -1,21 +1,30 @@
+export enum StrokeWidth {
+  Thin = 1.5,
+  Bold = 2.5,
+  ExtraBold = 4,
+}
+export enum StrokeType {
+  Solid = "solid",
+  Dashed = "dashed",
+  Dotted = "dotted",
+}
+
 export interface AppSetting {
   canvasColorKey: CanvasColorKey;
   strokeColorKey: StrokeColorKey;
   backgroundColorKey: BackgroundColorkey;
+  strokeWidth: StrokeWidth;
+  strokeStyle: StrokeType;
   grid: boolean;
 }
 export const setting: AppSetting = {
   canvasColorKey: "White",
   strokeColorKey: "Stroke_Black",
   backgroundColorKey: "BG_Transparent",
+  strokeWidth: StrokeWidth.Thin,
+  strokeStyle: StrokeType.Solid,
   grid: false,
 };
-
-export enum StrokeType {
-  Solid = "solid",
-  Dashed = "dashed",
-  Dotted = "dotted",
-}
 
 export const STROKE_COLOR_KEYS = [
   "Stroke_Black",
@@ -99,12 +108,6 @@ export const THEME_PALETTE = {
 
 export function getThemeColors(theme: "light" | "dark" | string | undefined) {
   return theme === "dark" ? THEME_PALETTE.dark : THEME_PALETTE.light;
-}
-
-export enum StrokeWidth {
-  Thin = 1.5,
-  Bold = 2.5,
-  ExtraBold = 4,
 }
 
 export enum FontFamily {

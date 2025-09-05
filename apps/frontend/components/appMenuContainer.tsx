@@ -7,14 +7,14 @@ import {
   STROKE_COLOR_KEYS,
   StrokeColorKey,
 } from "@repo/types/drawingConfig";
-import ColorPicker from "./colorPicker";
+
 import PencilMenu from "./pencilSetting";
 
 import StrokeWidthSelector from "./strokewidth";
 import StrokeStyleSelector from "./strokeStyleSelector";
 import { ShapeType, Tool } from "@repo/types/canvasTypes";
 import TextSelector from "./TextSelector";
-import { CanvasEngine } from "@/canvas/CanvasEngine";
+
 import useCanvasStore from "@/app/store/canvas-store";
 import { useTheme } from "next-themes";
 import useDrawStore from "@/app/store/draw-store";
