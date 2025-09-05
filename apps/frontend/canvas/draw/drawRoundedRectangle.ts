@@ -1,8 +1,14 @@
 import { RectangleShape } from "@repo/types/canvasTypes";
-import { getLineDashPattern, getThemeColors } from "@repo/types/drawingConfig";
+import {
+  Edges,
+  getLineDashPattern,
+  getThemeColors,
+  StrokeWidth,
+} from "@repo/types/drawingConfig";
+import { RoughCanvas } from "roughjs/bin/canvas";
 
 export function drawRoundedRectangle(
-  ctx: CanvasRenderingContext2D,
+  roughCanvas: RoughCanvas,
   shape: RectangleShape,
   themeColors: ReturnType<typeof getThemeColors>,
 
@@ -13,23 +19,73 @@ export function drawRoundedRectangle(
 ) {
   const width = shape.endX - shape.startX;
   const height = shape.endY - shape.startY;
-  const radius = boundingBox.isBoundingBox
-    ? width / 3
-    : Math.abs(Math.min(width, height) / 6);
-  ctx.save();
-  ctx.fillStyle = themeColors[shape.style.backgroundColorKey];
-  ctx.strokeStyle = themeColors[shape.style.strokeColorKey];
+  let radius =
+    shape.style.edges == Edges.Rounded
+      ? Math.abs(Math.min(width, height) / 6)
+      : 0;
 
-  ctx.lineWidth = boundingBox.isBoundingBox
-    ? 1 / boundingBox.scale
-    : shape.style.strokeWidth;
-  ctx.setLineDash(
-    getLineDashPattern(shape.style.strokeType, shape.style.strokeWidth)
+  if (boundingBox.isBoundingBox) {
+    shape.style.strokeWidth = 1 / boundingBox.scale;
+    radius = width / 3;
+  }
+
+  const roundedRectPath = createRoundedRectPath(
+    shape.startX,
+    shape.startY,
+    width,
+    height,
+    radius
   );
-  ctx.lineCap = "round";
-  ctx.beginPath();
-  ctx.roundRect(shape.startX, shape.startY, width, height, radius);
-  ctx.fill();
-  ctx.stroke();
-  ctx.restore();
+  const options = {
+    stroke: themeColors[shape.style.strokeColorKey],
+    fill: themeColors[shape.style.backgroundColorKey],
+    strokeWidth: shape.style.strokeWidth,
+    roughness: shape.style.sloppiness,
+    bowing: shape.style.bowing,
+    fillStyle: shape.style.fillStyle,
+    strokeLineDash: getLineDashPattern(
+      shape.style.strokeType,
+      shape.style.strokeWidth
+    ),
+  };
+
+  roughCanvas.path(roundedRectPath, options);
+}
+
+/**
+ * Generates an SVG path data string for a rectangle with rounded corners.
+ * @param x
+ * @param y
+ * @param width
+ * @param height
+ * @param radius
+ * @returns
+ */
+function createRoundedRectPath(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+): string {
+  const r = Math.min(radius, width / 2, height / 2);
+
+  if (r <= 0) {
+    return `M${x},${y} L${x + width},${y} L${x + width},${y + height} L${x},${y + height} Z`;
+  }
+
+  const path = `
+    M${x + r},${y}
+    L${x + width - r},${y}
+    Q${x + width},${y} ${x + width},${y + r}
+    L${x + width},${y + height - r}
+    Q${x + width},${y + height} ${x + width - r},${y + height}
+    L${x + r},${y + height}
+    Q${x},${y + height} ${x},${y + height - r}
+    L${x},${y + r}
+    Q${x},${y} ${x + r},${y}
+    Z
+  `;
+
+  return path.replace(/\s+/g, " ").trim();
 }

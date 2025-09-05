@@ -21,6 +21,8 @@ import { isNeartheShape } from "./utils/geometry";
 import { ShapeManager } from "./ShapeManager";
 import { SocketHandler } from "./SocketHandler";
 import cuid from "cuid";
+import rough from "roughjs/bin/rough";
+import { RoughCanvas } from "roughjs/bin/canvas";
 
 import { drawText } from "./draw/drawText";
 import {
@@ -77,6 +79,7 @@ export class CanvasEngine {
   private roomId: string | null = null;
   private userId: string | null = null;
   private shapeToRemove: Shape[] = [];
+  private roughCanvas: RoughCanvas;
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
@@ -88,6 +91,7 @@ export class CanvasEngine {
     userId: string | null
   ) {
     this.canvas = canvas;
+    this.roughCanvas = rough.canvas(this.canvas);
     this.ctx = ctx;
     this.textArea = textArea;
     this.standalone = standalone;
@@ -104,7 +108,6 @@ export class CanvasEngine {
     this.panX = 0;
     this.panY = 0;
     this.scale = 1;
-
     this.selectedShape = { type: null, index: -1, offsetX: 0, offsetY: 0 };
     this.CurrentShapeStyles = DefaultShapeStyles;
     this.CurrentPencilStyles = DefaultPencilStyles;
@@ -136,6 +139,7 @@ export class CanvasEngine {
       triggerRender: () => this.render(),
       socketHandler: this.sockethandler,
       theme: this.theme,
+      roughCanvas: this.roughCanvas,
     });
 
     this.init();
@@ -150,7 +154,6 @@ export class CanvasEngine {
     this.ChangeCanvasColor(setting.canvasColorKey);
     this.ChangeStrokeWidth(setting.strokeWidth);
     this.ChangeStrokeStyle(setting.strokeStyle);
-
     this.render();
   };
 
@@ -304,7 +307,7 @@ export class CanvasEngine {
         case ShapeType.RECTANGLE:
         case ShapeType.ELLIPSE:
         case ShapeType.DIAMOND:
-          if (s.type == ShapeType.RECTANGLE) drawRoundedRectangle(this.ctx, s, themeColors );
+          if (s.type == ShapeType.RECTANGLE) drawRoundedRectangle(this.roughCanvas, s, themeColors );
           if (s.type == ShapeType.ELLIPSE) drawEllipse(this.ctx, s, themeColors);
           if (s.type == ShapeType.DIAMOND) drawDiamond(this.ctx, s,  themeColors);
           break;

@@ -1,3 +1,4 @@
+import { RoughCanvas } from "roughjs/bin/canvas";
 import { drawRoundedRectangle } from "./draw/drawRoundedRectangle";
 import { SocketHandler } from "./SocketHandler";
 import { ResizeHandlers, Shape, ShapeType } from "@repo/types/canvasTypes";
@@ -19,6 +20,7 @@ interface ShapeManagerDependencies {
   triggerRender: () => void;
   socketHandler?: SocketHandler;
   theme: "light" | "dark";
+  roughCanvas: RoughCanvas;
 }
 export class ShapeManager {
   private ctx: CanvasRenderingContext2D;
@@ -40,6 +42,7 @@ export class ShapeManager {
     | null;
   private triggerRender: () => void;
   private socketHandler: SocketHandler | null = null;
+  private roughCanvas: RoughCanvas;
 
   constructor(dependencies: ShapeManagerDependencies) {
     this.ctx = dependencies.ctx;
@@ -50,7 +53,7 @@ export class ShapeManager {
     this.triggerRender = dependencies.triggerRender;
     this.resizeSide = null;
     this.theme = dependencies.theme;
-
+    this.roughCanvas = dependencies.roughCanvas;
     if (dependencies.socketHandler) {
       this.socketHandler = dependencies.socketHandler;
     }
@@ -59,7 +62,6 @@ export class ShapeManager {
   handleShapeMovement = (currentX: number, currentY: number) => {
     const index = this.selectedShape.index;
     const shape = this.existingShapes[index];
-
     const deltaX = currentX - this.selectedShape.offsetX;
     const deltaY = currentY - this.selectedShape.offsetY;
     switch (shape.type) {
@@ -180,7 +182,7 @@ export class ShapeManager {
         this.ctx.strokeRect(minX, minY, maxX - minX, maxY - minY);
 
         drawRoundedRectangle(
-          this.ctx,
+          this.roughCanvas,
           {
             type: ShapeType.RECTANGLE,
             startX: minX - width,
@@ -204,7 +206,7 @@ export class ShapeManager {
         };
         this.resizeHandlers.push(rect1);
         drawRoundedRectangle(
-          this.ctx,
+          this.roughCanvas,
           {
             type: ShapeType.RECTANGLE,
             startX: minX - width,
@@ -227,7 +229,7 @@ export class ShapeManager {
         };
         this.resizeHandlers.push(rect2);
         drawRoundedRectangle(
-          this.ctx,
+          this.roughCanvas,
           {
             type: ShapeType.RECTANGLE,
             startX: maxX - width,
@@ -250,7 +252,7 @@ export class ShapeManager {
         };
         this.resizeHandlers.push(rect3);
         drawRoundedRectangle(
-          this.ctx,
+          this.roughCanvas,
           {
             type: ShapeType.RECTANGLE,
             startX: maxX - width,

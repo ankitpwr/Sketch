@@ -8,7 +8,15 @@ export enum StrokeType {
   Dashed = "dashed",
   Dotted = "dotted",
 }
-
+export enum FillStyle {
+  Hachure = "hachure",
+  Solid = "solid",
+  ZigZag = "zigzag",
+  CrossHatch = "cross-hatch",
+  Dots = "dots",
+  Dashed = "dashed",
+  ZigZagLine = "zigzag-line",
+}
 export interface AppSetting {
   canvasColorKey: CanvasColorKey;
   strokeColorKey: StrokeColorKey;
@@ -123,6 +131,17 @@ export enum FontSize {
   Xl = "45px",
 }
 
+export enum Sloppiness {
+  Architect = 0,
+  Artist = 0.8,
+  Cartoonist = 1.5,
+}
+
+export enum Edges {
+  Sharp = 0,
+  Rounded = 1,
+}
+
 export enum StrokeSizePencil {
   Thin = 2,
   Bold = 5,
@@ -141,14 +160,12 @@ export enum Thinning {
 }
 
 export interface TextStyle {
-  // strokeStyle: StrokeColor | string;
   fontsize: FontSize;
   fontfamily: FontFamily;
   strokeColorKey: StrokeColorKey;
   backgroundColorKey: BackgroundColorkey;
 }
 export interface PencilStyles {
-  // StrokeStyle: StrokeColor | string;
   strokeWidth: StrokeSizePencil;
   tapper: Tapper;
   thinning: Thinning;
@@ -157,14 +174,15 @@ export interface PencilStyles {
 }
 export interface ShapeStyles {
   strokeWidth: StrokeWidth;
-
   strokeType: StrokeType;
-
   strokeColorKey: StrokeColorKey;
   backgroundColorKey: BackgroundColorkey;
+  sloppiness: Sloppiness;
+  bowing: number;
+  fillStyle: FillStyle;
+  edges: Edges;
 }
 export const DefaultTextStyle: TextStyle = {
-  // strokeStyle: StrokeColor.PrimaryRed,
   fontsize: FontSize.Medium,
   fontfamily: FontFamily.Normal,
   strokeColorKey: "Stroke_Black",
@@ -172,7 +190,6 @@ export const DefaultTextStyle: TextStyle = {
 };
 
 export const DefaultPencilStyles: PencilStyles = {
-  // StrokeStyle: StrokeColor.PrimaryBlue,
   strokeWidth: StrokeSizePencil.ExtraBold,
   tapper: Tapper.Sharp,
   thinning: Thinning.Medium,
@@ -183,9 +200,12 @@ export const DefaultPencilStyles: PencilStyles = {
 export const DefaultShapeStyles: ShapeStyles = {
   strokeType: StrokeType.Solid,
   strokeWidth: StrokeWidth.Thin,
-
   strokeColorKey: "Stroke_Black",
   backgroundColorKey: "BG_Transparent",
+  sloppiness: Sloppiness.Artist,
+  bowing: 0.5,
+  fillStyle: FillStyle.Hachure,
+  edges: Edges.Rounded,
 };
 
 export const BoundingBorderStyles: ShapeStyles = {
@@ -193,6 +213,10 @@ export const BoundingBorderStyles: ShapeStyles = {
   strokeWidth: StrokeWidth.Thin,
   strokeColorKey: "Stroke_Violet",
   backgroundColorKey: "BG_White",
+  sloppiness: Sloppiness.Architect,
+  bowing: 0.5,
+  fillStyle: FillStyle.Solid,
+  edges: Edges.Rounded,
 };
 
 export function getLineDashPattern(
