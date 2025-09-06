@@ -313,10 +313,10 @@ export class CanvasEngine {
           break;
 
         case ShapeType.LINE:
-          drawLine(this.ctx, s, themeColors);
+          drawLine(this.roughCanvas, s, themeColors);
           break;
         case ShapeType.ARROW:
-          drawArrow(this.ctx, s, themeColors);
+          drawArrow(this.roughCanvas, s, themeColors);
           break;
         case ShapeType.PENCIL:
           drawPencil(this.ctx, s, themeColors);
