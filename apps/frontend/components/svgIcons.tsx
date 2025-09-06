@@ -1237,29 +1237,77 @@ export const NormalSloppines = ({ size }: { size: number }) => {
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 95.98667932436547 50.66677167877083"
-      width="95.98667932436547"
-      height="50.66677167877083"
+      width={size}
+      height={size}
+      className="stroke-black dark:stroke-[#e3e3e8]"
     >
       <metadata></metadata>
       <defs>
         <style className="style-fonts"></style>
       </defs>
-      <rect
-        x="0"
-        y="0"
-        width="95.98667932436547"
-        height="50.66677167877083"
-        fill="#ffffff"
-      ></rect>
-      <g stroke-linecap="round">
+
+      <g strokeLinecap="round">
         <g transform="translate(10 40.66677167877083) rotate(0 35.67773296862924 -15.319680768056628)">
           <path
             d="M0 0 C11.89 -5.11, 59.86 -29.73, 71.36 -30.64 C82.85 -31.55, 69.37 -9.64, 68.98 -5.45 M0 0 C11.89 -5.11, 59.86 -29.73, 71.36 -30.64 C82.85 -31.55, 69.37 -9.64, 68.98 -5.45"
-            stroke="#1e1e1e"
-            stroke-width="2"
+            strokeWidth="2"
             fill="none"
           ></path>
         </g>
+      </g>
+      <mask></mask>
+    </svg>
+  );
+};
+
+export const MediumSloppiness = ({ size }: { size: number }) => {
+  return (
+    <svg
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      width={size}
+      height={size}
+      className="stroke-black dark:stroke-[#e3e3e8]"
+    >
+      <metadata></metadata>
+      <defs>
+        <style className="style-fonts"></style>
+      </defs>
+
+      <g strokeLinecap="round">
+        <path
+          d="M2.5 12.563c1.655-.886 5.9-3.293 8.568-4.355 2.668-1.062.101 2.822 1.32 3.105 1.218.283 5.112-1.814 5.112-1.814m-13.469 2.23c2.963-1.586 6.13-5.62 7.468-4.998 1.338.623-1.153 4.11-.132 5.595 1.02 1.487 6.133-1.43 6.133-1.43"
+          strokeWidth="1"
+          fill="none"
+        ></path>
+      </g>
+      <mask></mask>
+    </svg>
+  );
+};
+
+export const LargeSloppiness = ({ size }: { size: number }) => {
+  return (
+    <svg
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      width={size}
+      height={size}
+      className="stroke-black dark:stroke-[#e3e3e8]"
+    >
+      <metadata></metadata>
+      <defs>
+        <style className="style-fonts"></style>
+      </defs>
+
+      <g strokeLinecap="round">
+        <path
+          d="M2.5 11.936c1.737-.879 8.627-5.346 10.42-5.268 1.795.078-.418 5.138.345 5.736.763.598 3.53-1.789 4.235-2.147M2.929 9.788c1.164-.519 5.47-3.28 6.987-3.114 1.519.165 1 3.827 2.121 4.109 1.122.281 3.839-2.016 4.606-2.42"
+          strokeWidth="1"
+          fill="none"
+        ></path>
       </g>
       <mask></mask>
     </svg>

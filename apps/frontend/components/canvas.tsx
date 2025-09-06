@@ -27,6 +27,7 @@ export default function Canvas() {
     setStrokeWidth,
     setStrokeStyle,
     setFillStyle,
+    setSloppiness,
   } = useDrawStore();
   const { resolvedTheme } = useTheme();
 
@@ -83,6 +84,7 @@ export default function Canvas() {
       setStrokeWidth(parseSketchSetting.strokeWidth);
       setStrokeStyle(parseSketchSetting.strokeStyle);
       setFillStyle(parseSketchSetting.fillStyle);
+      setSloppiness(parseSketchSetting.sloppiness);
     }
 
     const newCanvasEngine = new CanvasEngine(

@@ -18,6 +18,7 @@ interface DrawState {
   strokeWidth: StrokeWidth;
   strokeStyle: StrokeType;
   fillStyle: FillStyle;
+  sloppiness: Sloppiness;
 }
 
 interface DrawStateAction {
@@ -27,6 +28,7 @@ interface DrawStateAction {
   setStrokeWidth: (strokeWidth: StrokeWidth) => void;
   setStrokeStyle: (strokeStyle: StrokeType) => void;
   setFillStyle: (FillStyle: FillStyle) => void;
+  setSloppiness: (sloppiness: Sloppiness) => void;
 }
 
 type DrawStoreType = DrawState & DrawStateAction;
@@ -38,6 +40,7 @@ const DrawStore: StateCreator<DrawStoreType> = (set) => ({
   strokeWidth: StrokeWidth.Thin,
   strokeStyle: StrokeType.Solid,
   fillStyle: FillStyle.Solid,
+  sloppiness: Sloppiness.Architect,
 
   setCanvasColorKey: (canvasColorKey: CanvasColorKey) => {
     setting.canvasColorKey = canvasColorKey;
@@ -72,6 +75,12 @@ const DrawStore: StateCreator<DrawStoreType> = (set) => ({
   setFillStyle: (fillStyle: FillStyle) => {
     setting.fillStyle = fillStyle;
     set({ fillStyle: fillStyle });
+    localStorage.setItem("sketch-setting", JSON.stringify(setting));
+  },
+
+  setSloppiness: (sloppiness: Sloppiness) => {
+    setting.sloppiness = sloppiness;
+    set({ sloppiness: sloppiness });
     localStorage.setItem("sketch-setting", JSON.stringify(setting));
   },
 });

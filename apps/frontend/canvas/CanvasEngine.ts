@@ -41,6 +41,7 @@ import {
   StrokeWidth,
   StrokeType,
   FillStyle,
+  Sloppiness,
 } from "@repo/types/drawingConfig";
 
 export class CanvasEngine {
@@ -223,6 +224,10 @@ export class CanvasEngine {
 
   ChangeFillStyle = (fillStyle: FillStyle) => {
     this.CurrentShapeStyles.fillStyle = fillStyle;
+  };
+
+  ChangeSloppliness = (sloppiness: Sloppiness) => {
+    this.CurrentShapeStyles.sloppiness = sloppiness;
   };
 
   ChangeGrid = (grid: boolean) => {

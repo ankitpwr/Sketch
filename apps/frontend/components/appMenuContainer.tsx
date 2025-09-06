@@ -4,6 +4,7 @@ import {
   BackgroundColorkey,
   BG_COLOR_KEYS,
   getThemeColors,
+  Sloppiness,
   STROKE_COLOR_KEYS,
   StrokeColorKey,
 } from "@repo/types/drawingConfig";
@@ -20,6 +21,7 @@ import { useTheme } from "next-themes";
 import useDrawStore from "@/app/store/draw-store";
 import FillStyle from "./fillStyle";
 import FillStyleSetting from "./fillStyle";
+import SloppinessSelect from "./sloppinessSelect";
 
 export default function AppMenuContainer() {
   const { currentTool, canvasEngine } = useCanvasStore();
@@ -185,6 +187,9 @@ export default function AppMenuContainer() {
 
       {currentTool != ShapeType.PENCIL && currentTool != ShapeType.TEXT && (
         <StrokeStyleSelector />
+      )}
+      {currentTool != ShapeType.TEXT && currentTool != ShapeType.PENCIL && (
+        <SloppinessSelect />
       )}
 
       {currentTool == ShapeType.PENCIL && <PencilMenu />}

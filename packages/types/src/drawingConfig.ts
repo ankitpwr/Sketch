@@ -34,6 +34,7 @@ export interface AppSetting {
   strokeStyle: StrokeType;
   grid: boolean;
   fillStyle: FillStyle;
+  sloppiness: Sloppiness;
 }
 export const setting: AppSetting = {
   canvasColorKey: "White",
@@ -43,6 +44,7 @@ export const setting: AppSetting = {
   strokeStyle: StrokeType.Solid,
   grid: false,
   fillStyle: FillStyle.Solid,
+  sloppiness: Sloppiness.Architect,
 };
 
 export const STROKE_COLOR_KEYS = [
