@@ -23,6 +23,8 @@ export function drawEllipse(
       shape.style.strokeType,
       shape.style.strokeWidth
     ),
+    seed: shape.seed,
+    hachureGap: 3 * shape.style.strokeWidth,
   };
 
   roughCanvas.ellipse(centerX, centerY, width, height, options);

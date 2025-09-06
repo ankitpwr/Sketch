@@ -36,6 +36,7 @@ interface BoundedShape extends BaseShape {
   endX: number;
   endY: number;
   style: ShapeStyles;
+  seed: number;
 }
 export type RectangleShape = BoundedShape & { type: ShapeType.RECTANGLE };
 export type EllipseShape = BoundedShape & { type: ShapeType.ELLIPSE };

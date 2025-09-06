@@ -18,6 +18,7 @@ export function drawArrow(
       shape.style.strokeType,
       shape.style.strokeWidth
     ),
+    seed: shape.seed,
   };
 
   const dx = shape.endX - shape.startX;

@@ -80,6 +80,7 @@ export class CanvasEngine {
   private userId: string | null = null;
   private shapeToRemove: Shape[] = [];
   private roughCanvas: RoughCanvas;
+  private seed: number = 0;
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
@@ -420,6 +421,7 @@ export class CanvasEngine {
     this.mouseDown = true;
     this.startX = this.getCoordinates(e)[0];
     this.startY = this.getCoordinates(e)[1];
+    this.seed = Math.floor(Math.random() * 1_000_000);
 
     switch (this.currentTool) {
       case ShapeType.TEXT:
@@ -549,6 +551,7 @@ export class CanvasEngine {
     ) {
       const currentShape = this.currentTool;
       let tempShape: Shape;
+
       if (currentShape == ShapeType.PENCIL) {
         if (this.points.length == 0)
           this.points.push([this.startX, this.startY]);
@@ -572,6 +575,7 @@ export class CanvasEngine {
           endX: currentX,
           endY: currentY,
           style: { ...this.CurrentShapeStyles },
+          seed: this.seed,
         };
         if (this.startX == currentX || this.startY == currentY) return;
       } else {
@@ -583,6 +587,7 @@ export class CanvasEngine {
           endX: Math.max(this.startX, currentX),
           endY: Math.max(this.startY, currentY),
           style: { ...this.CurrentShapeStyles },
+          seed: this.seed,
         };
         if (this.startX == currentX || this.startY == currentY) return;
       }
@@ -626,6 +631,7 @@ export class CanvasEngine {
         break;
       case Action.DRAWING:
         const currentShape = this.currentTool;
+
         if (!(currentShape in ShapeType)) break;
         if (currentShape == ShapeType.PENCIL) {
           if (this.points.length == 0)
@@ -647,6 +653,7 @@ export class CanvasEngine {
             endX: currentX,
             endY: currentY,
             style: { ...this.CurrentShapeStyles },
+            seed: this.seed,
           };
           this.previewShape = tempShape;
         } else {
@@ -657,6 +664,7 @@ export class CanvasEngine {
             endX: Math.max(this.startX, currentX),
             endY: Math.max(this.startY, currentY),
             style: { ...this.CurrentShapeStyles },
+            seed: this.seed,
           };
           //@ts-ignore
           this.previewShape = tempShape;

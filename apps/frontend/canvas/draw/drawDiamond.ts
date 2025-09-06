@@ -33,6 +33,8 @@ export function drawDiamond(
       shape.style.strokeType,
       shape.style.strokeWidth
     ),
+    seed: shape.seed,
+    hachureGap: 3 * shape.style.strokeWidth,
   };
 
   if ((shape.style.edges = Edges.Rounded)) {

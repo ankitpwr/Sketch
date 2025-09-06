@@ -17,6 +17,7 @@ export function drawLine(
       shape.style.strokeType,
       shape.style.strokeWidth
     ),
+    seed: shape.seed,
   };
 
   roughCanvas.linearPath(

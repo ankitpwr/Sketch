@@ -47,6 +47,8 @@ export function drawRoundedRectangle(
       shape.style.strokeType,
       shape.style.strokeWidth
     ),
+    seed: shape.seed,
+    hachureGap: 3 * shape.style.strokeWidth,
   };
 
   roughCanvas.path(roundedRectPath, options);
