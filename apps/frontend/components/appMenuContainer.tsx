@@ -18,6 +18,8 @@ import TextSelector from "./TextSelector";
 import useCanvasStore from "@/app/store/canvas-store";
 import { useTheme } from "next-themes";
 import useDrawStore from "@/app/store/draw-store";
+import FillStyle from "./fillStyle";
+import FillStyleSetting from "./fillStyle";
 
 export default function AppMenuContainer() {
   const { currentTool, canvasEngine } = useCanvasStore();
@@ -172,6 +174,10 @@ export default function AppMenuContainer() {
           )} */}
         </div>
       </div>
+
+      {(currentTool == ShapeType.RECTANGLE ||
+        currentTool == ShapeType.DIAMOND ||
+        currentTool == ShapeType.ELLIPSE) && <FillStyleSetting />}
 
       {currentTool != ShapeType.PENCIL && currentTool != ShapeType.TEXT && (
         <StrokeWidthSelector />

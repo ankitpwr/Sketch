@@ -26,6 +26,7 @@ export default function Canvas() {
     setStrokeColorKey,
     setStrokeWidth,
     setStrokeStyle,
+    setFillStyle,
   } = useDrawStore();
   const { resolvedTheme } = useTheme();
 
@@ -81,6 +82,7 @@ export default function Canvas() {
       setStrokeColorKey(parseSketchSetting.strokeColorKey);
       setStrokeWidth(parseSketchSetting.strokeWidth);
       setStrokeStyle(parseSketchSetting.strokeStyle);
+      setFillStyle(parseSketchSetting.fillStyle);
     }
 
     const newCanvasEngine = new CanvasEngine(

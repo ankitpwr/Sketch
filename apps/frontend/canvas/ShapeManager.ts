@@ -190,8 +190,10 @@ export class ShapeManager {
             endX: minX + width,
             endY: minY + width,
             style: BoundingBorderStyles,
+            seed: 1,
           },
           themeColors,
+
           { isBoundingBox: true, scale: this.scale }
         );
 
@@ -203,6 +205,7 @@ export class ShapeManager {
           endX: minX + width,
           endY: minY + width,
           style: BoundingBorderStyles,
+          seed: 1,
         };
         this.resizeHandlers.push(rect1);
         drawRoundedRectangle(
@@ -214,6 +217,7 @@ export class ShapeManager {
             endX: minX + width,
             endY: maxY + width,
             style: BoundingBorderStyles,
+            seed: 1,
           },
           themeColors,
           { isBoundingBox: true, scale: this.scale }
@@ -226,6 +230,7 @@ export class ShapeManager {
           endX: minX + width,
           endY: maxY + width,
           style: BoundingBorderStyles,
+          seed: 1,
         };
         this.resizeHandlers.push(rect2);
         drawRoundedRectangle(
@@ -237,6 +242,7 @@ export class ShapeManager {
             endX: maxX + width,
             endY: maxY + width,
             style: BoundingBorderStyles,
+            seed: 1,
           },
           themeColors,
           { isBoundingBox: true, scale: this.scale }
@@ -249,6 +255,7 @@ export class ShapeManager {
           endX: maxX + width,
           endY: maxY + width,
           style: BoundingBorderStyles,
+          seed: 1,
         };
         this.resizeHandlers.push(rect3);
         drawRoundedRectangle(
@@ -260,6 +267,7 @@ export class ShapeManager {
             endX: maxX + width,
             endY: minY + width,
             style: BoundingBorderStyles,
+            seed: 1,
           },
           themeColors,
           { isBoundingBox: true, scale: this.scale }
@@ -272,6 +280,7 @@ export class ShapeManager {
           endX: maxX + width,
           endY: minY + width,
           style: BoundingBorderStyles,
+          seed: 1,
         };
         this.resizeHandlers.push(rect4);
         break;

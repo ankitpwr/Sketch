@@ -8,14 +8,23 @@ export enum StrokeType {
   Dashed = "dashed",
   Dotted = "dotted",
 }
+export enum Sloppiness {
+  Architect = 0,
+  Artist = 0.8,
+  Cartoonist = 1.5,
+}
+
+export enum Edges {
+  Sharp = 0,
+  Rounded = 1,
+}
 export enum FillStyle {
   Hachure = "hachure",
   Solid = "solid",
-  ZigZag = "zigzag",
   CrossHatch = "cross-hatch",
-  Dots = "dots",
-  Dashed = "dashed",
   ZigZagLine = "zigzag-line",
+  // Dots = "dots",
+  // Dashed = "dashed",
 }
 export interface AppSetting {
   canvasColorKey: CanvasColorKey;
@@ -24,6 +33,7 @@ export interface AppSetting {
   strokeWidth: StrokeWidth;
   strokeStyle: StrokeType;
   grid: boolean;
+  fillStyle: FillStyle;
 }
 export const setting: AppSetting = {
   canvasColorKey: "White",
@@ -32,6 +42,7 @@ export const setting: AppSetting = {
   strokeWidth: StrokeWidth.Thin,
   strokeStyle: StrokeType.Solid,
   grid: false,
+  fillStyle: FillStyle.Solid,
 };
 
 export const STROKE_COLOR_KEYS = [
@@ -131,17 +142,6 @@ export enum FontSize {
   Xl = "45px",
 }
 
-export enum Sloppiness {
-  Architect = 0,
-  Artist = 0.8,
-  Cartoonist = 1.5,
-}
-
-export enum Edges {
-  Sharp = 0,
-  Rounded = 1,
-}
-
 export enum StrokeSizePencil {
   Thin = 2,
   Bold = 5,
@@ -202,9 +202,9 @@ export const DefaultShapeStyles: ShapeStyles = {
   strokeWidth: StrokeWidth.Thin,
   strokeColorKey: "Stroke_Black",
   backgroundColorKey: "BG_Transparent",
-  sloppiness: Sloppiness.Artist,
+  sloppiness: Sloppiness.Architect,
   bowing: 0.85,
-  fillStyle: FillStyle.Hachure,
+  fillStyle: FillStyle.Solid,
   edges: Edges.Rounded,
 };
 

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Stroke from "./stroke";
 import { BoldLineIcon, ExtraBold, ThinLineIcon } from "./svgIcons";
 
-import { CanvasEngine } from "@/canvas/CanvasEngine";
 import { StrokeWidth } from "@repo/types/drawingConfig";
 import useCanvasStore from "@/app/store/canvas-store";
 import useDrawStore from "@/app/store/draw-store";

@@ -40,6 +40,7 @@ import {
   setting,
   StrokeWidth,
   StrokeType,
+  FillStyle,
 } from "@repo/types/drawingConfig";
 
 export class CanvasEngine {
@@ -155,6 +156,7 @@ export class CanvasEngine {
     this.ChangeCanvasColor(setting.canvasColorKey);
     this.ChangeStrokeWidth(setting.strokeWidth);
     this.ChangeStrokeStyle(setting.strokeStyle);
+    this.ChangeFillStyle(setting.fillStyle);
     this.render();
   };
 
@@ -217,6 +219,10 @@ export class CanvasEngine {
   };
   ChangeStrokeStyle = (strokeType: StrokeType) => {
     this.CurrentShapeStyles.strokeType = strokeType;
+  };
+
+  ChangeFillStyle = (fillStyle: FillStyle) => {
+    this.CurrentShapeStyles.fillStyle = fillStyle;
   };
 
   ChangeGrid = (grid: boolean) => {
