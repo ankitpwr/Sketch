@@ -52,15 +52,6 @@ export function drawRoundedRectangle(
   roughCanvas.path(roundedRectPath, options);
 }
 
-/**
- * Generates an SVG path data string for a rectangle with rounded corners.
- * @param x
- * @param y
- * @param width
- * @param height
- * @param radius
- * @returns
- */
 function createRoundedRectPath(
   x: number,
   y: number,

@@ -308,8 +308,8 @@ export class CanvasEngine {
         case ShapeType.ELLIPSE:
         case ShapeType.DIAMOND:
           if (s.type == ShapeType.RECTANGLE) drawRoundedRectangle(this.roughCanvas, s, themeColors );
-          if (s.type == ShapeType.ELLIPSE) drawEllipse(this.ctx, s, themeColors);
-          if (s.type == ShapeType.DIAMOND) drawDiamond(this.ctx, s,  themeColors);
+          if (s.type == ShapeType.ELLIPSE) drawEllipse(this.roughCanvas, s, themeColors);
+          if (s.type == ShapeType.DIAMOND) drawDiamond(this.roughCanvas, s,  themeColors);
           break;
 
         case ShapeType.LINE:

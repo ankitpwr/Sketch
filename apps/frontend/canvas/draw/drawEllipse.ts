@@ -1,8 +1,9 @@
 import { EllipseShape } from "@repo/types/canvasTypes";
 import { getLineDashPattern, getThemeColors } from "@repo/types/drawingConfig";
+import { RoughCanvas } from "roughjs/bin/canvas";
 
 export function drawEllipse(
-  ctx: CanvasRenderingContext2D,
+  roughCanvas: RoughCanvas,
   shape: EllipseShape,
   themeColors: ReturnType<typeof getThemeColors>
 ) {
@@ -10,18 +11,19 @@ export function drawEllipse(
   const height = Math.abs(shape.endY - shape.startY);
   const centerX = (shape.startX + shape.endX) / 2;
   const centerY = (shape.startY + shape.endY) / 2;
-  ctx.save();
-  ctx.fillStyle = themeColors[shape.style.backgroundColorKey];
-  ctx.strokeStyle = themeColors[shape.style.strokeColorKey];
-  ctx.lineWidth = shape.style.strokeWidth;
-  ctx.setLineDash(
-    getLineDashPattern(shape.style.strokeType, shape.style.strokeWidth)
-  );
-  ctx.lineCap = "round";
-  ctx.beginPath();
-  ctx.ellipse(centerX, centerY, width / 2, height / 2, 0, 0, 2 * Math.PI);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  ctx.restore();
+
+  const options = {
+    stroke: themeColors[shape.style.strokeColorKey],
+    fill: themeColors[shape.style.backgroundColorKey],
+    strokeWidth: shape.style.strokeWidth,
+    roughness: shape.style.sloppiness,
+    bowing: shape.style.bowing,
+    fillStyle: shape.style.fillStyle,
+    strokeLineDash: getLineDashPattern(
+      shape.style.strokeType,
+      shape.style.strokeWidth
+    ),
+  };
+
+  roughCanvas.ellipse(centerX, centerY, width, height, options);
 }

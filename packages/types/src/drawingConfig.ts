@@ -202,7 +202,7 @@ export const DefaultShapeStyles: ShapeStyles = {
   strokeWidth: StrokeWidth.Thin,
   strokeColorKey: "Stroke_Black",
   backgroundColorKey: "BG_Transparent",
-  sloppiness: Sloppiness.Artist,
+  sloppiness: Sloppiness.Architect,
   bowing: 0.5,
   fillStyle: FillStyle.Hachure,
   edges: Edges.Rounded,
