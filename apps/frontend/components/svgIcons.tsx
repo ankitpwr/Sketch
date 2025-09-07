@@ -1313,3 +1313,61 @@ export const LargeSloppiness = ({ size }: { size: number }) => {
     </svg>
   );
 };
+
+export const RoundEdges = ({ size }: { size: number }) => {
+  return (
+    <svg
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 86.46210137348135 75.4518073769209"
+      width={size}
+      height={size}
+      className="stroke-black dark:stroke-[#e3e3e8]"
+    >
+      <metadata></metadata>
+      <defs>
+        <style className="style-fonts"></style>
+      </defs>
+
+      <g
+        strokeLinecap="round"
+        transform="translate(10 10) rotate(0 33.23105068674067 27.72590368846045)"
+      >
+        <path
+          d="M13.86 0 C24.93 0, 35.99 0, 52.6 0 M13.86 0 C21.82 0, 29.78 0, 52.6 0 M52.6 0 C61.84 0, 66.46 4.62, 66.46 13.86 M52.6 0 C61.84 0, 66.46 4.62, 66.46 13.86 M66.46 13.86 C66.46 24.82, 66.46 35.77, 66.46 41.59 M66.46 13.86 C66.46 20.54, 66.46 27.22, 66.46 41.59 M66.46 41.59 C66.46 50.83, 61.84 55.45, 52.6 55.45 M66.46 41.59 C66.46 50.83, 61.84 55.45, 52.6 55.45 M52.6 55.45 C44.11 55.45, 35.62 55.45, 13.86 55.45 M52.6 55.45 C39.47 55.45, 26.35 55.45, 13.86 55.45 M13.86 55.45 C4.62 55.45, 0 50.83, 0 41.59 M13.86 55.45 C4.62 55.45, 0 50.83, 0 41.59 M0 41.59 C0 34.86, 0 28.13, 0 13.86 M0 41.59 C0 31.88, 0 22.18, 0 13.86 M0 13.86 C0 4.62, 4.62 0, 13.86 0 M0 13.86 C0 4.62, 4.62 0, 13.86 0"
+          strokeWidth="4"
+          fill="none"
+        ></path>
+      </g>
+    </svg>
+  );
+};
+
+export const SharpEdges = ({ size }: { size: number }) => {
+  return (
+    <svg
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 86.46210137348135 75.4518073769209"
+      width={size}
+      height={size}
+      className="stroke-black dark:stroke-[#e3e3e8]"
+    >
+      <metadata></metadata>
+      <defs>
+        <style className="style-fonts"></style>
+      </defs>
+
+      <g
+        strokeLinecap="round"
+        transform="translate(10 10) rotate(0 33.23105068674067 27.72590368846045)"
+      >
+        <path
+          d="M0 0 C21.25 0, 42.5 0, 66.46 0 M0 0 C16.11 0, 32.22 0, 66.46 0 M66.46 0 C66.46 19.07, 66.46 38.13, 66.46 55.45 M66.46 0 C66.46 20.64, 66.46 41.28, 66.46 55.45 M66.46 55.45 C41.34 55.45, 16.21 55.45, 0 55.45 M66.46 55.45 C49.97 55.45, 33.48 55.45, 0 55.45 M0 55.45 C0 34.52, 0 13.59, 0 0 M0 55.45 C0 41.48, 0 27.5, 0 0"
+          strokeWidth="2"
+          fill="none"
+        ></path>
+      </g>
+    </svg>
+  );
+};

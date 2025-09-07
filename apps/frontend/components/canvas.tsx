@@ -28,6 +28,7 @@ export default function Canvas() {
     setStrokeStyle,
     setFillStyle,
     setSloppiness,
+    setEdges,
   } = useDrawStore();
   const { resolvedTheme } = useTheme();
 
@@ -85,6 +86,8 @@ export default function Canvas() {
       setStrokeStyle(parseSketchSetting.strokeStyle);
       setFillStyle(parseSketchSetting.fillStyle);
       setSloppiness(parseSketchSetting.sloppiness);
+      setEdges(parseSketchSetting.edges);
+      console.log(`in localStorage the edge is ${parseSketchSetting.edges}`);
     }
 
     const newCanvasEngine = new CanvasEngine(

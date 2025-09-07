@@ -23,6 +23,7 @@ export function drawRoundedRectangle(
     shape.style.edges == Edges.Rounded
       ? Math.abs(Math.min(width, height) / 6)
       : 0;
+  console.log(`edges in rounded-rectangle ${shape.style.edges}`);
 
   if (boundingBox.isBoundingBox) {
     shape.style.strokeWidth = 1 / boundingBox.scale;

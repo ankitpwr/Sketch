@@ -36,8 +36,11 @@ export function drawDiamond(
     seed: shape.seed,
     hachureGap: 3 * shape.style.strokeWidth,
   };
+  console.log(`in edge is :- `);
+  console.log(shape.style.edges);
 
   if ((shape.style.edges = Edges.Rounded)) {
+    console.log(`rounded edges`);
     const roundedDiamondPath = createRoundedDiamondPath(
       shape.startX,
       shape.startY,

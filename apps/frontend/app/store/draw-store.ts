@@ -2,6 +2,7 @@ import {
   AppSetting,
   BackgroundColorkey,
   CanvasColorKey,
+  Edges,
   FillStyle,
   setting,
   Sloppiness,
@@ -19,6 +20,7 @@ interface DrawState {
   strokeStyle: StrokeType;
   fillStyle: FillStyle;
   sloppiness: Sloppiness;
+  edges: Edges;
 }
 
 interface DrawStateAction {
@@ -29,6 +31,7 @@ interface DrawStateAction {
   setStrokeStyle: (strokeStyle: StrokeType) => void;
   setFillStyle: (FillStyle: FillStyle) => void;
   setSloppiness: (sloppiness: Sloppiness) => void;
+  setEdges: (edges: Edges) => void;
 }
 
 type DrawStoreType = DrawState & DrawStateAction;
@@ -41,6 +44,7 @@ const DrawStore: StateCreator<DrawStoreType> = (set) => ({
   strokeStyle: StrokeType.Solid,
   fillStyle: FillStyle.Solid,
   sloppiness: Sloppiness.Architect,
+  edges: Edges.Rounded,
 
   setCanvasColorKey: (canvasColorKey: CanvasColorKey) => {
     setting.canvasColorKey = canvasColorKey;
@@ -81,6 +85,12 @@ const DrawStore: StateCreator<DrawStoreType> = (set) => ({
   setSloppiness: (sloppiness: Sloppiness) => {
     setting.sloppiness = sloppiness;
     set({ sloppiness: sloppiness });
+    localStorage.setItem("sketch-setting", JSON.stringify(setting));
+  },
+
+  setEdges: (edges: Edges) => {
+    setting.edges = edges;
+    set({ edges: edges });
     localStorage.setItem("sketch-setting", JSON.stringify(setting));
   },
 });

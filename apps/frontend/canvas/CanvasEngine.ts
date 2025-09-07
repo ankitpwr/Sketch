@@ -42,6 +42,7 @@ import {
   StrokeType,
   FillStyle,
   Sloppiness,
+  Edges,
 } from "@repo/types/drawingConfig";
 
 export class CanvasEngine {
@@ -158,6 +159,8 @@ export class CanvasEngine {
     this.ChangeStrokeWidth(setting.strokeWidth);
     this.ChangeStrokeStyle(setting.strokeStyle);
     this.ChangeFillStyle(setting.fillStyle);
+    this.ChangeSloppliness(setting.sloppiness);
+    this.ChangeEdge(setting.edges);
     this.render();
   };
 
@@ -228,6 +231,13 @@ export class CanvasEngine {
 
   ChangeSloppliness = (sloppiness: Sloppiness) => {
     this.CurrentShapeStyles.sloppiness = sloppiness;
+  };
+
+  ChangeEdge = (edges: Edges) => {
+    this.CurrentShapeStyles.edges = edges;
+    console.log(`new edges is ${edges}`);
+    console.log(`new current shape style is`);
+    console.log(this.CurrentShapeStyles.edges);
   };
 
   ChangeGrid = (grid: boolean) => {

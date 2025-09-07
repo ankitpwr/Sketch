@@ -22,6 +22,7 @@ import useDrawStore from "@/app/store/draw-store";
 import FillStyle from "./fillStyle";
 import FillStyleSetting from "./fillStyle";
 import SloppinessSelect from "./sloppinessSelect";
+import EdgeSelector from "./EdgeSelector";
 
 export default function AppMenuContainer() {
   const { currentTool, canvasEngine } = useCanvasStore();
@@ -191,6 +192,9 @@ export default function AppMenuContainer() {
       {currentTool != ShapeType.TEXT && currentTool != ShapeType.PENCIL && (
         <SloppinessSelect />
       )}
+
+      {(currentTool == ShapeType.RECTANGLE ||
+        currentTool == ShapeType.DIAMOND) && <EdgeSelector />}
 
       {currentTool == ShapeType.PENCIL && <PencilMenu />}
 

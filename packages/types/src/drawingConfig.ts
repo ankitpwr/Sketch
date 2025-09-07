@@ -15,8 +15,8 @@ export enum Sloppiness {
 }
 
 export enum Edges {
-  Sharp = 0,
-  Rounded = 1,
+  Sharp = "Sharp",
+  Rounded = "Rounded",
 }
 export enum FillStyle {
   Hachure = "hachure",
@@ -35,6 +35,7 @@ export interface AppSetting {
   grid: boolean;
   fillStyle: FillStyle;
   sloppiness: Sloppiness;
+  edges: Edges;
 }
 export const setting: AppSetting = {
   canvasColorKey: "White",
@@ -45,6 +46,7 @@ export const setting: AppSetting = {
   grid: false,
   fillStyle: FillStyle.Solid,
   sloppiness: Sloppiness.Architect,
+  edges: Edges.Rounded,
 };
 
 export const STROKE_COLOR_KEYS = [
