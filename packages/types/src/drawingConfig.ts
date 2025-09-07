@@ -10,8 +10,8 @@ export enum StrokeType {
 }
 export enum Sloppiness {
   Architect = 0,
-  Artist = 0.8,
-  Cartoonist = 1.5,
+  Artist = 1,
+  Cartoonist = 2,
 }
 
 export enum Edges {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "./button";
 import {
+  Download,
   Github,
   Grid,
   GridIcon,
@@ -54,8 +55,13 @@ export default function DropDownContainer() {
     setGrid(!grid);
   };
 
-  console.log("grid is drop down is ");
-  console.log(grid);
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.download = "sketch-canvas.png";
+    link.href = canvasEngine!.canvas.toDataURL("image/png");
+    console.log(link);
+    link.click();
+  };
   return (
     <div
       id="drop-down-menu"
@@ -83,6 +89,15 @@ export default function DropDownContainer() {
         <h1 className="text-sm text-gray-900 dark:text-[#dadadf]  ">
           Reset the canvas
         </h1>
+      </Button>
+      <Button
+        onClickhandler={handleDownload}
+        varient={"sidebar"}
+        size={"md"}
+        isActive={false}
+      >
+        <Download size={16} />
+        <h1 className="text-sm text-gray-900 dark:text-[#dadadf]  ">Export</h1>
       </Button>
       <Button
         onClickhandler={handleGrid}
