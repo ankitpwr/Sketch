@@ -825,4 +825,115 @@ export class CanvasEngine {
     const Y = (e.offsetY - this.panY) / this.scale;
     return [X, Y];
   };
+
+  getBoundingBoxOfAllShape = () => {
+    if (this.existingShapes.length == 0) {
+      return {
+        minX: 0,
+        minY: 0,
+        width: this.canvas.width,
+        height: this.canvas.height,
+      };
+    }
+
+    let minX = 0;
+    let minY = 0;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+
+    this.existingShapes.forEach((shape) => {
+      let shapeMinX = Infinity,
+        shapeMinY = Infinity,
+        shapeMaxX = -Infinity,
+        shapeMaxY = -Infinity;
+      if (shape.type === ShapeType.PENCIL) {
+        shape.points.forEach(([px, py]) => {
+          shapeMinX = Math.min(shapeMinX, px);
+          shapeMinY = Math.min(shapeMinY, py);
+          shapeMaxX = Math.max(shapeMaxX, px);
+          shapeMaxY = Math.max(shapeMaxY, py);
+        });
+      } else if (shape.type === ShapeType.TEXT) {
+        shapeMinX = shape.startX;
+        shapeMinY = shape.startY;
+        shapeMaxX = shape.startX + shape.width;
+        shapeMaxY = shape.startY + shape.height;
+      } else {
+        shapeMinX = Math.min(shape.startX, shape.endX);
+        shapeMinY = Math.min(shape.startY, shape.endY);
+        shapeMaxX = Math.max(shape.startX, shape.endX);
+        shapeMaxY = Math.max(shape.startY, shape.endY);
+      }
+
+      minX = Math.min(minX, shapeMinX);
+      minY = Math.min(minY, shapeMinY);
+      maxX = Math.max(maxX, shapeMaxX);
+      maxY = Math.max(maxY, shapeMaxY);
+    });
+
+    const padding = 40;
+    const width = maxX - minX + padding * 2;
+    const height = maxY - minY + padding * 2;
+
+    return { minX: minX - padding, minY: minY - padding, width, height };
+  };
+
+  exportCanvas = () => {
+    const { minX, minY, width, height } = this.getBoundingBoxOfAllShape();
+    const offScreenCanvas = document.createElement("canvas");
+    offScreenCanvas.width = width;
+    offScreenCanvas.height = height;
+
+    const offScreenCtx = offScreenCanvas.getContext("2d");
+    const offScreenRoughCanvas = rough.canvas(offScreenCanvas);
+    const themeColors = getThemeColors(this.theme);
+    offScreenCtx!.fillStyle = this.CanvasColor;
+    offScreenCtx!.fillRect(0, 0, width, height);
+
+    this.existingShapes.forEach((shape) => {
+      const translatedShape = JSON.parse(JSON.stringify(shape));
+      if ("startX" in translatedShape) {
+        translatedShape.startX -= minX;
+        translatedShape.startY -= minY;
+      }
+      if ("endX" in translatedShape) {
+        translatedShape.endX -= minX;
+        translatedShape.endY -= minY;
+      }
+      if (translatedShape.type === ShapeType.PENCIL) {
+        translatedShape.points = translatedShape.points.map(
+          ([px, py]: [number, number]) => [px - minX, py - minY]
+        );
+      }
+
+      switch (translatedShape.type) {
+        case ShapeType.RECTANGLE:
+          drawRoundedRectangle(
+            offScreenRoughCanvas,
+            translatedShape,
+            themeColors
+          );
+          break;
+        case ShapeType.ELLIPSE:
+          drawEllipse(offScreenRoughCanvas, translatedShape, themeColors);
+          break;
+        case ShapeType.DIAMOND:
+          drawDiamond(offScreenRoughCanvas, translatedShape, themeColors);
+          break;
+        case ShapeType.LINE:
+          drawLine(offScreenRoughCanvas, translatedShape, themeColors);
+          break;
+        case ShapeType.ARROW:
+          drawArrow(offScreenRoughCanvas, translatedShape, themeColors);
+          break;
+        case ShapeType.PENCIL:
+          drawPencil(offScreenCtx!, translatedShape, themeColors);
+          break;
+        case ShapeType.TEXT:
+          drawText(offScreenCtx!, translatedShape, themeColors);
+          break;
+      }
+    });
+    return offScreenCanvas.toDataURL("image/png");
+  };
 }

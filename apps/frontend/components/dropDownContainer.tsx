@@ -56,10 +56,10 @@ export default function DropDownContainer() {
   };
 
   const handleDownload = () => {
+    const dataUrl = canvasEngine!.exportCanvas();
     const link = document.createElement("a");
     link.download = "sketch-canvas.png";
-    link.href = canvasEngine!.canvas.toDataURL("image/png");
-    console.log(link);
+    link.href = dataUrl;
     link.click();
   };
   return (
