@@ -237,9 +237,6 @@ export class CanvasEngine {
 
   ChangeEdge = (edges: Edges) => {
     this.CurrentShapeStyles.edges = edges;
-    console.log(`new edges is ${edges}`);
-    console.log(`new current shape style is`);
-    console.log(this.CurrentShapeStyles.edges);
   };
 
   ChangeGrid = (grid: boolean) => {
@@ -328,6 +325,7 @@ export class CanvasEngine {
     if (this.grid) {
       this.CreateGridPattern();
     }
+    console.log("render called");
 
     const drawShape = (s: Shape) => {
       //prettier-ignore
@@ -556,12 +554,6 @@ export class CanvasEngine {
       this.currentTool == ActionTool.ERASER &&
       this.shapeToRemove.length > 0
     ) {
-      const shapeToKeep = this.existingShapes.filter(
-        (s) => !this.shapeToRemove.some((rem) => rem.id === s.id)
-      );
-      this.existingShapes.length = 0;
-      this.existingShapes.push(...shapeToKeep);
-      this.render();
       if (!this.standalone) {
         this.sockethandler?.eraseShape(this.shapeToRemove);
       } else {
@@ -652,8 +644,17 @@ export class CanvasEngine {
             break;
           }
         }
+
         if (topShape && !this.shapeToRemove.some((s) => s.id == topShape.id)) {
           this.shapeToRemove.push(topShape);
+        }
+        if (topShape) {
+          const shapeToKeep = this.existingShapes.filter(
+            (s) => !this.shapeToRemove.some((rem) => rem.id === s.id)
+          );
+          this.existingShapes.length = 0;
+          this.existingShapes.push(...shapeToKeep);
+          this.render();
         }
         break;
       case Action.DRAWING:

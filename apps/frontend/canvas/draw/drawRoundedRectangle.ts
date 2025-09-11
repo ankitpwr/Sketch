@@ -17,13 +17,14 @@ export function drawRoundedRectangle(
     scale: 1,
   }
 ) {
+  console.log(`in rounded rect`);
+  console.log(shape);
   const width = shape.endX - shape.startX;
   const height = shape.endY - shape.startY;
   let radius =
     shape.style.edges == Edges.Rounded
       ? Math.abs(Math.min(width, height) / 6)
       : 0;
-  console.log(`edges in rounded-rectangle ${shape.style.edges}`);
 
   if (boundingBox.isBoundingBox) {
     shape.style.strokeWidth = 1 / boundingBox.scale;
