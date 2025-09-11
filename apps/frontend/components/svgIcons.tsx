@@ -332,20 +332,13 @@ export function FontSmallIcon({
       width={size}
       height={size}
     >
-      <g clipPath="url(#a)">
-        <path
-          d="M14.167 6.667a3.333 3.333 0 0 0-3.334-3.334H9.167a3.333 3.333 0 0 0 0 6.667h1.666a3.333 3.333 0 0 1 0 6.667H9.167a3.333 3.333 0 0 1-3.334-3.334"
-          stroke="currentColor"
-          strokeWidth="1.25"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        ></path>
-      </g>
-      <defs>
-        <clipPath id="a">
-          <path fill="#fff" d="M0 0h20v20H0z"></path>
-        </clipPath>
-      </defs>
+      <path
+        d="M14.167 6.667a3.333 3.333 0 0 0-3.334-3.334H9.167a3.333 3.333 0 0 0 0 6.667h1.666a3.333 3.333 0 0 1 0 6.667H9.167a3.333 3.333 0 0 1-3.334-3.334"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
     </svg>
   );
 }
@@ -371,20 +364,13 @@ export function FontMediumIcon({
       width={size}
       height={size}
     >
-      <g clipPath="url(#a)">
-        <path
-          d="M5 16.667V3.333L10 15l5-11.667v13.334"
-          stroke="currentColor"
-          strokeWidth="1.25"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        ></path>
-      </g>
-      <defs>
-        <clipPath id="a">
-          <path fill="#fff" d="M0 0h20v20H0z"></path>
-        </clipPath>
-      </defs>
+      <path
+        d="M5 16.667V3.333L10 15l5-11.667v13.334"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
     </svg>
   );
 }
@@ -401,7 +387,7 @@ export function FontLargeIcon({
       aria-hidden="true"
       focusable="false"
       role="img"
-      viewBox="0 0 20 20"
+      viewBox="0 0 22 20"
       width={size}
       height={size}
       fill="none"
@@ -409,20 +395,13 @@ export function FontLargeIcon({
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <g clipPath="url(#a)">
-        <path
-          d="M5.833 3.333v13.334h8.334"
-          stroke="currentColor"
-          strokeWidth="1.25"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        ></path>
-      </g>
-      <defs>
-        <clipPath id="a">
-          <path fill="#fff" d="M0 0h20v20H0z"></path>
-        </clipPath>
-      </defs>
+      <path
+        d="M5.833 3.333v13.334h8.334"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
     </svg>
   );
 }
