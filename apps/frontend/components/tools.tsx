@@ -20,6 +20,9 @@ export default function Tools() {
   const handleTool = (tool: Tool) => {
     setTool(tool);
     canvasEngine!.changeTool(tool);
+    if (tool == ActionTool.HAND) canvasEngine!.ChangeCursor("grab");
+    else if (tool == ActionTool.SELECT) canvasEngine!.ChangeCursor("default");
+    else if (tool as ShapeType) canvasEngine!.ChangeCursor("crosshair");
   };
   return (
     <div className="fixed bg-white dark:bg-[#232329] top-5 left-1/2 -translate-x-1/2 px-1 py-1 flex md:gap-2  rounded-lg shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] ">

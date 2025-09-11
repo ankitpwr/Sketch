@@ -10,6 +10,7 @@ import {
   TextShape,
   Tool,
 } from "@repo/types/canvasTypes";
+
 import { drawRoundedRectangle } from "./draw/drawRoundedRectangle";
 import { drawEllipse } from "./draw/drawEllipse";
 import { drawDiamond } from "./draw/drawDiamond";
@@ -196,6 +197,7 @@ export class CanvasEngine {
   changeTool = (tool: Tool) => {
     this.currentTool = tool;
     this.shapeMangager.clearSelectedShape();
+
     this.render();
   };
   handleCanvasResize = () => {
@@ -243,6 +245,10 @@ export class CanvasEngine {
   ChangeGrid = (grid: boolean) => {
     this.grid = grid;
     this.render();
+  };
+
+  ChangeCursor = (cursorType: string) => {
+    this.canvas.style.cursor = cursorType;
   };
 
   public setCanvasTheme = (theme: "light" | "dark") => {
