@@ -1,48 +1,67 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Input from "./input";
 import Button from "./button";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
+import { Ellipsis, LoaderIcon } from "lucide-react";
 
 export default function AuthCard({ isSignin }: { isSignin: boolean }) {
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const nameRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async () => {
+    setLoading(true);
     if (!emailRef.current || !passwordRef.current) return; //  toast error
-    let response;
-    if (isSignin) {
-      response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/signin`,
-        {
-          email: emailRef.current.value,
-          password: passwordRef.current.value,
-        }
-      );
-    } else {
-      if (!nameRef.current) return; //  toast error
-      response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/signup`,
-        {
-          email: emailRef.current.value,
-          password: passwordRef.current.value,
-          name: nameRef.current.value,
-        }
-      );
-    }
+    if (!emailRef.current.value || !passwordRef.current.value)
+      return toast.error("Please fill Email and Password");
 
-    if (response.status != 200) {
-      console.log(`error as ${response.data.error}`);
-      toast.error(response.data.error);
-      return;
-    } else {
-      console.log(`token is ${response.data.tokens}`);
+    let response;
+    try {
+      if (isSignin) {
+        response = await axios.post(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/signin`,
+          {
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
+          }
+        );
+      } else {
+        if (!nameRef.current || !nameRef.current.value)
+          return toast.error("Please Fill Name");
+        response = await axios.post(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/signup`,
+          {
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
+            name: nameRef.current.value,
+          }
+        );
+      }
       localStorage.setItem("token", response.data.token);
       router.push("/");
+    } catch (error) {
+      const axiosError = error as AxiosError<{ error: any }>;
+      console.log(axiosError);
+
+      if (
+        axiosError.response &&
+        axiosError.response.data &&
+        axiosError.response.data.error
+      ) {
+        const errorData = axiosError.response.data.error;
+
+        if (typeof errorData === "string") toast.error(errorData);
+        else if (Array.isArray(errorData) && errorData.length > 0) {
+          toast.error(errorData[0].message);
+        } else toast.error("Error occured");
+      }
     }
+
+    setLoading(false);
   };
   return (
     <div className="flex flex-col items-center md:gap-6 gap-4 bg-[#fef3d3] dark:bg-[#232329]  p-6 md:p-12 rounded-4xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
@@ -60,7 +79,7 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
           <Input refer={nameRef} placeholder="Name" type={"text"} />
         )}
         <Input refer={emailRef} placeholder={"Email"} type={"text"} />
-        <Input refer={passwordRef} placeholder={"Password"} type={"text"} />
+        <Input refer={passwordRef} placeholder={"Password"} type={"password"} />
 
         <Button
           varient={"primary"}
@@ -69,7 +88,13 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
           onClickhandler={handleSubmit}
           styles={`w-full py-6`}
         >
-          {isSignin ? "Sign in" : "Sign up"}
+          {loading ? (
+            <Ellipsis className="animate-pulse w-10 h-10 " />
+          ) : isSignin ? (
+            "Sign in"
+          ) : (
+            "Sign up"
+          )}
         </Button>
       </div>
 

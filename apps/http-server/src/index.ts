@@ -62,13 +62,13 @@ app.post("/signin", async (req, res) => {
         email: req.body.email,
       },
     });
-    if (!user) return res.status(400).json({ error: "Email not found" });
+    if (!user) return res.status(401).json({ error: "Email not found" });
     const verifyPassword = await bcrypt.compare(
       req.body.password,
       user.password
     );
     if (!verifyPassword) {
-      return res.status(400).json({ error: "Incorrect Password" });
+      return res.status(401).json({ error: "Incorrect Password" });
     }
     const payload = { userId: user.id, name: user.name };
     console.log(payload);
