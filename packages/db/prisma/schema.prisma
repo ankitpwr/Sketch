@@ -15,29 +15,41 @@ datasource db {
 }
 
 model User{
-  id String @default(uuid()) @id
-  email String @unique 
-  password String
-  name String
-  joined DateTime @default(now())
-  room Room[]
-  message Shape[]
+  id           String     @default(uuid()) @id
+  email        String     @unique 
+  password     String
+  name         String
+  joined       DateTime   @default(now())
+  room         Room[]
+  message      Shape[]
+  isVerified   Boolean  @default(false)
+  verificationToken   VerificationToken[]
+
+}
+
+model VerificationToken{
+  id          String        @default(cuid())   @id
+  token       String        @unique
+  expiresAt   DateTime
+  userId      String
+  user        User           @relation(fields: [userId], references: [id],  onDelete: Cascade)
+
 }
 
 model Room {
-  id String @default(cuid()) @id
-  createdAt DateTime @default(now())
-  userId String
-  admin User @relation(fields: [userId], references: [id])
-  message Shape[]
+  id          String       @default(cuid()) @id
+  createdAt   DateTime     @default(now())
+  userId      String
+  admin       User         @relation(fields: [userId], references: [id])
+  message     Shape[]
 }
 
 model Shape{
-  id String  @id
-  roomId String
-  room Room @relation(fields: [roomId], references: [id])
-  message String
-  createdAt DateTime @default(now())
-  userId String
-  user User @relation(fields: [userId], references: [id])
+  id         String        @id
+  roomId     String
+  room       Room          @relation(fields: [roomId], references: [id])
+  message    String
+  createdAt  DateTime      @default(now())
+  userId     String
+  user       User          @relation(fields: [userId], references: [id])
 }

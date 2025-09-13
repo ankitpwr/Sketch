@@ -13,38 +13,139 @@ dotenv.config();
 
 app.post("/signup", async (req, res) => {
   try {
-    console.log("ho");
     const parseData = SignUpSchema.safeParse(req.body);
     if (!parseData.success) {
       return res.status(400).json({
         error: parseData.error.issues,
       });
     }
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email: req.body.email },
+    });
+
+    if (existingUser && existingUser.isVerified) {
+      return res.status(409).json({ error: "Email is already in use" });
+    }
+
     //bcrypt for password hashing
     const hashedPassword = await bcrypt.hash(req.body.password, 5);
-    console.log(hashedPassword);
 
-    //db call
-    console.log("before db call");
-    const user = await prisma.user.create({
-      data: {
-        email: req.body.email,
-        password: hashedPassword,
-        name: req.body.name,
+    //update the password and name
+    if (existingUser && !existingUser.isVerified) {
+      const updatedUser = await prisma.user.update({
+        where: { email: req.body.email },
+        data: {
+          name: req.body.name,
+          password: hashedPassword,
+        },
+      });
+
+      //generate and store otp.
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expireAt = new Date(Date.now() + 15 * 60 * 1000);
+      await prisma.verificationToken.create({
+        data: {
+          token: otp,
+          expiresAt: expireAt,
+          userId: updatedUser.id,
+        },
+      });
+
+      //send Email verification code.
+
+      return res.status(200).json({
+        message:
+          "Signup successful. Please check your email for verification code.",
+        email: updatedUser.email,
+      });
+    } else {
+      //db call
+      const user = await prisma.user.create({
+        data: {
+          email: req.body.email,
+          password: hashedPassword,
+          name: req.body.name,
+          isVerified: false,
+        },
+      });
+
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expireAt = new Date(Date.now() + 15 * 60 * 1000);
+      await prisma.verificationToken.create({
+        data: {
+          token: otp,
+          userId: user.id,
+          expiresAt: expireAt,
+        },
+      });
+
+      //send Email verification code.
+
+      return res.status(200).json({
+        message:
+          "Signup successful. Please check your email for verification code.",
+        email: user.email,
+      });
+    }
+  } catch (error) {
+    console.log(`Error Occured`);
+    console.log(error);
+    return res.status(500).json({
+      error: `Internal server error`,
+    });
+  }
+});
+
+app.post("/verify-email", async (req, res) => {
+  try {
+    const email = req.body.email;
+    const otp = req.body.otp;
+    if (!email || !otp) {
+      return res.status(400).json({ error: "Email and OTP are required" });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email: email } });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    //check if otp is correct or not.
+    const verificationToken = await prisma.verificationToken.findFirst({
+      where: {
+        userId: user.id,
+        token: otp,
       },
     });
+
+    if (!verificationToken) {
+      return res.status(400).json({ error: "Invalid OTP" });
+    }
+    if (new Date() > verificationToken.expiresAt) {
+      return res.status(400).json({ error: "OTP has expired" });
+    }
+
+    //update verify status
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        isVerified: true,
+      },
+    });
+
     //jwt token generation.
     const payload = { userId: user.id, name: user.name };
     const token = jwt.sign(payload, process.env.JWT_SECRET!);
+
     return res.status(200).json({
-      message: "You have signed in successfully",
+      message: " Email verified",
       token: token,
     });
   } catch (error) {
     console.log(`Error Occured`);
     console.log(error);
     return res.status(500).json({
-      error: `Internal server error`,
+      error: " Internal server error",
     });
   }
 });
@@ -63,6 +164,10 @@ app.post("/signin", async (req, res) => {
       },
     });
     if (!user) return res.status(401).json({ error: "Email not found" });
+    if (!user.isVerified)
+      return res
+        .status(400)
+        .json({ error: "Please verify your email before signin." });
     const verifyPassword = await bcrypt.compare(
       req.body.password,
       user.password
