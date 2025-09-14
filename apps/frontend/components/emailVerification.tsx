@@ -69,7 +69,7 @@ export default function EmailVerification() {
               type="text"
               onChange={(e) => handleChange(index, e)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className="w-12 h-14 border-1 rounded-xl bg-[#fcf6e2] dark:bg-[#3c3c45] flex text-center "
+              className="w-14 h-14 border-1 rounded-2xl bg-[#fcf6e2] dark:bg-[#3c3c45] flex text-center border-[#767680] focus:outline-none text-[#1b1b1f]  dark:border-[#46464f] dark:text-white focus:border-[#6965db]"
             ></input>
           );
         })}
@@ -79,6 +79,7 @@ export default function EmailVerification() {
         varient={"primary"}
         size="md"
         isActive={false}
+        styles="w-46 h-14 text-lg"
       >
         {" "}
         <p>Verify</p>{" "}
