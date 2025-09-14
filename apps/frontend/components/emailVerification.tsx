@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 export default function EmailVerification() {
   const { verifyEmailBox, setVerifyEmailBox } = useMenuStore();
-  const [otpValue, setOtpValue] = useState(new Array(6).fill(""));
+  const [otpValue, setOtpValue] = useState(new Array(4).fill(""));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [finalOtp, setFinalOtp] = useState<string | null>(null);
 
@@ -48,7 +48,7 @@ export default function EmailVerification() {
   };
 
   return (
-    <div className="flex flex-col items-center md:gap-8 gap-4 z-22 bg-[#fef3d3] dark:bg-[#232329]  p-6 md:p-12 rounded-4xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
+    <div className="flex flex-col items-center md:gap-8 gap-4 z-22  bg-[#fef3d3] dark:bg-[#232329]  p-6 md:p-12 rounded-4xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
       <div className="flex flex-col gap-1 justify-center items-center">
         <h1 className="text-2xl font-nunito font-extrabold text-[#343a40] dark:text-[#ced4da] ">
           Enter OTP

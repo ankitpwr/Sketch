@@ -25,6 +25,7 @@ export const sendEmail = async (email: string, otp: string, name: string) => {
       text: "Verify your Email",
       html: template,
     });
-    console.log(info);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };

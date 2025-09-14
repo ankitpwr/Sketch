@@ -43,7 +43,7 @@ app.post("/signup", async (req, res) => {
       });
 
       //generate and store otp.
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const otp = Math.floor(10000 + Math.random() * 9000).toString();
       const expireAt = new Date(Date.now() + 15 * 60 * 1000);
       await prisma.verificationToken.create({
         data: {
@@ -73,7 +73,7 @@ app.post("/signup", async (req, res) => {
       });
 
       //generate and store otp.
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const otp = Math.floor(10000 + Math.random() * 9000).toString();
       const expireAt = new Date(Date.now() + 15 * 60 * 1000);
       await prisma.verificationToken.create({
         data: {
