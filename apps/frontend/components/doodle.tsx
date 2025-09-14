@@ -33,7 +33,7 @@ export default function Doodles() {
         <FunnyFaceSVG size={70} color={"#716ddd"} />
       </div>
 
-      <div className="fixed top-8 left-34">
+      <div className="hidden md:fixed top-8 left-34">
         <ArrowSVG size={32} color={"#FF9B00"} />
       </div>
       <div

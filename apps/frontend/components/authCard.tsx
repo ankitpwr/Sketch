@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { Ellipsis, LoaderIcon } from "lucide-react";
+import useMenuStore from "@/app/store/menu-store";
 
 export default function AuthCard({ isSignin }: { isSignin: boolean }) {
   const emailRef = useRef<HTMLInputElement | null>(null);
@@ -13,6 +14,7 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
   const nameRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { setVerifyEmailBox } = useMenuStore();
   const handleSubmit = async () => {
     setLoading(true);
     if (!emailRef.current || !passwordRef.current) return; //  toast error
@@ -41,8 +43,10 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
           }
         );
       }
-      localStorage.setItem("token", response.data.token);
-      router.push("/");
+      // localStorage.setItem("token", response.data.token);
+      // router.push("/");
+      toast.success(response.data.message);
+      setVerifyEmailBox(true);
     } catch (error) {
       const axiosError = error as AxiosError<{ error: any }>;
       console.log(axiosError);
@@ -64,7 +68,7 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
     setLoading(false);
   };
   return (
-    <div className="flex flex-col items-center md:gap-6 gap-4 bg-[#fef3d3] dark:bg-[#232329]  p-6 md:p-12 rounded-4xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
+    <div className="flex flex-col items-center md:gap-6 gap-4 z-22 bg-[#fef3d3] dark:bg-[#232329]  p-6 md:p-12 rounded-4xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
       <div className="flex flex-col items-center gap-1">
         {" "}
         <h1 className="text-2xl font-nunito font-extrabold text-[#343a40] dark:text-[#ced4da] ">

@@ -6,6 +6,7 @@ import * as dotenv from "dotenv";
 import { SignUpSchema, SignInSchema } from "@repo/types/zodSchema";
 import { prisma } from "@repo/db/prisma";
 import { authMiddleware, CustomRequest } from "./middleware";
+import { sendEmail } from "./email";
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -53,6 +54,7 @@ app.post("/signup", async (req, res) => {
       });
 
       //send Email verification code.
+      sendEmail(updatedUser.email, otp, updatedUser.name);
 
       return res.status(200).json({
         message:
@@ -70,6 +72,7 @@ app.post("/signup", async (req, res) => {
         },
       });
 
+      //generate and store otp.
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       const expireAt = new Date(Date.now() + 15 * 60 * 1000);
       await prisma.verificationToken.create({
@@ -80,7 +83,7 @@ app.post("/signup", async (req, res) => {
         },
       });
 
-      //send Email verification code.
+      sendEmail(user.email, otp, user.name);
 
       return res.status(200).json({
         message:
