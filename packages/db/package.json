@@ -15,11 +15,11 @@
     "./prisma": "./dist/index.js"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "prisma": "^6.16.1"
   },
   "dependencies": {
-    "@prisma/client": "6.11.1",
-    "@types/node": "^22.15.3",
-    "prisma": "^6.11.1"
+    "@prisma/client": "6.16.1",
+    "@types/node": "^22.15.3"
   }
 }

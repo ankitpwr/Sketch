@@ -91,12 +91,12 @@ export const EmailTemplate = `<!DOCTYPE html>
                                 <tr><td style="height: 2rem;"></td></tr>
                                 <tr>
                                     <td>
-                                        <h2 style="color: #374151; font-weight: normal; margin: 0;">{username},</h2>
+                                        <h2 style="color: #374151; font-weight: normal; margin: 0;">Hi,</h2>
                                         <p style="margin-top: 0.5rem; line-height: 1.75; color: #4B5563;">
                                             Please use the following One Time Password(OTP)
                                         </p>
                                         <p style="display: inline-block; padding: 0.5rem 1rem; font-size: 1.5rem; font-weight: 500; color: #6965db; border: 1px solid #6965db; border-radius: 0.375rem; margin: 1rem 0;">
-                                            {verification_code}
+                                            {OTPCODE}
                                         </p>
                                         <p style="margin-top: 1rem; line-height: 1.75; color: #4B5563;">
                                             This passcode will only be valid for the next

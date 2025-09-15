@@ -43,7 +43,7 @@ app.post("/signup", async (req, res) => {
       });
 
       //generate and store otp.
-      const otp = Math.floor(10000 + Math.random() * 9000).toString();
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
       const expireAt = new Date(Date.now() + 15 * 60 * 1000);
       await prisma.verificationToken.create({
         data: {
@@ -73,7 +73,7 @@ app.post("/signup", async (req, res) => {
       });
 
       //generate and store otp.
-      const otp = Math.floor(10000 + Math.random() * 9000).toString();
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
       const expireAt = new Date(Date.now() + 15 * 60 * 1000);
       await prisma.verificationToken.create({
         data: {
@@ -191,6 +191,27 @@ app.post("/signin", async (req, res) => {
       error: "Internal server error",
     });
   }
+});
+
+app.post("/user-data", authMiddleware, async (req, res) => {
+  try {
+    const userId = (req as CustomRequest).userId;
+    const name = (req as CustomRequest).name;
+    const userData = await prisma.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+    if (!userData)
+      return res.status(400).json({
+        message: "User does not exist",
+      });
+    return res.status(200).json({
+      userId: userData.id,
+      name: userData.name,
+      verified: userData.isVerified,
+    });
+  } catch (error) {}
 });
 
 app.post("/create-room", authMiddleware, async (req, res) => {

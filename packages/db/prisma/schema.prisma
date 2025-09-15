@@ -24,7 +24,7 @@ model User{
   message      Shape[]
   isVerified   Boolean  @default(false)
   verificationToken   VerificationToken[]
-
+  
 }
 
 model VerificationToken{

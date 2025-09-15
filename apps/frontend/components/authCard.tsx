@@ -7,6 +7,7 @@ import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { Ellipsis, LoaderIcon } from "lucide-react";
 import useMenuStore from "@/app/store/menu-store";
+import useUserStore from "@/app/store/user-store";
 
 export default function AuthCard({ isSignin }: { isSignin: boolean }) {
   const emailRef = useRef<HTMLInputElement | null>(null);
@@ -15,6 +16,7 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { setVerifyEmailBox } = useMenuStore();
+  const { setEmail } = useUserStore();
   const handleSubmit = async () => {
     setLoading(true);
     if (!emailRef.current || !passwordRef.current) return; //  toast error
@@ -42,6 +44,9 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
             name: nameRef.current.value,
           }
         );
+
+        //setEmail
+        setEmail(response.data.email);
       }
       // localStorage.setItem("token", response.data.token);
       // router.push("/");

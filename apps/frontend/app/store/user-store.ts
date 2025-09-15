@@ -7,6 +7,7 @@ interface UserDetails {
   standalone: boolean;
   signedin: boolean;
   roomId: string | null;
+  email: string | null;
 }
 interface UserActions {
   setSocket: (socket: WebSocket | null) => void;
@@ -15,6 +16,7 @@ interface UserActions {
   setStandalone: (standalone: boolean) => void;
   setSignedin: (signedin: boolean) => void;
   setRoomId: (roomId: string | null) => void;
+  setEmail: (email: string | null) => void;
 }
 type UserStoreType = UserDetails & UserActions;
 const UserStore: StateCreator<UserStoreType> = (set) => ({
@@ -24,6 +26,7 @@ const UserStore: StateCreator<UserStoreType> = (set) => ({
   standalone: true,
   signedin: false,
   roomId: null,
+  email: null,
 
   setSocket: (socket: WebSocket | null) => set({ socket: socket }),
   setUserId: (userId: string | null) => set({ userId: userId }),
@@ -31,6 +34,7 @@ const UserStore: StateCreator<UserStoreType> = (set) => ({
   setStandalone: (standalone: boolean) => set({ standalone: standalone }),
   setSignedin: (signedin: boolean) => set({ signedin: signedin }),
   setRoomId: (roomId: string | null) => set({ roomId: roomId }),
+  setEmail: (email: string | null) => set({ email: email }),
 });
 
 const useUserStore = create<UserDetails & UserActions>(UserStore);

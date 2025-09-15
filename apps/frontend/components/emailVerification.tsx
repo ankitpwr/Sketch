@@ -2,12 +2,15 @@ import useMenuStore from "@/app/store/menu-store";
 import React, { useEffect, useRef, useState } from "react";
 import Button from "./button";
 import { toast } from "sonner";
+import axios, { Axios, AxiosError } from "axios";
+import useUserStore from "@/app/store/user-store";
 
 export default function EmailVerification() {
   const { verifyEmailBox, setVerifyEmailBox } = useMenuStore();
   const [otpValue, setOtpValue] = useState(new Array(4).fill(""));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [finalOtp, setFinalOtp] = useState<string | null>(null);
+  const { email } = useUserStore();
 
   useEffect(() => {
     if (inputRefs.current[0]) {
@@ -15,9 +18,26 @@ export default function EmailVerification() {
     }
   }, []);
 
-  const handleVerification = (otp: string | null) => {
-    if (!otp) return toast.error("Please enter the OTP");
-    if (otp.length != 6) return toast.error("OTP must be 6 digit");
+  const handleVerification = async (otp: string | null) => {
+    if (!otp || !email) return toast.error("Please enter the OTP");
+    if (otp.length != 4) return toast.error("OTP must be 4 digit");
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email}`,
+        {
+          otp: otp,
+          email: email,
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      const axiosError = error as AxiosError<{ error: any }>;
+      if (axiosError && axiosError.response && axiosError.response.data.error) {
+        const errorData = axiosError.response.data.error;
+        if (typeof axiosError === "string") toast.error(errorData);
+        else toast.error("Error occured");
+      }
+    }
   };
 
   const handleChange = (

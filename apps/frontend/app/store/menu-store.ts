@@ -22,7 +22,7 @@ const AppMenuStore: StateCreator<AppMenuStoreType> = (set) => ({
   dialogBox: false,
   dropDown: false,
   shapeSetting: false,
-  verifyEmailBox: true,
+  verifyEmailBox: false,
   setDialogBox: (dialogBox: boolean) => set({ dialogBox: dialogBox }),
   setDropDown: (dropDown: boolean) => set({ dropDown: dropDown }),
   setShapeSetting: (shapeSetting: boolean) =>

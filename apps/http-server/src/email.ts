@@ -15,8 +15,7 @@ export const transporter = nodemailer.createTransport({
 
 export const sendEmail = async (email: string, otp: string, name: string) => {
   try {
-    let template = EmailTemplate.replace("{verification_code}", otp);
-    template = EmailTemplate.replace("{username}", name);
+    const template = EmailTemplate.replace("{OTPCODE}", otp);
 
     const info = await transporter.sendMail({
       from: `"Sketch" <${process.env.EMAIL_FROM}>`,
