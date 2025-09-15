@@ -44,12 +44,8 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
             name: nameRef.current.value,
           }
         );
-
-        //setEmail
         setEmail(response.data.email);
       }
-      // localStorage.setItem("token", response.data.token);
-      // router.push("/");
       toast.success(response.data.message);
       setVerifyEmailBox(true);
     } catch (error) {
@@ -63,7 +59,15 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
       ) {
         const errorData = axiosError.response.data.error;
 
-        if (typeof errorData === "string") toast.error(errorData);
+        const responseData = axiosError.response.data as {
+          error: any;
+          email?: string;
+        };
+        if (axiosError.response.status == 409 && responseData.email) {
+          toast.error(errorData);
+          setEmail(responseData.email);
+          setVerifyEmailBox(true);
+        } else if (typeof errorData === "string") toast.error(errorData);
         else if (Array.isArray(errorData) && errorData.length > 0) {
           toast.error(errorData[0].message);
         } else toast.error("Error occured");

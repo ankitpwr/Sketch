@@ -1,5 +1,8 @@
+"use client";
+import useMenuStore from "@/app/store/menu-store";
 import AuthCard from "@/components/authCard";
 import Doodles from "@/components/doodle";
+import EmailVerification from "@/components/emailVerification";
 import {
   ArrowSVG,
   BottomLeftBlob,
@@ -20,6 +23,7 @@ import ThemeToggle from "@/components/themeToggle";
 import React, { useRef } from "react";
 
 export default function Signin() {
+  const { verifyEmailBox, setVerifyEmailBox } = useMenuStore();
   return (
     <div className="relative w-screen h-screen flex flex-col justify-center items-center bg-white dark:bg-black/30 overflow-hidden  ">
       <TopLeftBlob />
@@ -36,7 +40,8 @@ export default function Signin() {
           </h1>
         </div>
 
-        <AuthCard isSignin={true} />
+        {!verifyEmailBox && <AuthCard isSignin={true} />}
+        {verifyEmailBox && <EmailVerification />}
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
+"use client";
 import useMenuStore from "@/app/store/menu-store";
 import React, { useEffect, useRef, useState } from "react";
 import Button from "./button";
 import { toast } from "sonner";
 import axios, { Axios, AxiosError } from "axios";
 import useUserStore from "@/app/store/user-store";
+import { useRouter } from "next/navigation";
 
 export default function EmailVerification() {
   const { verifyEmailBox, setVerifyEmailBox } = useMenuStore();
@@ -11,6 +13,7 @@ export default function EmailVerification() {
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [finalOtp, setFinalOtp] = useState<string | null>(null);
   const { email } = useUserStore();
+  const router = useRouter();
 
   useEffect(() => {
     if (inputRefs.current[0]) {
@@ -19,16 +22,23 @@ export default function EmailVerification() {
   }, []);
 
   const handleVerification = async (otp: string | null) => {
+    console.log(`email is ${email}`);
     if (!otp || !email) return toast.error("Please enter the OTP");
     if (otp.length != 4) return toast.error("OTP must be 4 digit");
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email`,
         {
           otp: otp,
           email: email,
         }
       );
+      if (response.data.token && response.data.message) {
+        localStorage.setItem("token", response.data.token);
+        toast.success(response.data.message);
+        setVerifyEmailBox(false);
+        router.push("/");
+      }
     } catch (error) {
       console.log(error);
       const axiosError = error as AxiosError<{ error: any }>;

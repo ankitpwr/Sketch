@@ -166,17 +166,34 @@ app.post("/signin", async (req, res) => {
         email: req.body.email,
       },
     });
-    if (!user) return res.status(401).json({ error: "Email not found" });
-    if (!user.isVerified)
-      return res
-        .status(400)
-        .json({ error: "Please verify your email before signin." });
+    if (!user)
+      return res.status(400).json({ error: "Email not found ! Please Signup" });
+    if (!user.isVerified) {
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
+      const expireAt = new Date(Date.now() + 15 * 60 * 1000);
+      await prisma.verificationToken.create({
+        data: {
+          token: otp,
+          expiresAt: expireAt,
+          userId: user.id,
+        },
+      });
+
+      //send Email verification code.
+      sendEmail(user.email, otp, user.name);
+
+      return res.status(409).json({
+        error: "Please verify your email before signin.",
+        email: user.email,
+      });
+    }
+
     const verifyPassword = await bcrypt.compare(
       req.body.password,
       user.password
     );
     if (!verifyPassword) {
-      return res.status(401).json({ error: "Incorrect Password" });
+      return res.status(400).json({ error: "Incorrect Password" });
     }
     const payload = { userId: user.id, name: user.name };
     console.log(payload);
