@@ -252,7 +252,10 @@ export class CanvasEngine {
   };
 
   ChangeScale = (num: number) => {
-    const newScale = this.scale + num;
+    const newScale = Math.min(
+      Math.max(this.scale + num, 0.1020177432729136),
+      20.00176306009637
+    );
     this.scale = newScale;
     this.shapeMangager.scale = newScale;
     this.setZoomValue(this.scale);
@@ -729,7 +732,11 @@ export class CanvasEngine {
   };
   handleZoom = (val: number, pivotX: number, pivotY: number) => {
     const oldScale = this.scale;
-    const newScale = Math.min(Math.max(this.scale + val, 0.15), 40);
+    console.log(`scale value is ${this.scale}`);
+    const newScale = Math.min(
+      Math.max(this.scale + val, 0.1020177432729136),
+      20.00176306009637
+    );
     const worldX = (pivotX - this.panX) / oldScale;
     const worldY = (pivotY - this.panY) / oldScale;
     this.panX = pivotX - worldX * newScale;

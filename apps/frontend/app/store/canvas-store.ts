@@ -25,7 +25,7 @@ const CanvasStore: StateCreator<CanvasStoreType> = (set) => ({
   canvasEngine: null,
   dpr: 1,
   grid: setting.grid,
-  zoomValue: 0,
+  zoomValue: 1,
 
   setTool: (currentTool: Tool) => set({ currentTool: currentTool }),
   setCanvasEngine: (canvasEngine: CanvasEngine | null) =>

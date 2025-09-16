@@ -1,7 +1,8 @@
 import React from "react";
 import Button from "./button";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Scale } from "lucide-react";
 import useCanvasStore from "@/app/store/canvas-store";
+import { Scada } from "next/font/google";
 
 export default function ZoomAction() {
   const { canvasEngine, zoomValue } = useCanvasStore();
@@ -22,7 +23,9 @@ export default function ZoomAction() {
       >
         <Minus />
       </Button>
-      <p className="font-nunito text-sm">{Math.floor(zoomValue)}&#x25;</p>
+      <p className="font-nunito text-sm">
+        {new Intl.NumberFormat("en-GB", { style: "percent" }).format(zoomValue)}
+      </p>
       <Button
         onClickhandler={handleZoomIn}
         varient="secondary"
