@@ -725,8 +725,8 @@ export class CanvasEngine {
     if (e.ctrlKey) {
       this.handleZoom(e.deltaY * -0.01, e.offsetX, e.offsetY);
     } else {
-      this.panX -= e.deltaX / this.scale;
-      this.panY -= e.deltaY / this.scale;
+      this.panX -= e.deltaX;
+      this.panY -= e.deltaY;
     }
     this.render();
   };
