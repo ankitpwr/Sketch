@@ -14,12 +14,22 @@ import useUserStore from "@/app/store/user-store";
 import { AppSetting, setting } from "@repo/types/drawingConfig";
 import { useTheme } from "next-themes";
 import useDrawStore from "@/app/store/draw-store";
+import { Loader2 } from "lucide-react";
+import ZoomAction from "./zoomAction";
 
 export default function Canvas() {
   const { userId, username, socket, standalone, roomId } = useUserStore();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { currentTool, dpr, canvasEngine, setDpr, setCanvasEngine, setGrid } =
-    useCanvasStore();
+  const {
+    currentTool,
+    dpr,
+    canvasEngine,
+    setDpr,
+    setCanvasEngine,
+    setGrid,
+    setZoomValue,
+  } = useCanvasStore();
   const {
     setCanvasColorKey,
     setBackgroundColorKey,
@@ -98,7 +108,8 @@ export default function Canvas() {
       standalone,
       socket,
       roomId,
-      userId
+      userId,
+      setZoomValue
     );
 
     setCanvasEngine(newCanvasEngine);
@@ -140,9 +151,12 @@ export default function Canvas() {
           <DropDown />
           <MobileAppBar />
           <Share />
+          <ZoomAction />
         </>
       ) : (
-        <div>Loading ...:</div>
+        <div className=" fixed left-1/2 top-1/2">
+          <Loader2 size={38} color="#6965db" className="animate-spin" />
+        </div>
       )}
     </div>
   );

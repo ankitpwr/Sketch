@@ -85,6 +85,7 @@ export class CanvasEngine {
   private shapeToRemove: Shape[] = [];
   private roughCanvas: RoughCanvas;
   private seed: number = 0;
+  private setZoomValue: (zoomValue: number) => void;
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
@@ -93,7 +94,8 @@ export class CanvasEngine {
     standalone: boolean,
     socket: WebSocket | null,
     roomId: string | null,
-    userId: string | null
+    userId: string | null,
+    setZoomValue: (zoomValue: number) => void
   ) {
     this.canvas = canvas;
     this.roughCanvas = rough.canvas(this.canvas);
@@ -101,6 +103,7 @@ export class CanvasEngine {
     this.textArea = textArea;
     this.standalone = standalone;
     this.dpr = dpr;
+    this.setZoomValue = setZoomValue;
     this.ctx.scale(this.dpr, this.dpr);
     this.existingShapes = [];
     this.action = Action.IDLE;
@@ -246,6 +249,14 @@ export class CanvasEngine {
 
   ChangeCursor = (cursorType: string) => {
     this.canvas.style.cursor = cursorType;
+  };
+
+  ChangeScale = (num: number) => {
+    const newScale = this.scale + num;
+    this.scale = newScale;
+    this.shapeMangager.scale = newScale;
+    this.setZoomValue(this.scale);
+    this.render();
   };
 
   public setCanvasTheme = (theme: "light" | "dark") => {
@@ -725,6 +736,7 @@ export class CanvasEngine {
     this.panY = pivotY - worldY * newScale;
     this.scale = newScale;
     this.shapeMangager.scale = newScale;
+    this.setZoomValue(this.scale);
   };
   handleKeyDown = (e: KeyboardEvent) => {
     this.pressedKey = e.key;

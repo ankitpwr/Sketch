@@ -8,12 +8,14 @@ interface CanvasState {
   canvasEngine: CanvasEngine | null;
   dpr: number;
   grid: boolean;
+  zoomValue: number;
 }
 interface CanvasAction {
   setTool: (currentTool: Tool) => void;
   setCanvasEngine: (canvasEngine: CanvasEngine | null) => void;
   setDpr: (dpr: number) => void;
   setGrid: (grid: boolean) => void;
+  setZoomValue: (zoomValue: number) => void;
 }
 
 type CanvasStoreType = CanvasState & CanvasAction;
@@ -23,6 +25,7 @@ const CanvasStore: StateCreator<CanvasStoreType> = (set) => ({
   canvasEngine: null,
   dpr: 1,
   grid: setting.grid,
+  zoomValue: 0,
 
   setTool: (currentTool: Tool) => set({ currentTool: currentTool }),
   setCanvasEngine: (canvasEngine: CanvasEngine | null) =>
@@ -33,6 +36,8 @@ const CanvasStore: StateCreator<CanvasStoreType> = (set) => ({
     set({ grid: grid });
     localStorage.setItem("sketch-setting", JSON.stringify(setting));
   },
+
+  setZoomValue: (zoomValue: number) => set({ zoomValue: zoomValue }),
 });
 
 const useCanvasStore = create<CanvasState & CanvasAction>(CanvasStore);

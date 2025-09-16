@@ -13,6 +13,7 @@ const VarientStyle = {
 };
 
 const Size = {
+  xs: "w-10 h-10",
   sm: `w-24 h-10 gap-1 text-md`,
   md: ` rounded-lg`,
 };
