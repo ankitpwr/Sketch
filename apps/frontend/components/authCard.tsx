@@ -33,6 +33,9 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
             password: passwordRef.current.value,
           }
         );
+        localStorage.setItem("token", response.data.token);
+        toast.success(response.data.message);
+        router.push("/");
       } else {
         if (!nameRef.current || !nameRef.current.value)
           return toast.error("Please Fill Name");
@@ -45,9 +48,9 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
           }
         );
         setEmail(response.data.email);
+        setVerifyEmailBox(true);
       }
       toast.success(response.data.message);
-      setVerifyEmailBox(true);
     } catch (error) {
       const axiosError = error as AxiosError<{ error: any }>;
       console.log(axiosError);

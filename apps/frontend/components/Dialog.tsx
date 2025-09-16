@@ -8,6 +8,7 @@ import Input from "./input";
 import useRoomStore from "@/app/store/room-store";
 import { MessageType } from "@repo/types/wsTypes";
 import useMenuStore from "@/app/store/menu-store";
+import { toast } from "sonner";
 
 export default function Dialog() {
   const {
@@ -54,8 +55,6 @@ export default function Dialog() {
   };
 
   const handleNewRoomCreation = async () => {
-    console.log(localStorage.getItem("token"));
-
     setLoading(true);
 
     try {
@@ -68,6 +67,7 @@ export default function Dialog() {
           },
         }
       );
+      toast.success("Room has been created successfully");
       router.push(`room/${response.data.roomId}`);
       setLoading(false);
     } catch (error) {
@@ -146,7 +146,7 @@ export default function Dialog() {
             <X size={18} color="gray" />
           </div>
           <div className="flex flex-col  justify-start items-start gap-3 w-full">
-            <h2 className="text-2xl font-bold text-[#6965db]">
+            <h2 className="text-2xl font-bold text-[#6965db] font-nunito">
               Live Collaboration
             </h2>
           </div>
@@ -164,7 +164,7 @@ export default function Dialog() {
           </div>
 
           <div className="flex flex-col  gap-0.5   items-start w-full">
-            <h1 className="text-sm">Link</h1>
+            <h1 className="text-sm font-nunito">Link</h1>
             <div className="flex gap-1.5 w-full">
               <Input
                 refer={linkRefer}
@@ -172,7 +172,7 @@ export default function Dialog() {
                 type={"text"}
                 readonly={true}
                 defaultValue={`${process.env.NEXT_PUBLIC_FE_URL}/room/${roomId}`}
-                styles={` bg-[#f1f0ff] dark:bg-[#2e2d39] dark:text-white w-full  `}
+                styles={` bg-[#f1f0ff] dark:bg-[#2e2d39] dark:text-white w-full font-nunito `}
               />
               <Button
                 varient={"primary"}
@@ -184,6 +184,10 @@ export default function Dialog() {
                 <p>Copy</p>
               </Button>
             </div>
+            <h1 className="text-center  mt-3 text-sm text-black  font-nunito dark:text-[#dadadf]">
+              Invite people to collaborate on your drawing by sharing the above
+              link
+            </h1>
           </div>
 
           <div

@@ -5,6 +5,7 @@ import { MessageType } from "@repo/types/wsTypes";
 import useUserStore from "@/app/store/user-store";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Loader, Loader2 } from "lucide-react";
 
 export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
   const router = useRouter();
@@ -39,7 +40,7 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
     ws.onclose = (event) => {
       if (event.code == 4001) {
         console.log("token is not provided");
-        toast.error("Please sign in to join the room.");
+        toast.error("Please sign in before joining the room.");
         localStorage.removeItem("token");
         router.push("/signin");
       } else if (event.code == 4002) {
@@ -66,7 +67,11 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
   }, [setSocket, setUserId, setUsername]);
 
   if (!socket || !userId) {
-    return <div>Loading...</div>;
+    return (
+      <div className=" fixed left-1/2 top-1/2">
+        <Loader2 size={38} color="#6965db" className="animate-spin" />
+      </div>
+    );
   }
   return (
     <div>
