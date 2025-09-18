@@ -153,6 +153,20 @@ app.post("/verify-email", async (req, res) => {
   }
 });
 
+app.get("/get-users", async (req, res) => {
+  try {
+    const userData = await prisma.user.findMany({});
+    return res.status(200).json({
+      users: userData,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      error: error,
+    });
+  }
+});
+
 app.post("/signin", async (req, res) => {
   try {
     const parseData = SignInSchema.safeParse(req.body);
