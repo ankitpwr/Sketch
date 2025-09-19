@@ -10,6 +10,6 @@ interface PageProps {
 export default async function RoomPage({ params }: PageProps) {
   const { roomId } = await params;
   console.log(`in page.tsx roomid is ${roomId}`);
-  // mobile  zooming  not working
+
   return <RoomCanvas newRoomId={roomId} />;
 }
