@@ -9,7 +9,8 @@
     "check-types": "turbo run check-types",
     "db:generate": "cd packages/db && npx prisma generate && cd ../..",
     "start:backend": "cd apps/http-server && pnpm run start",
-    "start:websocket": "cd apps/ws-server && pnpm run start"
+    "start:websocket": "cd apps/ws-server && pnpm run start",
+    "start:frontend": "cd apps/frontend && pnpm run start"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
