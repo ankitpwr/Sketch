@@ -4,13 +4,12 @@ import Canvas from "@/components/canvas";
 import RoomCanvas from "@/components/roomCanvas";
 import React, { useEffect, useState } from "react";
 
-export default async function RoomPage({
-  params,
-}: {
-  params: { roomId: string };
-}) {
-  const newRoomId = params.roomId;
-  console.log(`in page.tsx roomid is ${newRoomId}`);
+interface PageProps {
+  params: Promise<{ roomId: string }>;
+}
+export default async function RoomPage({ params }: PageProps) {
+  const { roomId } = await params;
+  console.log(`in page.tsx roomid is ${roomId}`);
   // mobile  zooming  not working
-  return <RoomCanvas newRoomId={newRoomId} />;
+  return <RoomCanvas newRoomId={roomId} />;
 }
