@@ -95,7 +95,7 @@ export class CanvasEngine {
     socket: WebSocket | null,
     roomId: string | null,
     userId: string | null,
-    setZoomValue: (zoomValue: number) => void
+    setZoomValue: (zoomValue: number) => void,
   ) {
     this.canvas = canvas;
     this.roughCanvas = rough.canvas(this.canvas);
@@ -136,7 +136,7 @@ export class CanvasEngine {
         userId,
         this.addShape,
         this.removeShapesByIds,
-        this.manageShape
+        this.manageShape,
       );
     }
     this.shapeMangager = new ShapeManager({
@@ -182,7 +182,7 @@ export class CanvasEngine {
 
   public removeShapesByIds = (shapeIdsToRemove: any) => {
     const shapesToKeep = this.existingShapes.filter(
-      (shape) => !shapeIdsToRemove.includes(shape.id)
+      (shape) => !shapeIdsToRemove.includes(shape.id),
     );
     this.existingShapes.length = 0;
     this.existingShapes.push(...shapesToKeep);
@@ -254,7 +254,7 @@ export class CanvasEngine {
   ChangeScale = (num: number) => {
     const newScale = Math.min(
       Math.max(this.scale + num, 0.1020177432729136),
-      20.00176306009637
+      20.00176306009637,
     );
     this.scale = newScale;
     this.shapeMangager.scale = newScale;
@@ -664,7 +664,7 @@ export class CanvasEngine {
         }
         if (topShape) {
           const shapeToKeep = this.existingShapes.filter(
-            (s) => !this.shapeToRemove.some((rem) => rem.id === s.id)
+            (s) => !this.shapeToRemove.some((rem) => rem.id === s.id),
           );
           this.existingShapes.length = 0;
           this.existingShapes.push(...shapeToKeep);
@@ -735,7 +735,7 @@ export class CanvasEngine {
     console.log(`scale value is ${this.scale}`);
     const newScale = Math.min(
       Math.max(this.scale + val, 0.1020177432729136),
-      20.00176306009637
+      20.00176306009637,
     );
     const worldX = (pivotX - this.panX) / oldScale;
     const worldY = (pivotY - this.panY) / oldScale;
@@ -928,7 +928,7 @@ export class CanvasEngine {
       }
       if (translatedShape.type === ShapeType.PENCIL) {
         translatedShape.points = translatedShape.points.map(
-          ([px, py]: [number, number]) => [px - minX, py - minY]
+          ([px, py]: [number, number]) => [px - minX, py - minY],
         );
       }
 
@@ -937,7 +937,7 @@ export class CanvasEngine {
           drawRoundedRectangle(
             offScreenRoughCanvas,
             translatedShape,
-            themeColors
+            themeColors,
           );
           break;
         case ShapeType.ELLIPSE:

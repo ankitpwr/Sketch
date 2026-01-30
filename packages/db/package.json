@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "dev": "tsc --watch --preserveWatchOutput"
   },
   "keywords": [],
@@ -19,6 +19,7 @@
     "prisma": "^6.16.1"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "6.16.1",
     "@types/node": "^22.15.3"
   }
