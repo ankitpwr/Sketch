@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@repo/types": "workspace:*",
+    "@repo/ui": "workspace:*",
     "axios": "^1.10.0",
     "clsx": "^2.1.1",
     "cuid": "^3.0.0",
@@ -25,8 +27,6 @@
     "zustand": "^5.0.7"
   },
   "devDependencies": {
-    "@repo/types": "workspace:*",
-    "@repo/ui": "workspace:*",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
