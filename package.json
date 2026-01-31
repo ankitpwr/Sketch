@@ -2,11 +2,12 @@
   "name": "Sketch",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
+    "postinstall": "turbo run db:generate",
     "db:generate": "cd packages/db && npx prisma generate && cd ../..",
     "start:backend": "cd apps/http-server && pnpm run start",
     "start:websocket": "cd apps/ws-server && pnpm run start",
