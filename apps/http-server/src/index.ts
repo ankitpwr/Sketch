@@ -204,7 +204,7 @@ app.post("/signin", async (req, res) => {
 
     const verifyPassword = await bcrypt.compare(
       req.body.password,
-      user.password
+      user.password,
     );
     if (!verifyPassword) {
       return res.status(400).json({ error: "Incorrect Password" });
@@ -282,4 +282,4 @@ app.get("/room-messages", authMiddleware, async (req, res) => {
 
 app.get;
 
-app.listen(process.env.PORT);
+app.listen(process.env.PORT || 3000);

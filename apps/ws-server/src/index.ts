@@ -17,13 +17,13 @@ dotenv.config();
 const UserConnection = new Map<WebSocket, { userId: string; name: string }>();
 const Rooms = new Map<string, WebSocket[]>();
 
-const wss = new WebSocketServer({ port: 8080 });
+const wss = new WebSocketServer({ port: Number(process.env.PORT) || 8000 });
 
 function veifyToken(token: string) {
   try {
     const decode = jwt.verify(
       token,
-      process.env.JWT_SECRET!
+      process.env.JWT_SECRET!,
     ) as CustomJwtPayload;
     return { userId: decode.userId, name: decode.name };
   } catch (error) {
@@ -86,7 +86,7 @@ wss.on("connection", (ws: WebSocket, request) => {
               userId: userId,
               username: name,
               message: `You Have Joined The Room`,
-            })
+            }),
           );
           break;
         case MessageType.LEAVE:
@@ -103,7 +103,7 @@ wss.on("connection", (ws: WebSocket, request) => {
               userId: userId,
               name: name,
               message: "You Have Left The Room",
-            })
+            }),
           );
           break;
         case MessageType.ERASER:
@@ -129,7 +129,7 @@ wss.on("connection", (ws: WebSocket, request) => {
                   name: name,
                   message: EraseData.message,
                   shapeId: shapeId,
-                })
+                }),
               );
             }
           });
@@ -165,7 +165,7 @@ wss.on("connection", (ws: WebSocket, request) => {
                   name: name,
                   message: shapeMoveData.message,
                   shapeToMove: shapeToMove,
-                })
+                }),
               );
             }
           });
@@ -201,7 +201,7 @@ wss.on("connection", (ws: WebSocket, request) => {
                   name: name,
                   message: shapeResizeData.message,
                   shapeToResize: shapeToResize,
-                })
+                }),
               );
             }
           });
@@ -225,7 +225,7 @@ wss.on("connection", (ws: WebSocket, request) => {
                   name: name,
                   message: previewShapeData.message,
                   shape: previewShapeData.shape,
-                })
+                }),
               );
             }
           });
@@ -260,7 +260,7 @@ wss.on("connection", (ws: WebSocket, request) => {
                   name: name,
                   message: shapeData.message,
                   shape: newShape,
-                })
+                }),
               );
             }
           });
@@ -273,7 +273,7 @@ wss.on("connection", (ws: WebSocket, request) => {
         JSON.stringify({
           type: MessageType.ERROR,
           message: "Internal error occured, try ",
-        })
+        }),
       );
     }
   });
