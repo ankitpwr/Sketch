@@ -32,7 +32,7 @@ export default function Tools() {
         varient={"secondary"}
         size={"md"}
       >
-        <Hand size={18} strokeWidth={1.5} />{" "}
+        <Hand size={16} strokeWidth={1.5} />{" "}
       </Button>
       <Button
         isActive={currentTool == ActionTool.SELECT ? true : false}
@@ -43,7 +43,7 @@ export default function Tools() {
         {" "}
         <MousePointer
           className={` ${currentTool == ActionTool.SELECT && `fill-[#030063] dark:fill-white`}`}
-          size={18}
+          size={16}
           strokeWidth={currentTool == ActionTool.SELECT ? 1 : 1.5}
         />
       </Button>
@@ -56,7 +56,7 @@ export default function Tools() {
         {" "}
         <Square
           className={`${currentTool == ShapeType.RECTANGLE && `fill-[#030063] dark:fill-white`}`}
-          size={18}
+          size={16}
           strokeWidth={currentTool == ShapeType.RECTANGLE ? 1 : 1.5}
         />{" "}
       </Button>
@@ -68,7 +68,7 @@ export default function Tools() {
       >
         <Diamond
           className={`${currentTool == ShapeType.DIAMOND && `fill-[#030063] dark:fill-white`}`}
-          size={18}
+          size={16}
           strokeWidth={currentTool == ShapeType.DIAMOND ? 0 : 1.5}
         />
       </Button>
@@ -80,7 +80,7 @@ export default function Tools() {
       >
         <Circle
           className={`${currentTool == ShapeType.ELLIPSE && `fill-[#030063] dark:fill-white`}`}
-          size={18}
+          size={16}
           strokeWidth={currentTool == ShapeType.ELLIPSE ? 0 : 1.5}
         />
       </Button>
@@ -90,7 +90,7 @@ export default function Tools() {
         varient={"secondary"}
         size={"md"}
       >
-        <MoveRight size={20} strokeWidth={1.5} />
+        <MoveRight size={16} strokeWidth={1.5} />
       </Button>
       <Button
         isActive={currentTool == ShapeType.LINE ? true : false}
@@ -98,7 +98,7 @@ export default function Tools() {
         varient={"secondary"}
         size={"md"}
       >
-        <Minus size={18} strokeWidth={1.5} />
+        <Minus size={16} strokeWidth={1.5} />
       </Button>
 
       <Button
@@ -107,7 +107,7 @@ export default function Tools() {
         varient={"secondary"}
         size={"md"}
       >
-        <Pencil size={18} strokeWidth={1.5} />
+        <Pencil size={16} strokeWidth={1.5} />
       </Button>
       <Button
         isActive={currentTool == ActionTool.ERASER ? true : false}
@@ -115,7 +115,7 @@ export default function Tools() {
         varient={"secondary"}
         size={"md"}
       >
-        <Eraser size={18} strokeWidth={1.5} />
+        <Eraser size={16} strokeWidth={1.5} />
       </Button>
       <Button
         isActive={currentTool == ShapeType.TEXT ? true : false}
@@ -123,7 +123,7 @@ export default function Tools() {
         varient={"secondary"}
         size={"md"}
       >
-        <TypeOutline size={18} strokeWidth={1.5} />
+        <TypeOutline size={16} strokeWidth={1.5} />
       </Button>
     </div>
   );

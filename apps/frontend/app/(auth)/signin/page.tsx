@@ -4,23 +4,14 @@ import AuthCard from "@/components/authCard";
 import Doodles from "@/components/doodle";
 import EmailVerification from "@/components/emailVerification";
 import {
-  ArrowSVG,
   BottomLeftBlob,
   BottomRightBlob,
-  BulbSVG,
-  CircleSVG,
-  DrawSVG,
-  FunnyFaceSVG,
-  GhostSVG,
-  HelicalSVG,
   SketchLogo,
-  StarSVG,
   TopLeftBlob,
   TopRightBlob,
 } from "@/components/svgIcons";
-import ThemeToggle from "@/components/themeToggle";
 
-import React, { useRef } from "react";
+import React from "react";
 
 export default function Signin() {
   const { verifyEmailBox, setVerifyEmailBox } = useMenuStore();
