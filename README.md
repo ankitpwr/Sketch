@@ -1,135 +1,186 @@
-# Turborepo starter
+# Sketch
 
-This Turborepo starter is maintained by the Turborepo core team.
+A real-time collaborative whiteboard application inspired by Excalidraw. Draw, sketch, and collaborate with others — no login required for solo use.
 
-## Using this example
+🔗 **Live Demo:** [sketch.ankitpwr.me](https://sketch.ankitpwr.me) &nbsp;|&nbsp; **Repo:** [github.com/ankitpwr/Sketch](https://github.com/ankitpwr/Sketch.git)
 
-Run the following command:
+![Sketch Preview](./assets/preview.png)
 
-```sh
-npx create-turbo@latest
-```
+---
 
-## What's inside?
+## Features
 
-This Turborepo includes the following packages/apps:
+- **No login required** for solo/offline canvas usage
+- **Real-time multi-user collaboration** — share a room and draw together live
+- **Shape tools** — rectangles, diamonds, circles, arrows, and lines
+- **Freehand pencil** with `perfect-freehand` for natural strokes
+- **Rough/sketchy style** shapes powered by `Rough.js`
+- **Eraser tool** — delete shapes individually
+- **Move & resize** shapes with live sync across all collaborators
+- **Grid background** for alignment
+- **Zoom & pan** the canvas
+- **Customizable styles** — stroke color, background color, fill style, stroke width, stroke style, sloppiness, and edge radius
 
-### Apps and Packages
+---
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+## Tech Stack
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+| Layer            | Technology                       |
+| ---------------- | -------------------------------- |
+| Frontend         | Next.js, TypeScript, Canvas API  |
+| Drawing          | Rough.js, perfect-freehand       |
+| Backend          | Node.js, Express, TypeScript     |
+| Real-time        | WebSocket (ws)                   |
+| Auth             | JWT                              |
+| Database         | Prisma ORM + NeonDB (PostgreSQL) |
+| Monorepo         | Turborepo, pnpm workspaces       |
+| Containerization | Docker, Docker Compose           |
 
-### Utilities
+---
 
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## Project Structure
 
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+sketch/
+├── apps/
+│   ├── frontend/        # Next.js frontend
+│   ├── http-server/     # REST API (auth, rooms, shapes)
+│   └── ws-server/       # WebSocket server (real-time collaboration)
+├── packages/
+│   └── db/              # Prisma schema & client
+├── docker/              # Dockerfiles for each service
+├── docker-compose.yml
+└── turbo.json
 ```
 
-### Develop
+---
 
-To develop all apps and packages, run the following command:
+## Getting Started
 
-```
-cd my-turborepo
+### Prerequisites
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+- [Docker](https://docs.docker.com/get-docker/) & Docker Compose
+- (Optional, for local dev) Node.js ≥ 18, pnpm
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+### Run with Docker (Recommended)
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+**1. Clone the repository**
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```bash
+git clone https://github.com/ankitpwr/Sketch.git
+cd Sketch
 ```
 
-### Remote Caching
+**2. Set up environment variables**
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+Create the following `.env` files before running:
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+**`packages/db/.env`**
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+```dotenv
+DATABASE_URL=your_neondb_connection_string
+NODE_ENV=production
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+**`apps/ws-server/.env`**
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+```dotenv
+JWT_SECRET=your_jwt_secret
+PORT=8080
 ```
 
-## Useful Links
+**`apps/http-server/.env`**
 
-Learn more about the power of Turborepo:
+```dotenv
+JWT_SECRET=your_jwt_secret
+PORT=3001
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
+EMAIL_USER=your_email@example.com
+EMAIL_PASS=your_email_password
+EMAIL_FROM=noreply@example.com
+```
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+**`apps/frontend/.env`**
+
+```dotenv
+NEXT_PUBLIC_BASE_URL=http://localhost:3001
+NEXT_PUBLIC_WS_BASE_URL=ws://localhost:8080
+NEXT_PUBLIC_FE_URL=http://localhost:3000
+```
+
+**3. Start all services**
+
+```bash
+docker compose up --build
+```
+
+| Service   | URL                   |
+| --------- | --------------------- |
+| Frontend  | http://localhost:3000 |
+| HTTP API  | http://localhost:3001 |
+| WebSocket | ws://localhost:8080   |
+
+---
+
+### Run Locally (Without Docker)
+
+**1. Install dependencies**
+
+```bash
+pnpm install
+```
+
+**2. Set up the database**
+
+```bash
+pnpm --filter @repo/db db:push
+```
+
+**3. Run all apps in parallel**
+
+```bash
+pnpm dev
+```
+
+---
+
+## 🔌 API Overview
+
+### Auth
+
+| Method | Endpoint        | Description              |
+| ------ | --------------- | ------------------------ |
+| POST   | `/signup`       | Register a new user      |
+| POST   | `/verify-email` | Verify OTP sent to email |
+| POST   | `/signin`       | Login and receive JWT    |
+
+### Rooms & Shapes
+
+| Method | Endpoint         | Auth | Description                     |
+| ------ | ---------------- | ---- | ------------------------------- |
+| POST   | `/create-room`   | ✅   | Create a new collaboration room |
+| GET    | `/room-messages` | ✅   | Fetch all shapes in a room      |
+| POST   | `/user-data`     | ✅   | Get current user info           |
+
+### WebSocket Events
+
+Connect: `ws://host:8080?token=<jwt>`
+
+| Type            | Direction        | Description                      |
+| --------------- | ---------------- | -------------------------------- |
+| `JOIN`          | Client → Server  | Join a room                      |
+| `LEAVE`         | Client → Server  | Leave a room                     |
+| `SHAPE`         | Client ↔ Server | Add a new shape                  |
+| `PREVIEW_SHAPE` | Client ↔ Server | Live shape preview while drawing |
+| `SHAPE_MOVE`    | Client ↔ Server | Move a shape                     |
+| `SHAPE_RESIZE`  | Client ↔ Server | Resize a shape                   |
+| `ERASER`        | Client ↔ Server | Delete shapes                    |
+
+---
+
+## Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to open an issue or submit a pull request.
+
+---
