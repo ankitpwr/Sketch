@@ -23,9 +23,25 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
   useEffect(() => {
     const authToken = localStorage.getItem("token");
     console.log(`token is ${authToken}`);
-    const ws = new WebSocket(
-      `${process.env.NEXT_PUBLIC_WS_BASE_URL}?token=${authToken}`
-    );
+    const configuredWsUrl = process.env.NEXT_PUBLIC_WS_BASE_URL;
+    if (!configuredWsUrl) {
+      toast.error("WebSocket server URL is not configured.");
+      return;
+    }
+
+    const wsUrl = new URL(configuredWsUrl);
+    if (wsUrl.protocol === "http:") wsUrl.protocol = "ws:";
+    if (wsUrl.protocol === "https:") wsUrl.protocol = "wss:";
+    wsUrl.searchParams.set("token", authToken ?? "");
+
+    let ws: WebSocket;
+    try {
+      ws = new WebSocket(wsUrl);
+    } catch (error) {
+      console.error("Unable to create WebSocket connection", error);
+      toast.error("Unable to connect to the room server.");
+      return;
+    }
     console.log(`the room id in roomCanvas.tsx is ${newRoomId}`);
     ws.onopen = () => {
       setSocket(ws);
@@ -34,7 +50,7 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
           type: MessageType.JOIN,
           roomId: newRoomId,
           message: "Join room",
-        })
+        }),
       );
     };
     ws.onclose = (event) => {
@@ -45,13 +61,16 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
         router.push("/signin");
       } else if (event.code == 4002) {
         toast.error(
-          "Redirecting you to the home page. Please check the Room ID and try again."
+          "Redirecting you to the home page. Please check the Room ID and try again.",
         );
         setSocket(null);
         setRoomId(null);
         setStandalone(true);
         router.push("/");
       }
+    };
+    ws.onerror = () => {
+      toast.error("Unable to connect to the room server.");
     };
     ws.onmessage = (event) => {
       const messageData = JSON.parse(event.data);
@@ -64,7 +83,15 @@ export default function RoomCanvas({ newRoomId }: { newRoomId: string }) {
     return () => {
       ws.close();
     };
-  }, [setSocket, setUserId, setUsername]);
+  }, [
+    newRoomId,
+    router,
+    setRoomId,
+    setSocket,
+    setStandalone,
+    setUserId,
+    setUsername,
+  ]);
 
   if (!socket || !userId) {
     return (
