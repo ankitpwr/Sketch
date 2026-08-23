@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../dist/generated"
+  output   = "../src/generated"
 }
 
 datasource db {
@@ -23,19 +23,11 @@ model User{
   joined       DateTime   @default(now())
   room         Room[]
   message      Shape[]
-  isVerified   Boolean  @default(false)
-  verificationToken   VerificationToken[]
+
   
 }
 
-model VerificationToken{
-  id          String        @default(cuid())   @id
-  token       String        @unique
-  expiresAt   DateTime
-  userId      String
-  user        User           @relation(fields: [userId], references: [id],  onDelete: Cascade)
 
-}
 
 model Room {
   id          String       @default(cuid()) @id

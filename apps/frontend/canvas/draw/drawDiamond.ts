@@ -9,7 +9,7 @@ import { RoughCanvas } from "roughjs/bin/canvas";
 export function drawDiamond(
   roughCanvas: RoughCanvas,
   shape: DiamondShape,
-  themeColors: ReturnType<typeof getThemeColors>
+  themeColors: ReturnType<typeof getThemeColors>,
 ) {
   const width = shape.endX - shape.startX;
   const height = shape.endY - shape.startY;
@@ -31,21 +31,18 @@ export function drawDiamond(
     fillStyle: shape.style.fillStyle,
     strokeLineDash: getLineDashPattern(
       shape.style.strokeType,
-      shape.style.strokeWidth
+      shape.style.strokeWidth,
     ),
     seed: shape.seed,
     hachureGap: 3 * shape.style.strokeWidth,
   };
-  console.log(`in edge is :- `);
-  console.log(shape.style.edges);
 
   if ((shape.style.edges = Edges.Rounded)) {
-    console.log(`rounded edges`);
     const roundedDiamondPath = createRoundedDiamondPath(
       shape.startX,
       shape.startY,
       shape.endX - shape.startX,
-      shape.endY - shape.startY
+      shape.endY - shape.startY,
     );
     roughCanvas.path(roundedDiamondPath, options);
   } else {
@@ -64,7 +61,7 @@ function createRoundedDiamondPath(
   x: number,
   y: number,
   width: number,
-  height: number
+  height: number,
 ): string {
   const an = 0.11; // "an" controls the roundness, 0.5 is a circle
 

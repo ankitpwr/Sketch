@@ -9,11 +9,8 @@ import {
   TopLeftBlob,
   TopRightBlob,
 } from "@/components/svgIcons";
-import ThemeToggle from "@/components/themeToggle";
 import useMenuStore from "@/app/store/menu-store";
-import EmailVerification from "@/components/emailVerification";
 export default function Signup() {
-  const { verifyEmailBox, setVerifyEmailBox } = useMenuStore();
   return (
     <div className="relative w-screen h-screen flex flex-col justify-center items-center  bg-white dark:bg-black/30 overflow-hidden  ">
       <TopLeftBlob />
@@ -30,8 +27,7 @@ export default function Signup() {
           </h1>
         </div>
       </div>
-      {!verifyEmailBox && <AuthCard isSignin={false} />}
-      {verifyEmailBox && <EmailVerification />}
+      <AuthCard isSignin={false} />
     </div>
   );
 }

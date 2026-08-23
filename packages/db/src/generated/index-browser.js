@@ -125,15 +125,7 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   name: 'name',
-  joined: 'joined',
-  isVerified: 'isVerified'
-};
-
-exports.Prisma.VerificationTokenScalarFieldEnum = {
-  id: 'id',
-  token: 'token',
-  expiresAt: 'expiresAt',
-  userId: 'userId'
+  joined: 'joined'
 };
 
 exports.Prisma.RoomScalarFieldEnum = {
@@ -163,7 +155,6 @@ exports.Prisma.QueryMode = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  VerificationToken: 'VerificationToken',
   Room: 'Room',
   Shape: 'Shape'
 };

@@ -339,7 +339,6 @@ export class CanvasEngine {
     if (this.grid) {
       this.CreateGridPattern();
     }
-    console.log("render called");
 
     const drawShape = (s: Shape) => {
       //prettier-ignore
@@ -521,7 +520,6 @@ export class CanvasEngine {
   };
 
   handleMouseUp = (e: MouseEvent) => {
-    console.log("mouseup");
     this.mouseDown = false;
 
     const currentX = this.getCoordinates(e)[0];
@@ -732,7 +730,6 @@ export class CanvasEngine {
   };
   handleZoom = (val: number, pivotX: number, pivotY: number) => {
     const oldScale = this.scale;
-    console.log(`scale value is ${this.scale}`);
     const newScale = Math.min(
       Math.max(this.scale + val, 0.1020177432729136),
       20.00176306009637,

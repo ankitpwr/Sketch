@@ -41,7 +41,6 @@ wss.on("connection", (ws: WebSocket, request) => {
   }
   const queryParams = new URLSearchParams(url.split("?")[1]);
   const token = queryParams.get("token") || "";
-  console.log(`token is ${token}`);
   const isVerified = veifyToken(token);
 
   if (!isVerified) {
@@ -240,6 +239,9 @@ wss.on("connection", (ws: WebSocket, request) => {
           roomConnections = Rooms.get(shapeData.roomId);
           if (!roomConnections) return;
           //db call
+          console.log("new shape id is ", newShape.id);
+          console.log("userId is ", userId);
+          console.log("message is  ", JSON.stringify(newShape));
           await prisma.shape.create({
             data: {
               id: newShape.id,

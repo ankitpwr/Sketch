@@ -5,8 +5,7 @@ import Button from "./button";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
-import { Ellipsis, LoaderIcon } from "lucide-react";
-import useMenuStore from "@/app/store/menu-store";
+import { Ellipsis } from "lucide-react";
 import useUserStore from "@/app/store/user-store";
 
 export default function AuthCard({ isSignin }: { isSignin: boolean }) {
@@ -15,13 +14,25 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
   const nameRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const { setVerifyEmailBox } = useMenuStore();
   const { setEmail } = useUserStore();
   const handleSubmit = async () => {
+    if (!emailRef.current || !passwordRef.current) {
+      toast.error("Please fill Email and Password");
+      return;
+    }
+    if (!emailRef.current.value || !passwordRef.current.value) {
+      toast.error("Please fill Email and Password");
+      return;
+    }
+    if (!isSignin && (!nameRef.current || !nameRef.current.value)) {
+      toast.error("Please Fill Name");
+      return;
+    }
+
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const name = nameRef.current?.value;
     setLoading(true);
-    if (!emailRef.current || !passwordRef.current) return; //  toast error
-    if (!emailRef.current.value || !passwordRef.current.value)
-      return toast.error("Please fill Email and Password");
 
     let response;
     try {
@@ -29,55 +40,46 @@ export default function AuthCard({ isSignin }: { isSignin: boolean }) {
         response = await axios.post(
           `${process.env.NEXT_PUBLIC_BASE_URL}/signin`,
           {
-            email: emailRef.current.value,
-            password: passwordRef.current.value,
-          }
+            email,
+            password,
+          },
         );
         localStorage.setItem("token", response.data.token);
-        toast.success(response.data.message);
-        router.push("/");
       } else {
-        if (!nameRef.current || !nameRef.current.value)
-          return toast.error("Please Fill Name");
         response = await axios.post(
           `${process.env.NEXT_PUBLIC_BASE_URL}/signup`,
           {
-            email: emailRef.current.value,
-            password: passwordRef.current.value,
-            name: nameRef.current.value,
-          }
+            email,
+            password,
+            name,
+          },
         );
+        localStorage.setItem("token", response.data.token);
         setEmail(response.data.email);
-        setVerifyEmailBox(true);
       }
       toast.success(response.data.message);
+      router.push("/");
     } catch (error) {
       const axiosError = error as AxiosError<{ error: any }>;
-      console.log(axiosError);
+      const errorData = axiosError.response?.data?.error;
+      const responseData = axiosError.response?.data as
+        | {
+            error?: any;
+            email?: string;
+          }
+        | undefined;
 
-      if (
-        axiosError.response &&
-        axiosError.response.data &&
-        axiosError.response.data.error
-      ) {
-        const errorData = axiosError.response.data.error;
-
-        const responseData = axiosError.response.data as {
-          error: any;
-          email?: string;
-        };
-        if (axiosError.response.status == 409 && responseData.email) {
-          toast.error(errorData);
-          setEmail(responseData.email);
-          setVerifyEmailBox(true);
-        } else if (typeof errorData === "string") toast.error(errorData);
-        else if (Array.isArray(errorData) && errorData.length > 0) {
-          toast.error(errorData[0].message);
-        } else toast.error("Error occured");
+      if (axiosError.response?.status === 409 && responseData?.email) {
+        setEmail(responseData.email);
       }
-    }
 
-    setLoading(false);
+      if (typeof errorData === "string") toast.error(errorData);
+      else if (Array.isArray(errorData) && errorData.length > 0)
+        toast.error(errorData[0].message);
+      else toast.error("Unable to complete authentication");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="flex flex-col items-center md:gap-6 gap-4 z-22 bg-[#fef3d3] dark:bg-[#232329]  p-6 md:p-12 rounded-4xl   shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">

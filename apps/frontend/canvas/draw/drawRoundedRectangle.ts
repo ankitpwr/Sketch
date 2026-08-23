@@ -15,10 +15,8 @@ export function drawRoundedRectangle(
   boundingBox: { isBoundingBox: boolean; scale: number } = {
     isBoundingBox: false,
     scale: 1,
-  }
+  },
 ) {
-  console.log(`in rounded rect`);
-  console.log(shape);
   const width = shape.endX - shape.startX;
   const height = shape.endY - shape.startY;
   let radius =
@@ -36,7 +34,7 @@ export function drawRoundedRectangle(
     shape.startY,
     width,
     height,
-    radius
+    radius,
   );
   const options = {
     stroke: themeColors[shape.style.strokeColorKey],
@@ -47,7 +45,7 @@ export function drawRoundedRectangle(
     fillStyle: shape.style.fillStyle,
     strokeLineDash: getLineDashPattern(
       shape.style.strokeType,
-      shape.style.strokeWidth
+      shape.style.strokeWidth,
     ),
     seed: shape.seed,
     hachureGap: 3 * shape.style.strokeWidth,
@@ -61,7 +59,7 @@ function createRoundedRectPath(
   y: number,
   width: number,
   height: number,
-  radius: number
+  radius: number,
 ): string {
   const r = Math.min(radius, width / 2, height / 2);
 
