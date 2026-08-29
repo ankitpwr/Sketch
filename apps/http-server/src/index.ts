@@ -11,6 +11,18 @@ app.use(express.json());
 app.use(cors());
 dotenv.config();
 
+app.get("/health-check", async (req, res) => {
+  try {
+    return res.status(200).json({ message: "all good" });
+  } catch (error) {
+    console.log(`Error Occured`);
+    console.log(error);
+    return res.status(500).json({
+      error: `Internal server error`,
+    });
+  }
+});
+
 app.post("/signup", async (req, res) => {
   try {
     const parseData = SignUpSchema.safeParse(req.body);
